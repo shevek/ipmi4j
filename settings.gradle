@@ -1,0 +1,2 @@
+rootProject.name='ipmi4j'
+include 'ipmi-protocol','ipmi-client-mina', 'ipmi-client-netty'

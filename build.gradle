@@ -1,0 +1,61 @@
+ext.githubProjectName = rootProject.name
+
+buildscript {
+	apply from: file('gradle/buildscript.gradle'), to: buildscript
+}
+
+apply from: file('gradle/convention.gradle')
+apply from: file('gradle/github.gradle')
+// apply from: file('gradle/maven.gradle')
+apply from: file('gradle/nexus.gradle')
+apply from: file('gradle/check.gradle')
+apply from: file('gradle/license.gradle')
+
+subprojects {
+	group = "org.anarres.ipmi"
+
+	repositories { 
+		// mavenLocal()
+		mavenCentral()
+		// jcenter()
+	}
+
+	dependencies {
+		compile 'com.google.code.findbugs:jsr305:2.0.2'
+		compile 'org.slf4j:slf4j-api:1.7.7'
+
+		testCompile 'junit:junit:4.11'
+
+		testRuntime 'org.slf4j:slf4j-jcl:1.7.7'
+	}
+}
+
+project(':ipmi-protocol') {
+	dependencies {
+		compile 'com.google.guava:guava:18.0'
+
+		testCompile 'commons-net:commons-net:3.3'
+	}
+}
+
+project(':ipmi-client-mina') {
+	dependencies {
+		compile project(':ipmi-protocol')
+		compile 'org.apache.mina:mina-core:2.0.8'
+
+		testCompile 'commons-net:commons-net:3.3'
+		testCompile project(':ipmi-protocol').sourceSets.test.output
+	}
+}
+
+project(':ipmi-client-netty') {
+	dependencies {
+		compile project(':ipmi-protocol')
+		compile 'io.netty:netty-all:4.0.23.Final'
+
+		testCompile 'commons-net:commons-net:3.3'
+		testCompile project(':ipmi-protocol').sourceSets.test.output
+
+		testRuntime 'org.javassist:javassist:3.18.2-GA'
+	}
+}
