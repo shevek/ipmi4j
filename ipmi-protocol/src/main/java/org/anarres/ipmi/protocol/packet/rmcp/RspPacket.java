@@ -1,8 +1,14 @@
-package org.anarres.ipmi.protocol.packet.rcmp;
+package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
 
 /**
+ * RMCP Security Extensions Protocol.
+ * 
+ * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
+ * Section 3.2.3 page 23.
+ * 
+ * Uses UDP port 0x0298.
  *
  * @author shevek
  */
@@ -10,7 +16,7 @@ public abstract class RspPacket implements Packet {
 
     private int sessionId;
     private int sequenceNumber;
-    private RcmpPacketHeader packet;
+    private RmcpHeader packet;
     private byte[] pad;
     private byte nextHeader;
     private byte[] integrityData;

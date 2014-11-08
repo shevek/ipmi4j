@@ -7,7 +7,7 @@ package org.anarres.ipmi.protocol.codec;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.rcmp.Packet;
+import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,8 @@
-package org.anarres.ipmi.protocol.packet.rcmp;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
 
@@ -6,7 +10,7 @@ import java.nio.ByteBuffer;
  *
  * @author shevek
  */
-public class RcmpPacket extends RcmpPacketHeader {
+public abstract class AsfRmcpData implements RmcpData {
 
     // Page 22
     private int ianaEnterpriseNumber = 0x4542;
@@ -45,7 +49,7 @@ public class RcmpPacket extends RcmpPacketHeader {
 
     @Override
     public int getWireLength() {
-        return super.getWireLength()
+        return 0
                 + 4 // ianaEnterpriseNumber
                 + 1 // message type
                 + 1 // message tag
@@ -55,12 +59,10 @@ public class RcmpPacket extends RcmpPacketHeader {
 
     @Override
     public void toWire(ByteBuffer buffer) {
-        super.toWire(buffer);
         buffer.putInt(ianaEnterpriseNumber);
         buffer.put((byte) messageType.value);
         buffer.put(messageTag);
         buffer.put((byte) 0);
         // 1 byte data length; n bytes data.
     }
-
 }

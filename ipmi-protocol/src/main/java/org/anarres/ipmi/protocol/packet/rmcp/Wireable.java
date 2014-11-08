@@ -1,6 +1,9 @@
-package org.anarres.ipmi.protocol.packet.rcmp;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.anarres.ipmi.protocol.packet.rmcp;
 
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -9,7 +12,7 @@ import javax.annotation.Nonnull;
  *
  * @author shevek
  */
-public interface Packet {
+public interface Wireable {
 
     @Nonnegative
     public int getWireLength();
@@ -17,10 +20,4 @@ public interface Packet {
     public void toWire(@Nonnull ByteBuffer buffer);
 
     public void fromWire(@Nonnull ByteBuffer buffer);
-
-    public void setRemoteAddress(@Nonnull SocketAddress remoteAddress);
-
-    @Nonnull
-    public SocketAddress getRemoteAddress();
-
 }

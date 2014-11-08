@@ -1,17 +1,35 @@
-package org.anarres.ipmi.protocol.packet.rcmp;
+package org.anarres.ipmi.protocol.packet.rmcp;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * RMCP Packet Header.
+ * 
+ * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
  * http://www.dmtf.org/standards/asf
+ * 
  * @author shevek
  */
-public abstract class RcmpPacketHeader {
+public abstract class RmcpHeader implements Wireable {
 
     private byte sequenceNumber;
+
+    private enum MessageClass {
+
+        ASF(6), IPMI(7), OEM(8);
+        private final byte value;
+
+        private MessageClass(int value) {
+            this.value = UnsignedBytes.checkedCast(value);
+        }
+
+        public byte getValue() {
+            return value;
+        }
+    }
+    private MessageClass messageClass;
 
     private enum MessageClassType {
 
@@ -19,23 +37,12 @@ public abstract class RcmpPacketHeader {
     };
     private MessageClassType messageClassType;
 
-    private enum MessageClass {
-
-        ASF(6), IPMI(7), OEM(8);
-        private final int value;
-
-        private MessageClass(int value) {
-            this.value = value;
-        }
-    }
-
-    private MessageClass messageClass;
-
-    @Nonnegative
+    @Override
     public int getWireLength() {
         return 4;
     }
 
+    @Override
     public void toWire(@Nonnull ByteBuffer buffer) {
         // DSP0136 page 22
         buffer.put((byte) 0x06); // ASF RCMP v1
@@ -43,8 +50,7 @@ public abstract class RcmpPacketHeader {
         buffer.put(sequenceNumber);
         byte messageClass = (byte) this.messageClass.value;
         if (messageClassType == MessageClassType.ACK)
-            messageClass |= (1 << 7);
+            messageClass |= 0x80;
         buffer.put(messageClass);
     }
-
 }
