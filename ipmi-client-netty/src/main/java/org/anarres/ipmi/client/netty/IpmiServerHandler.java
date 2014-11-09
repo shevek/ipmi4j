@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.rcmp.Packet;
+import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
