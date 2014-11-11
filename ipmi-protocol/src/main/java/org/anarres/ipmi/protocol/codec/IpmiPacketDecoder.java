@@ -8,6 +8,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,9 @@ public class IpmiPacketDecoder {
 
     @Nonnull
     public Packet decode(@Nonnull SocketAddress remoteAddress, @Nonnull ByteBuffer buf) {
-        Packet packet = null;
+        Packet packet = new RmcpPacket();
         packet.setRemoteAddress(remoteAddress);
-        packet.fromWire(buf);
+        packet.toWire(buf);
         if (buf.position() < buf.limit()) {
             LOG.warn("Discarded " + (buf.limit() - buf.position()) + " trailing bytes in TFTP packet: " + buf);
             buf.position(buf.limit());

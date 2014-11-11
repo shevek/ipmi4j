@@ -1,5 +1,6 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
+import org.anarres.ipmi.protocol.packet.common.Wireable;
 import java.net.SocketAddress;
 import javax.annotation.Nonnull;
 
