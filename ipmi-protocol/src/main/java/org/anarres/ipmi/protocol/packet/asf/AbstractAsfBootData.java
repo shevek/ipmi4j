@@ -6,16 +6,16 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import com.google.common.collect.ImmutableMap;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 
 /**
- * RMCP Packet Header.
+ * PowerUp, Reset and PowerCycleReset.
  * 
  * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
  * http://www.dmtf.org/standards/asf
@@ -23,7 +23,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.Packet;
  * 
  * @author shevek
  */
-public class BootAsfData extends AbstractAsfData {
+public abstract class AbstractAsfBootData extends AbstractAsfData {
 
     /** Section 3.2.4.1 page 33. */
     public static class Command {
@@ -36,6 +36,7 @@ public class BootAsfData extends AbstractAsfData {
         public static final byte FORCE_BOOT_OPTICAL = 0x05;
     }
 
+    /** Section 3.2.4.1 page 34. */
     public static enum Option implements Bits.Wrapper {
 
         LOCK_POWER_BUTTON(0, 1),
@@ -64,20 +65,41 @@ public class BootAsfData extends AbstractAsfData {
             return bit;
         }
     }
-    private byte command;
+    private byte command = Command.NOP;
     private Set<Option> options = EnumSet.noneOf(Option.class);
 
+    public byte getCommand() {
+        return command;
+    }
+
+    @Nonnull
+    public AbstractAsfBootData withCommand(byte command) {
+        this.command = command;
+        return this;
+    }
+
+    @Nonnull
+    public AbstractAsfBootData withOptions(Option... options) {
+        this.options.addAll(Arrays.asList(options));
+        return this;
+    }
+
+    @Nonnull
+    public Set<? extends Option> getOptions() {
+        return options;
+    }
+
     @Override
-    public int getWireLength() {
+    public int getDataWireLength() {
         return 11;
     }
 
     @Override
-    public void toWire(ByteBuffer buffer) {
-        buffer.putInt(AsfRcmpData.IANA_ENTERPRISE_NUMBER);
-        buffer.put(command);
+    public void toWireData(ByteBuffer buffer) {
+        buffer.putInt(IANA_ENTERPRISE_NUMBER);
+        buffer.put(getCommand());
         buffer.put(new byte[2]);    // TODO: Command params. :-(
-        buffer.put(Bits.toBytes(2, options));
+        buffer.put(Bits.toBytes(2, getOptions()));
         buffer.put(new byte[2]);    // TODO: OEM parameters.
     }
 }

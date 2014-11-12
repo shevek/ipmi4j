@@ -4,22 +4,31 @@
  */
 package org.anarres.ipmi.protocol.packet.common;
 
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
+ * A bit-masked subset of a byte array.
+ * 
+ * A Bits object represents a set of bits in a byte array, using a mask and value.
+ * It can query or modify a byte or byte array for the presence of the value.
+ * It also supports a convenient pattern for serializing an {@link EnumSet} into a byte array.
  *
  * @author shevek
  */
 public class Bits {
 
+    /** Implement this, probably in an enum. */
     public static interface Wrapper {
 
         @Nonnull
         public Bits getBits();
     }
 
+    /** Serializer. */
     public static byte toByte(@Nonnull Iterable<? extends Wrapper> wrappers) {
         byte data = 0;
         for (Wrapper wrapper : wrappers)
@@ -27,6 +36,7 @@ public class Bits {
         return data;
     }
 
+    /** Serializer. */
     @Nonnull
     public static byte[] toBytes(@Nonnegative int length, @Nonnull Iterable<? extends Wrapper> wrappers) {
         byte[] data = new byte[length];
@@ -35,11 +45,33 @@ public class Bits {
         return data;
     }
 
+    /** Deserializer. */
     @Nonnull
-    public static Bits forBitIndex(@Nonnegative int byteIndex, int bitIndex) {
+    public static <T extends Enum<T> & Wrapper> Set<T> fromByte(@Nonnull Class<T> type, byte value) {
+        Set<T> out = EnumSet.noneOf(type);
+        for (T t : type.getEnumConstants())
+            if (t.getBits().get(value))
+                out.add(t);
+        return out;
+    }
+
+    /** Deserializer. */
+    @Nonnull
+    public static <T extends Enum<T> & Wrapper> Set<T> fromBytes(@Nonnull Class<T> type, byte[] value) {
+        Set<T> out = EnumSet.noneOf(type);
+        for (T t : type.getEnumConstants())
+            if (t.getBits().get(value))
+                out.add(t);
+        return out;
+    }
+
+    /** Convenience constructor. */
+    @Nonnull
+    public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
         return new Bits(byteIndex, 1 << bitIndex, 1 << bitIndex);
     }
 
+    /** Convenience constructor. */
     @Nonnull
     public static Bits forBitValues(@Nonnegative int byteIndex, @Nonnull Map<Integer, Boolean> bitValues) {
         int byteMask = 0;
@@ -56,7 +88,7 @@ public class Bits {
     private final int byteMask;
     private final int byteValue;
 
-    public Bits(int byteIndex, int byteMask, int byteValue) {
+    public Bits(@Nonnegative int byteIndex, int byteMask, int byteValue) {
         this.byteIndex = byteIndex;
         this.byteMask = byteMask;
         this.byteValue = byteValue;

@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.net.SocketAddress;
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -23,10 +22,5 @@ public abstract class AbstractPacket implements Packet {
     @Override
     public void setRemoteAddress(SocketAddress remoteAddress) {
         this.remoteAddress = remoteAddress;
-    }
-
-    @Nonnull
-    public Packet toPacket() {
-        return this;
     }
 }

@@ -4,7 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
-// Page 22
+/** Page 22. */
 public enum AsfRcmpMessageType {
 
     Reset(0x10),
@@ -17,7 +17,7 @@ public enum AsfRcmpMessageType {
     OpenSessionResponse(0x43),
     CloseSessionResponse(0x44),
     PresencePing(0x80),
-    CapabilitiesRequesT(0x81),
+    CapabilitiesRequest(0x81),
     SystemStateRequest(0x82),
     OpenSessionRequest(0x83),
     CloseSessionRequest(0x84),

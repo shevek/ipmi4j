@@ -39,8 +39,12 @@ public class RmcpPacket extends AbstractPacket {
 
     @Override
     public void toWire(ByteBuffer buffer) {
+        int start = buffer.position();
+        int length = getWireLength();
         header.toWire(buffer);
         if (data != null)
             data.toWire(buffer);
+        if (buffer.position() - start != length)
+            throw new IllegalStateException("Bad serializer.");
     }
 }

@@ -41,17 +41,20 @@ public class RspRmcpPacket extends AbstractPacket {
     @Override
     public void toWire(ByteBuffer buffer) {
         int start = buffer.position();
+        int length = getWireLength();
         buffer.putInt(sessionId);
         buffer.putInt(sequenceNumber);
         packet.toWire(buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             // Padding aligns us to a DWORD, which is 4 bytes.
-            int length = buffer.position() - start;
-            int pad = PAD(length);
+            int dataLength = buffer.position() - start;
+            int pad = PAD(dataLength);
             buffer.put(new byte[pad]);
             buffer.put((byte) pad);
             buffer.put(packet.getHeader().getVersion().getValue());
             buffer.put(integrityData);
         }
+        if (buffer.position() - start != length)
+            throw new IllegalStateException("Bad serializer.");
     }
 }
