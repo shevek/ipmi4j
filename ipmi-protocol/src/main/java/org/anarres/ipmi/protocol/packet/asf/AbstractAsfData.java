@@ -16,6 +16,11 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
  * http://www.dmtf.org/standards/asf
  * Section 3.2.2.3 page 22.
+ * 
+ * This class manages both the RMCP payload and the ASF payload.
+ * Implementors desiring to provide the ASF payload should override
+ * {@link #getDataWireLength()} and * {@link #toWireData(ByteBuffer)}
+ * and ignore the RMCP wrapper.
  *
  * @author shevek
  */
@@ -39,6 +44,7 @@ public abstract class AbstractAsfData implements RmcpData {
                 + getDataWireLength();
     }
 
+    /** Returns the length of the ASF data part of this packet. */
     @Nonnegative
     protected abstract int getDataWireLength();
 
@@ -56,5 +62,6 @@ public abstract class AbstractAsfData implements RmcpData {
             throw new IllegalStateException("Bad serializer: Wrote " + buffer.position() + " bytes, not " + length);
     }
 
+    /** Serializes the ASF data into this RCMP data. */
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
 }

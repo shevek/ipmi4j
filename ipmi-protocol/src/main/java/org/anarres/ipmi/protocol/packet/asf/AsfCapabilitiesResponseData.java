@@ -22,6 +22,7 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
  */
 public class AsfCapabilitiesResponseData extends AbstractAsfData {
 
+    /** Page 37. */
     public enum SpecialCommands implements Bits.Wrapper {
 
         SUPPORTS_FORCE_CD_BOOT(1, 4),
@@ -35,12 +36,13 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
-        @Nonnull
+        @Override
         public Bits getBits() {
             return bits;
         }
     }
 
+    /** Page 37. */
     public enum SystemCapabilities implements Bits.Wrapper {
 
         SUPPORTS_RESET_BOTH_PORTS(0, 7),
@@ -57,27 +59,32 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
-        @Nonnull
+        @Override
         public Bits getBits() {
             return bits;
         }
     }
 
+    /** Page 38. */
     public enum SystemFirmwareCapabilities implements Bits.Wrapper {
 
         SUPPORTS_LOCK_SLEEP_BUTTON(0, 6),
         SUPPORTS_LOCK_KEYBOARD(0, 5),
         SUPPORTS_LOCK_RESET_BUTTON(0, 2),
         SUPPORTS_LOCK_POWER_BUTTON(0, 1),
-        SUPPORTS_SCREEN_BLANK(0, 0);
-        // TODO: More here, page 38.
+        SUPPORTS_SCREEN_BLANK(0, 0),
+        SUPPORTS_CONFIGURATION_DATA_RESET(1, 7),
+        SUPPORTS_FIRMWARE_VERBOSITY_QUIET(1, 6),
+        SUPPORTS_FIRMWARE_VERBOSITY_VERBOSE(1, 5),
+        SUPPORTS_FORCED_PROGRESS_EVENTS(1, 4),
+        SUPPORTS_USER_PASSWORD_BYPASS(1, 3);
         private final Bits bits;
 
         private SystemFirmwareCapabilities(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
-        @Nonnull
+        @Override
         public Bits getBits() {
             return bits;
         }

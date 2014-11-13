@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.rmcp;
+package org.anarres.ipmi.protocol.packet.asf;
 
 import com.google.common.primitives.UnsignedBytes;
 
@@ -15,7 +15,7 @@ import com.google.common.primitives.UnsignedBytes;
  *
  * @author shevek
  */
-public enum RsspStatus {
+public enum AsfRsspSessionStatus {
 
     NO_ERROR(0x00, 0x43, 0x44, 0xc1, 0xc2),
     INSUFFICIENT_RESOURCES(0x01, 0x43),
@@ -36,7 +36,7 @@ public enum RsspStatus {
     private final byte code;
     private final byte[] messageTypes;
 
-    private RsspStatus(int code, int... messageTypes) {
+    private AsfRsspSessionStatus(int code, int... messageTypes) {
         this.code = UnsignedBytes.checkedCast(code);
         this.messageTypes = new byte[messageTypes.length];
         for (int i = 0; i < messageTypes.length; i++)

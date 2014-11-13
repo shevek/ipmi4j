@@ -4,7 +4,6 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
-import com.google.common.collect.ImmutableMap;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
@@ -25,14 +24,14 @@ public class AsfPresencePongData extends AbstractAsfData {
     public enum SupportedEntity implements Bits.Wrapper {
 
         IPMI_SUPPORTED(Bits.forBitIndex(0, 7)),
-        SUPPORT_ASFV1(Bits.forBitValues(0, ImmutableMap.of(1, true, 1, false, 2, false, 3, false)));
+        SUPPORT_ASF_V1(Bits.forBinaryBE(0, 3, 4, 0b0001));
         private final Bits bits;
 
         private SupportedEntity(@Nonnull Bits bits) {
             this.bits = bits;
         }
 
-        @Nonnull
+        @Override
         public Bits getBits() {
             return bits;
         }
@@ -47,7 +46,7 @@ public class AsfPresencePongData extends AbstractAsfData {
             this.bits = bits;
         }
 
-        @Nonnull
+        @Override
         public Bits getBits() {
             return bits;
         }
