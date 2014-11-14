@@ -1,9 +1,8 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
-import org.anarres.ipmi.protocol.packet.common.Wireable;
-import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 
 /**
  * RMCP Packet Header.
@@ -14,7 +13,7 @@ import javax.annotation.Nonnull;
  * 
  * @author shevek
  */
-public class RmcpHeader implements Wireable {
+public class RmcpHeader extends AbstractWireable {
 
     private final RmcpVersion version = RmcpVersion.ASF_RMCP_1_0;
     private byte sequenceNumber;
@@ -32,7 +31,7 @@ public class RmcpHeader implements Wireable {
     }
 
     @Override
-    public void toWire(@Nonnull ByteBuffer buffer) {
+    protected void toWireUnchecked(@Nonnull ByteBuffer buffer) {
         // DSP0136 page 22
         buffer.put(getVersion().getValue());
         buffer.put((byte) 0x00); // ASF reserved

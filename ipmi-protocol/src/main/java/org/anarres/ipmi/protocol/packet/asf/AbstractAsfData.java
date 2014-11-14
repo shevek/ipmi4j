@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**
@@ -24,9 +25,9 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  *
  * @author shevek
  */
-public abstract class AbstractAsfData implements RmcpData {
+public abstract class AbstractAsfData extends AbstractWireable implements RmcpData {
 
-    public static final int IANA_ENTERPRISE_NUMBER = 0x4542;
+    public static final int IANA_ENTERPRISE_NUMBER = 4542;
     // Page 33
     private byte messageTag;    // matches request/response
 
@@ -49,7 +50,7 @@ public abstract class AbstractAsfData implements RmcpData {
     protected abstract int getDataWireLength();
 
     @Override
-    public void toWire(ByteBuffer buffer) {
+    protected void toWireUnchecked(ByteBuffer buffer) {
         int start = buffer.position();
         int length = getWireLength();
         buffer.putInt(IANA_ENTERPRISE_NUMBER);

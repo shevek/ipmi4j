@@ -5,12 +5,13 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.net.SocketAddress;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 
 /**
  *
  * @author shevek
  */
-public abstract class AbstractPacket implements Packet {
+public abstract class AbstractPacket extends AbstractWireable implements Packet {
 
     private SocketAddress remoteAddress;
 

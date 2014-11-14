@@ -39,7 +39,7 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    public void toWire(ByteBuffer buffer) {
+    protected void toWireUnchecked(ByteBuffer buffer) {
         int start = buffer.position();
         int length = getWireLength();
         buffer.putInt(sessionId);
