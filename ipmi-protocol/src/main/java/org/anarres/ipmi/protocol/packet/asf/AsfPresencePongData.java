@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
+import com.google.common.collect.Iterables;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
@@ -64,8 +65,10 @@ public class AsfPresencePongData extends AbstractAsfData {
         return oemDefined;
     }
 
-    public void setOemDefined(int oemDefined) {
+    @Nonnull
+    public AsfPresencePongData withOemDefined(int oemDefined) {
         this.oemDefined = oemDefined;
+        return this;
     }
 
     @Nonnull
@@ -74,8 +77,20 @@ public class AsfPresencePongData extends AbstractAsfData {
     }
 
     @Nonnull
+    public AsfPresencePongData withSupportedEntities(Iterable<? extends SupportedEntity> supportedEntities) {
+        Iterables.addAll(this.supportedEntities, supportedEntities);
+        return this;
+    }
+
+    @Nonnull
     public Set<? extends SupportedInteraction> getSupportedInteractions() {
         return supportedInteractions;
+    }
+
+    @Nonnull
+    public AsfPresencePongData withSupportedInteractions(Iterable<? extends SupportedInteraction> supportedInteractions) {
+        Iterables.addAll(this.supportedInteractions, supportedInteractions);
+        return this;
     }
 
     @Override
@@ -90,5 +105,14 @@ public class AsfPresencePongData extends AbstractAsfData {
         buffer.put(Bits.toByte(getSupportedEntities()));
         buffer.put(Bits.toByte(getSupportedInteractions()));
         buffer.put(new byte[6]);    // Reserved, zero.
+    }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        withOemDefined(buffer.getInt());
+        withSupportedEntities(Bits.fromBuffer(SupportedEntity.class, buffer, 1));
+        withSupportedInteractions(Bits.fromBuffer(SupportedInteraction.class, buffer, 1));
+        assertWireBytes(buffer, 0, 0, 0, 0, 0, 0);
     }
 }

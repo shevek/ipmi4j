@@ -22,5 +22,6 @@ public interface Wireable {
     public int getWireLength();
 
     public void toWire(@Nonnull ByteBuffer buffer);
-    // public void fromWire(@Nonnull ByteBuffer buffer);
+
+    public void fromWire(@Nonnull ByteBuffer buffer);
 }

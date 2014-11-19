@@ -5,6 +5,9 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import com.google.common.primitives.UnsignedBytes;
+import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * RSSP and RAKP Status Codes.
@@ -15,7 +18,7 @@ import com.google.common.primitives.UnsignedBytes;
  *
  * @author shevek
  */
-public enum AsfRsspSessionStatus {
+public enum AsfRsspSessionStatus implements Code.Wrapper {
 
     NO_ERROR(0x00, 0x43, 0x44, 0xc1, 0xc2),
     INSUFFICIENT_RESOURCES(0x01, 0x43),
@@ -43,6 +46,7 @@ public enum AsfRsspSessionStatus {
             this.messageTypes[i] = UnsignedBytes.checkedCast(messageTypes[i]);
     }
 
+    @Override
     public byte getCode() {
         return code;
     }

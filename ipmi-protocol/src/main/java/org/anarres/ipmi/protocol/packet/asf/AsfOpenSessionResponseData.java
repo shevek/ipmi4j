@@ -5,6 +5,8 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * OpenSessionResponse.
@@ -17,31 +19,45 @@ import java.nio.ByteBuffer;
  */
 public class AsfOpenSessionResponseData extends AbstractAsfData {
 
-    private AsfRsspSessionStatus status;
+    private AsfRsspSessionStatus status = AsfRsspSessionStatus.NO_ERROR;
     private int consoleSessionId;
     private int clientSessionId;
-    private AsfRsspSessionAuthenticationPayload.AuthenticationAlgorithm authenticationAlgorithm;
-    private AsfRsspSessionAuthenticationPayload.IntegrityAlgorithm integrityAlgorithm;
+    private AsfRsspSessionAuthentication.AuthenticationAlgorithm authenticationAlgorithm;
+    private AsfRsspSessionAuthentication.IntegrityAlgorithm integrityAlgorithm;
 
-    @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.OpenSessionResponse;
+    @Nonnull
+    public AsfRsspSessionStatus getStatus() {
+        return status;
+    }
+
+    @Nonnull
+    public AsfOpenSessionResponseData withStatus(@Nonnull AsfRsspSessionStatus status) {
+        this.status = status;
+        return this;
     }
 
     public int getConsoleSessionId() {
         return consoleSessionId;
     }
 
-    public void setConsoleSessionId(int consoleSessionId) {
+    @Nonnull
+    public AsfOpenSessionResponseData withConsoleSessionId(int consoleSessionId) {
         this.consoleSessionId = consoleSessionId;
+        return this;
     }
 
     public int getClientSessionId() {
         return clientSessionId;
     }
 
-    public void setClientSessionId(int clientSessionId) {
+    public AsfOpenSessionResponseData withClientSessionId(int clientSessionId) {
         this.clientSessionId = clientSessionId;
+        return this;
+    }
+
+    @Override
+    public AsfRcmpMessageType getMessageType() {
+        return AsfRcmpMessageType.OpenSessionResponse;
     }
 
     @Override
@@ -52,10 +68,20 @@ public class AsfOpenSessionResponseData extends AbstractAsfData {
     @Override
     protected void toWireData(ByteBuffer buffer) {
         buffer.put(status.getCode());
-        buffer.put(new byte[2]);    // Reserved, zero
+        buffer.putChar((char) 0);    // Reserved, zero
         buffer.putInt(getConsoleSessionId());
         buffer.putInt(getClientSessionId());
         authenticationAlgorithm.toWire(buffer);
         integrityAlgorithm.toWire(buffer);
+    }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+        withStatus(Code.fromBuffer(AsfRsspSessionStatus.class, buffer));
+        assertWireChar(buffer, (char) 0);
+        withConsoleSessionId(buffer.getInt());
+        withClientSessionId(buffer.getInt());
+        authenticationAlgorithm = (AsfRsspSessionAuthentication.AuthenticationAlgorithm) AsfRsspSessionAuthentication.fromWire(buffer);
+        integrityAlgorithm = (AsfRsspSessionAuthentication.IntegrityAlgorithm) AsfRsspSessionAuthentication.fromWire(buffer);
     }
 }

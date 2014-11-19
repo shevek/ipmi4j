@@ -30,4 +30,8 @@ public class AsfSystemStateRequestData extends AbstractAsfData {
     @Override
     protected void toWireData(ByteBuffer buffer) {
     }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+    }
 }

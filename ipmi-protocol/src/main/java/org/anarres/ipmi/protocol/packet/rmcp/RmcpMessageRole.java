@@ -4,11 +4,23 @@
  */
 package org.anarres.ipmi.protocol.packet.rmcp;
 
+import org.anarres.ipmi.protocol.packet.common.Code;
+
 /**
  *
  * @author shevek
  */
-public enum RmcpMessageRole {
+public enum RmcpMessageRole implements Code.Wrapper {
 
-    REQ, ACK
+    REQ {
+        @Override
+        public byte getCode() {
+            return 0;
+        }
+    }, ACK {
+        @Override
+        public byte getCode() {
+            return 1;
+        }
+    };
 }

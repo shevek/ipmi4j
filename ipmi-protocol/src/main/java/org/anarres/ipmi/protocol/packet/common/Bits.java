@@ -5,6 +5,8 @@
 package org.anarres.ipmi.protocol.packet.common;
 
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +35,8 @@ public class Bits {
     public static byte toByte(@Nonnull Iterable<? extends Wrapper> wrappers) {
         byte data = 0;
         for (Wrapper wrapper : wrappers)
-            data = wrapper.getBits().set(data);
+            if (wrapper != null)
+                data = wrapper.getBits().set(data);
         return data;
     }
 
@@ -42,7 +45,8 @@ public class Bits {
     public static byte[] toBytes(@Nonnegative int length, @Nonnull Iterable<? extends Wrapper> wrappers) {
         byte[] data = new byte[length];
         for (Wrapper wrapper : wrappers)
-            wrapper.getBits().set(data);
+            if (wrapper != null)
+                wrapper.getBits().set(data);
         return data;
     }
 
@@ -66,6 +70,22 @@ public class Bits {
         return out;
     }
 
+    /** Deserializer. */
+    @Nonnull
+    public static <T extends Enum<T> & Wrapper> Set<T> fromBuffer(@Nonnull Class<T> type, @Nonnull ByteBuffer buffer, @Nonnegative int length) {
+        Preconditions.checkPositionIndex(length, buffer.remaining(), "Insufficient bytes remaining in buffer");
+        switch (length) {
+            case 0:
+                return Collections.emptySet();
+            case 1:
+                return fromByte(type, buffer.get());
+            default:
+                byte[] data = new byte[length];
+                buffer.get(data);
+                return fromBytes(type, data);
+        }
+    }
+
     /** Convenience constructor. */
     @Nonnull
     public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
@@ -74,6 +94,7 @@ public class Bits {
 
     /** Convenience constructor. */
     @Nonnull
+    @Deprecated
     public static Bits forBitValues(@Nonnegative int byteIndex, @Nonnull Map<Integer, Boolean> bitValues) {
         Preconditions.checkArgument(!bitValues.isEmpty(), "No bit values.");
         int byteMask = 0;
@@ -89,6 +110,8 @@ public class Bits {
 
     /**
      * Convenience constructor.
+     * 
+     * @param firstBitIndex The high bit index, e.g. bits 3:0 pass 3, not 0.
      */
     @Nonnull
     public static Bits forBinaryBE(@Nonnegative int byteIndex, @Nonnegative int firstBitIndex, @Nonnegative int length, int value) {
@@ -104,7 +127,7 @@ public class Bits {
         }
         if (firstBitIndex - length >= 0)
             value = value << (firstBitIndex - length + 1);
-        return new Bits(byteIndex, firstBitIndex, value);
+        return new Bits(byteIndex, byteMask, value);
     }
     private final int byteIndex;
     private final int byteMask;

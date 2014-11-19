@@ -5,6 +5,8 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * CloseSessionResponse.
@@ -17,7 +19,18 @@ import java.nio.ByteBuffer;
  */
 public class AsfCloseSessionResponseData extends AbstractAsfData {
 
-    private AsfRsspSessionStatus status;
+    private AsfRsspSessionStatus status = AsfRsspSessionStatus.NO_ERROR;
+
+    @Nonnull
+    public AsfRsspSessionStatus getStatus() {
+        return status;
+    }
+
+    @Nonnull
+    public AsfCloseSessionResponseData withStatus(@Nonnull AsfRsspSessionStatus status) {
+        this.status = status;
+        return this;
+    }
 
     @Override
     public AsfRcmpMessageType getMessageType() {
@@ -32,5 +45,10 @@ public class AsfCloseSessionResponseData extends AbstractAsfData {
     @Override
     protected void toWireData(ByteBuffer buffer) {
         buffer.put(status.getCode());
+    }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+        withStatus(Code.fromBuffer(AsfRsspSessionStatus.class, buffer));
     }
 }

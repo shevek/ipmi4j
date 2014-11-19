@@ -35,6 +35,14 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
     @Nonnull
     public abstract AsfRcmpMessageType getMessageType();
 
+    public byte getMessageTag() {
+        return messageTag;
+    }
+
+    public void setMessageTag(byte messageTag) {
+        this.messageTag = messageTag;
+    }
+
     @Override
     public int getWireLength() {
         return 0
@@ -51,18 +59,26 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
 
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
-        int start = buffer.position();
-        int length = getWireLength();
         buffer.putInt(IANA_ENTERPRISE_NUMBER);
-        buffer.put((byte) getMessageType().value);
-        buffer.put(messageTag);
+        buffer.put(getMessageType().getCode());
+        buffer.put(getMessageTag());
         buffer.put((byte) 0);   // reserved
         buffer.put(UnsignedBytes.checkedCast(getDataWireLength()));
         toWireData(buffer);
-        if (buffer.position() - start != length)
-            throw new IllegalStateException("Bad serializer: Wrote " + buffer.position() + " bytes, not " + length);
     }
 
     /** Serializes the ASF data into this RCMP data. */
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        assertWireByte(buffer, getMessageType().getCode());
+        setMessageTag(buffer.get());
+        assertWireByte(buffer, (byte) 0);
+        buffer.get();   // Can't validate until we have the data. :-(
+        fromWireData(buffer);
+    }
+
+    protected abstract void fromWireData(@Nonnull ByteBuffer buffer);
 }

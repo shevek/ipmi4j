@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * OpenSessionRequest.
@@ -20,8 +21,8 @@ import java.util.List;
 public class AsfOpenSessionRequestData extends AbstractAsfData {
 
     private int consoleSessionId;
-    private final List<AsfRsspSessionAuthenticationPayload.AuthenticationAlgorithm> authenticationAlgorithms = new ArrayList<>();
-    private final List<AsfRsspSessionAuthenticationPayload.IntegrityAlgorithm> integrityAlgorithms = new ArrayList<>();
+    private final List<AsfRsspSessionAuthentication.AuthenticationAlgorithm> authenticationAlgorithms = new ArrayList<>();
+    private final List<AsfRsspSessionAuthentication.IntegrityAlgorithm> integrityAlgorithms = new ArrayList<>();
 
     @Override
     public AsfRcmpMessageType getMessageType() {
@@ -32,25 +33,41 @@ public class AsfOpenSessionRequestData extends AbstractAsfData {
         return consoleSessionId;
     }
 
-    public void setConsoleSessionId(int consoleSessionId) {
+    @Nonnull
+    public AsfOpenSessionRequestData withConsoleSessionId(int consoleSessionId) {
         this.consoleSessionId = consoleSessionId;
+        return this;
     }
 
     @Override
     protected int getDataWireLength() {
         return 4
-                + authenticationAlgorithms.size() * AsfRsspSessionAuthenticationPayload.AuthenticationAlgorithm.LENGTH
-                + integrityAlgorithms.size() * AsfRsspSessionAuthenticationPayload.IntegrityAlgorithm.LENGTH
-                + AsfRsspSessionAuthenticationPayload.EndOfList.LENGTH;
+                + authenticationAlgorithms.size() * AsfRsspSessionAuthentication.AuthenticationAlgorithm.LENGTH
+                + integrityAlgorithms.size() * AsfRsspSessionAuthentication.IntegrityAlgorithm.LENGTH
+                + AsfRsspSessionAuthentication.EndOfList.LENGTH;
     }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
         buffer.putInt(getConsoleSessionId());
-        for (AsfRsspSessionAuthenticationPayload.AuthenticationAlgorithm authenticationAlgorithm : authenticationAlgorithms)
+        for (AsfRsspSessionAuthentication.AuthenticationAlgorithm authenticationAlgorithm : authenticationAlgorithms)
             authenticationAlgorithm.toWire(buffer);
-        for (AsfRsspSessionAuthenticationPayload.IntegrityAlgorithm integrityAlgorithm : integrityAlgorithms)
+        for (AsfRsspSessionAuthentication.IntegrityAlgorithm integrityAlgorithm : integrityAlgorithms)
             integrityAlgorithm.toWire(buffer);
-        AsfRsspSessionAuthenticationPayload.EndOfList.INSTANCE.toWire(buffer);
+        AsfRsspSessionAuthentication.EndOfList.INSTANCE.toWire(buffer);
+    }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+        withConsoleSessionId(buffer.getInt());
+        while (buffer.hasRemaining()) {
+            AsfRsspSessionAuthentication.Payload payload = AsfRsspSessionAuthentication.fromWire(buffer);
+            if (payload instanceof AsfRsspSessionAuthentication.AuthenticationAlgorithm)
+                authenticationAlgorithms.add((AsfRsspSessionAuthentication.AuthenticationAlgorithm) payload);
+            else if (payload instanceof AsfRsspSessionAuthentication.IntegrityAlgorithm)
+                integrityAlgorithms.add((AsfRsspSessionAuthentication.IntegrityAlgorithm) payload);
+            else if (payload instanceof AsfRsspSessionAuthentication.EndOfList)
+                break;
+        }
     }
 }

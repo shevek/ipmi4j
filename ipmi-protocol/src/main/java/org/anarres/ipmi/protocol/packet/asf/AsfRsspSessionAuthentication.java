@@ -4,15 +4,24 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  *
  * @author shevek
  */
-public interface AsfRsspSessionAuthenticationPayload {
+public class AsfRsspSessionAuthentication {
 
-    public enum AuthenticationAlgorithm implements AsfRsspSessionAuthenticationPayload {
+    public interface Payload {
+
+        public void toWire(ByteBuffer buffer);
+    }
+
+    public enum AuthenticationAlgorithm implements Payload, Code.Wrapper {
 
         RAKP_HMAC_SHA1(0x01);
         public static final short LENGTH = 8;
@@ -20,6 +29,11 @@ public interface AsfRsspSessionAuthenticationPayload {
 
         private AuthenticationAlgorithm(int code) {
             this.code = (byte) code;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
         }
 
         @Override
@@ -32,7 +46,7 @@ public interface AsfRsspSessionAuthenticationPayload {
         }
     }
 
-    public enum IntegrityAlgorithm implements AsfRsspSessionAuthenticationPayload {
+    public enum IntegrityAlgorithm implements Payload, Code.Wrapper {
 
         HMAC_SHA1_96(0x01);
         public static final short LENGTH = 8;
@@ -40,6 +54,11 @@ public interface AsfRsspSessionAuthenticationPayload {
 
         private IntegrityAlgorithm(int code) {
             this.code = (byte) code;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
         }
 
         @Override
@@ -52,7 +71,7 @@ public interface AsfRsspSessionAuthenticationPayload {
         }
     }
 
-    public enum EndOfList implements AsfRsspSessionAuthenticationPayload {
+    public enum EndOfList implements Payload {
 
         INSTANCE;
         public static final short LENGTH = 4;
@@ -65,5 +84,26 @@ public interface AsfRsspSessionAuthenticationPayload {
         }
     };
 
-    public void toWire(ByteBuffer buffer);
+    @Nonnull
+    public static Payload fromWire(@Nonnull ByteBuffer buffer) {
+        if (!buffer.hasRemaining())
+            return EndOfList.INSTANCE;
+
+        byte type = buffer.get();
+        AbstractWireable.assertWireByte(buffer, (byte) 0);
+        short length = buffer.getShort();
+        byte[] data = new byte[length - 4];
+        buffer.get(data);
+
+        switch (buffer.get()) {
+            case 0:
+                return EndOfList.INSTANCE;
+            case 1:
+                return Code.fromByte(AuthenticationAlgorithm.class, data[0]);
+            case 2:
+                return Code.fromByte(IntegrityAlgorithm.class, data[0]);
+            default:
+                throw new IllegalArgumentException("Unknown algorithm type 0x" + UnsignedBytes.toString(type, 16));
+        }
+    }
 }

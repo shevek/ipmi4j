@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
+import com.google.common.collect.Iterables;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
 public class AsfCapabilitiesResponseData extends AbstractAsfData {
 
     /** Page 37. */
-    public enum SpecialCommands implements Bits.Wrapper {
+    public enum SpecialCommand implements Bits.Wrapper {
 
         SUPPORTS_FORCE_CD_BOOT(1, 4),
         SUPPORTS_FORCE_DIAGNOSTIC_BOOT(1, 3),
@@ -32,7 +33,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         SUPPORTS_FORCE_PXE_BOOT(1, 0);
         private final Bits bits;
 
-        private SpecialCommands(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
+        private SpecialCommand(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
@@ -43,7 +44,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
     }
 
     /** Page 37. */
-    public enum SystemCapabilities implements Bits.Wrapper {
+    public enum SystemCapability implements Bits.Wrapper {
 
         SUPPORTS_RESET_BOTH_PORTS(0, 7),
         SUPPORTS_POWER_UP_BOTH_PORTS(0, 6),
@@ -55,7 +56,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         SUPPORTS_POWER_CYCLE_RESET_SECURE_PORT_ONLY(0, 0);
         private final Bits bits;
 
-        private SystemCapabilities(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
+        private SystemCapability(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
@@ -66,7 +67,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
     }
 
     /** Page 38. */
-    public enum SystemFirmwareCapabilities implements Bits.Wrapper {
+    public enum SystemFirmwareCapability implements Bits.Wrapper {
 
         SUPPORTS_LOCK_SLEEP_BUTTON(0, 6),
         SUPPORTS_LOCK_KEYBOARD(0, 5),
@@ -80,7 +81,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         SUPPORTS_USER_PASSWORD_BYPASS(1, 3);
         private final Bits bits;
 
-        private SystemFirmwareCapabilities(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
+        private SystemFirmwareCapability(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
             this.bits = Bits.forBitIndex(byteIndex, bitIndex);
         }
 
@@ -90,9 +91,9 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         }
     }
     private int oemDefined;
-    private final Set<SpecialCommands> specialCommands = EnumSet.noneOf(SpecialCommands.class);
-    private final Set<SystemCapabilities> systemCapabilities = EnumSet.noneOf(SystemCapabilities.class);
-    private final Set<SystemFirmwareCapabilities> systemFirmwareCapabilities = EnumSet.noneOf(SystemFirmwareCapabilities.class);
+    private final Set<SpecialCommand> specialCommands = EnumSet.noneOf(SpecialCommand.class);
+    private final Set<SystemCapability> systemCapabilities = EnumSet.noneOf(SystemCapability.class);
+    private final Set<SystemFirmwareCapability> systemFirmwareCapabilities = EnumSet.noneOf(SystemFirmwareCapability.class);
 
     @Override
     public AsfRcmpMessageType getMessageType() {
@@ -103,23 +104,43 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         return oemDefined;
     }
 
-    public void setOemDefined(int oemDefined) {
+    @Nonnull
+    public AsfCapabilitiesResponseData withOemDefined(int oemDefined) {
         this.oemDefined = oemDefined;
+        return this;
     }
 
     @Nonnull
-    public Set<? extends SpecialCommands> getSpecialCommands() {
+    public Set<? extends SpecialCommand> getSpecialCommands() {
         return specialCommands;
     }
 
     @Nonnull
-    public Set<? extends SystemCapabilities> getSystemCapabilities() {
+    public AsfCapabilitiesResponseData withSpecialCommands(Iterable<? extends SpecialCommand> specialCommands) {
+        Iterables.addAll(this.specialCommands, specialCommands);
+        return this;
+    }
+
+    @Nonnull
+    public Set<? extends SystemCapability> getSystemCapabilities() {
         return systemCapabilities;
     }
 
     @Nonnull
-    public Set<? extends SystemFirmwareCapabilities> getSystemFirmwareCapabilities() {
+    public AsfCapabilitiesResponseData withSystemCapabilities(Iterable<? extends SystemCapability> systemCapabilities) {
+        Iterables.addAll(this.systemCapabilities, systemCapabilities);
+        return this;
+    }
+
+    @Nonnull
+    public Set<? extends SystemFirmwareCapability> getSystemFirmwareCapabilities() {
         return systemFirmwareCapabilities;
+    }
+
+    @Nonnull
+    public AsfCapabilitiesResponseData withSystemFirmwareCapabilities(Iterable<? extends SystemFirmwareCapability> systemFirmwareCapabilities) {
+        Iterables.addAll(this.systemFirmwareCapabilities, systemFirmwareCapabilities);
+        return this;
     }
 
     @Override
@@ -135,5 +156,15 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
         buffer.put(Bits.toByte(getSystemCapabilities()));
         buffer.put(Bits.toBytes(4, getSystemFirmwareCapabilities()));
         buffer.put((byte) 0);   // Reserved
+    }
+
+    @Override
+    protected void fromWireData(ByteBuffer buffer) {
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        withOemDefined(buffer.getInt());
+        withSpecialCommands(Bits.fromBuffer(SpecialCommand.class, buffer, 2));
+        withSystemCapabilities(Bits.fromBuffer(SystemCapability.class, buffer, 1));
+        withSystemFirmwareCapabilities(Bits.fromBuffer(SystemFirmwareCapability.class, buffer, 4));
+        assertWireByte(buffer, (byte) 0);
     }
 }

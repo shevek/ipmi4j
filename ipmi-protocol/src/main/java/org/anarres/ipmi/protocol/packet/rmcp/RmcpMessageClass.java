@@ -5,21 +5,23 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  *
  * @author shevek
  */
-public enum RmcpMessageClass {
+public enum RmcpMessageClass implements Code.Wrapper {
 
     ASF(6), IPMI(7), OEM(8);
-    final byte value;
+    final byte code;
 
-    private RmcpMessageClass(int value) {
-        this.value = UnsignedBytes.checkedCast(value);
+    private RmcpMessageClass(int code) {
+        this.code = UnsignedBytes.checkedCast(code);
     }
 
-    public byte getValue() {
-        return value;
+    @Override
+    public byte getCode() {
+        return code;
     }
 }
