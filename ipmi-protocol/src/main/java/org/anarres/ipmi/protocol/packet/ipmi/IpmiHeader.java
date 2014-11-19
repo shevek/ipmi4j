@@ -45,6 +45,11 @@ public class IpmiHeader extends AbstractWireable {
     private int ipmiSessionId;
     private int ipmiSessionSequenceNumber;
 
+    @Override
+    public int getWireLength() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     // 2 byte payload length
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
@@ -56,5 +61,10 @@ public class IpmiHeader extends AbstractWireable {
             payloadType |= 0x40;
         buffer.put(payloadType);
         // if payloadType == OEM_EXPLICIT
+    }
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
