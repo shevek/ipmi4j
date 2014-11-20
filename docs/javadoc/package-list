@@ -1,0 +1,8 @@
+org.anarres.ipmi.client.netty
+org.anarres.ipmi.protocol
+org.anarres.ipmi.protocol.codec
+org.anarres.ipmi.protocol.engine
+org.anarres.ipmi.protocol.packet.asf
+org.anarres.ipmi.protocol.packet.common
+org.anarres.ipmi.protocol.packet.ipmi
+org.anarres.ipmi.protocol.packet.rmcp
