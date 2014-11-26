@@ -32,7 +32,7 @@ public class RspRmcpPacket extends AbstractPacket {
             case 2:
                 return PAD2;
             case 3:
-                return PAD3;
+                return PAD1;
             default:
                 throw new IllegalStateException("Illegal length " + length);
         }

@@ -18,8 +18,8 @@ import java.nio.ByteBuffer;
 public class AsfCapabilitiesRequestData extends AbstractAsfData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.CapabilitiesRequest;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.CapabilitiesRequest;
     }
 
     @Override

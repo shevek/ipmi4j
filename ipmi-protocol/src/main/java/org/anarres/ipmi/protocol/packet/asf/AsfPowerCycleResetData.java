@@ -16,7 +16,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 public class AsfPowerCycleResetData extends AbstractAsfBootData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.PowerCycleReset;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.PowerCycleReset;
     }
 }

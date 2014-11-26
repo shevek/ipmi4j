@@ -71,8 +71,8 @@ public class AsfRAKPMessage2Data extends AbstractAsfData {
     }
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.RAKPMessage2;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.RAKPMessage2;
     }
 
     @Override

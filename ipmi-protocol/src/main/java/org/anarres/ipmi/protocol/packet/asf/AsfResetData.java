@@ -16,7 +16,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 public class AsfResetData extends AbstractAsfBootData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.Reset;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.Reset;
     }
 }

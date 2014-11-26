@@ -24,6 +24,9 @@ die "Failed: $@" unless $res->is_success;
 print <<"EOM";
 package org.anarres.ipmi.protocol;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 public enum IanaEnterpriseNumber {
 EOM
 
@@ -87,11 +90,13 @@ print <<"EOM";
 		this.name = name;
 	}
 
+	\@Nonnegative
 	public int getNumber() {
 		return number;
 	}
 
-	public String getNanem() {
+	\@Nonnull
+	public String getName() {
 		return name;
 	}
 }

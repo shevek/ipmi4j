@@ -20,6 +20,7 @@ public enum RmcpMessageRole implements Code.Wrapper {
     }, ACK {
         @Override
         public byte getCode() {
+            // TODO: -> 0x80 and correct all else to match.
             return 1;
         }
     };

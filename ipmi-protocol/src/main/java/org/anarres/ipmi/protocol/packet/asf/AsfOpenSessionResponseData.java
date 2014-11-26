@@ -56,8 +56,8 @@ public class AsfOpenSessionResponseData extends AbstractAsfData {
     }
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.OpenSessionResponse;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.OpenSessionResponse;
     }
 
     @Override

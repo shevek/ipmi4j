@@ -18,8 +18,8 @@ import java.nio.ByteBuffer;
 public class AsfUnconditionalPowerDownData extends AbstractAsfData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.UnconditionalPowerDown;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.UnconditionalPowerDown;
     }
 
     @Override

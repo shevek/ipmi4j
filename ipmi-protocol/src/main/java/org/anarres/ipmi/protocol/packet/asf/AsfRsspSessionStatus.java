@@ -5,9 +5,10 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import com.google.common.primitives.UnsignedBytes;
-import java.nio.ByteBuffer;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import static org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType.*;
 
 /**
  * RSSP and RAKP Status Codes.
@@ -20,30 +21,28 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public enum AsfRsspSessionStatus implements Code.Wrapper {
 
-    NO_ERROR(0x00, 0x43, 0x44, 0xc1, 0xc2),
-    INSUFFICIENT_RESOURCES(0x01, 0x43),
-    INVALID_SESSION_ID(0x02, 0x43, 0x44, 0xc1, 0xc2),
-    INVALID_PAYLOAD_TYPE(0x03, 0x43),
-    INVALID_AUTHENTICATION_ALGORITHM(0x04, 0x43),
-    INVALID_INTEGRITY_ALGORITHM(0x05, 0x43),
-    NO_MATCHING_AUTHENTICATION_PAYLOAD(0x06, 0x43),
-    NO_MATCHING_INTEGRITY_PAYLOAD(0x07, 0x43),
-    INACTIVE_SESSION_ID(0x08, 0x44, 0xc1, 0xc2),
-    INVALID_ROLE(0x09, 0xc1),
-    UNAUTHORIZED_ROLE(0x0A, 0xc1),
-    INSUFFICIENT_RESOURCES_FOR_ROLE(0x0B, 0xc1),
-    INVALID_NAME_LENGTH(0x0C, 0xc1),
-    UNAUTHORIZED_NAME(0x0D, 0xc1),
-    UNAUTHORIZED_GUID(0x0E, 0xc2),
-    INVALID_INTEGRITY_CHECK_VALUE(0x0F, 0xc2);
+    NO_ERROR(0x00, OpenSessionResponse, CloseSessionResponse, RAKPMessage2, RAKPMessage3),
+    INSUFFICIENT_RESOURCES(0x01, OpenSessionResponse),
+    INVALID_SESSION_ID(0x02, OpenSessionResponse, CloseSessionResponse, RAKPMessage2, RAKPMessage3),
+    INVALID_PAYLOAD_TYPE(0x03, OpenSessionResponse),
+    INVALID_AUTHENTICATION_ALGORITHM(0x04, OpenSessionResponse),
+    INVALID_INTEGRITY_ALGORITHM(0x05, OpenSessionResponse),
+    NO_MATCHING_AUTHENTICATION_PAYLOAD(0x06, OpenSessionResponse),
+    NO_MATCHING_INTEGRITY_PAYLOAD(0x07, OpenSessionResponse),
+    INACTIVE_SESSION_ID(0x08, CloseSessionResponse, RAKPMessage2, RAKPMessage3),
+    INVALID_ROLE(0x09, RAKPMessage2),
+    UNAUTHORIZED_ROLE(0x0A, RAKPMessage2),
+    INSUFFICIENT_RESOURCES_FOR_ROLE(0x0B, RAKPMessage2),
+    INVALID_NAME_LENGTH(0x0C, RAKPMessage2),
+    UNAUTHORIZED_NAME(0x0D, RAKPMessage2),
+    UNAUTHORIZED_GUID(0x0E, RAKPMessage3),
+    INVALID_INTEGRITY_CHECK_VALUE(0x0F, RAKPMessage3);
     private final byte code;
-    private final byte[] messageTypes;
+    private final AsfRmcpMessageType[] messageTypes;
 
-    private AsfRsspSessionStatus(int code, int... messageTypes) {
+    private AsfRsspSessionStatus(@Nonnegative int code, @Nonnull AsfRmcpMessageType... messageTypes) {
         this.code = UnsignedBytes.checkedCast(code);
-        this.messageTypes = new byte[messageTypes.length];
-        for (int i = 0; i < messageTypes.length; i++)
-            this.messageTypes[i] = UnsignedBytes.checkedCast(messageTypes[i]);
+        this.messageTypes = messageTypes;
     }
 
     @Override

@@ -25,8 +25,8 @@ public class AsfOpenSessionRequestData extends AbstractAsfData {
     private final List<AsfRsspSessionAuthentication.IntegrityAlgorithm> integrityAlgorithms = new ArrayList<>();
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.OpenSessionRequest;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.OpenSessionRequest;
     }
 
     public int getConsoleSessionId() {

@@ -1,5 +1,8 @@
 package org.anarres.ipmi.protocol;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 public enum IanaEnterpriseNumber {
 	/** IBM. Kristine Adamson <adamson&us.ibm.com> */
 	IBM(2, "IBM"),
@@ -25,11 +28,13 @@ public enum IanaEnterpriseNumber {
 		this.name = name;
 	}
 
+	@Nonnegative
 	public int getNumber() {
 		return number;
 	}
 
-	public String getNanem() {
+	@Nonnull
+	public String getName() {
 		return name;
 	}
 }

@@ -2,27 +2,25 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.rmcp;
+package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
+ * [IPMI2] Section 13.28 page 157.
  *
  * @author shevek
  */
-public enum RmcpVersion implements Code.Wrapper {
+public enum IpmiAuthenticationAlgorithm implements Code.Wrapper {
 
-    LEGACY0(0),
-    LEGACY1(1),
-    LEGACY2(2),
-    LEGACY3(3),
-    LEGACY4(4),
-    LEGACY5(5),
-    ASF_RMCP_2_0(6);
-    final byte code;
+    RAKP_NONE(0x00),
+    RAKP_HMAC_SHA1(0x01),
+    RAKP_HMAC_MD5(0x02),
+    RAKP_HMAC_SHA256(0x03);
+    private byte code;
 
-    private RmcpVersion(int code) {
+    private IpmiAuthenticationAlgorithm(int code) {
         this.code = UnsignedBytes.checkedCast(code);
     }
 

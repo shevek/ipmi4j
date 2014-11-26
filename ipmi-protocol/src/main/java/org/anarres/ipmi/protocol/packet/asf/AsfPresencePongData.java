@@ -57,8 +57,8 @@ public class AsfPresencePongData extends AbstractAsfData {
     private final Set<SupportedInteraction> supportedInteractions = EnumSet.noneOf(SupportedInteraction.class);
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.PresencePong;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.PresencePong;
     }
 
     public int getOemDefined() {
@@ -100,7 +100,7 @@ public class AsfPresencePongData extends AbstractAsfData {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        buffer.putInt(IANA_ENTERPRISE_NUMBER);
+        buffer.putInt(IANA_ENTERPRISE_NUMBER.getNumber());
         buffer.putInt(getOemDefined());
         buffer.put(Bits.toByte(getSupportedEntities()));
         buffer.put(Bits.toByte(getSupportedInteractions()));
@@ -109,7 +109,7 @@ public class AsfPresencePongData extends AbstractAsfData {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
         withOemDefined(buffer.getInt());
         withSupportedEntities(Bits.fromBuffer(SupportedEntity.class, buffer, 1));
         withSupportedInteractions(Bits.fromBuffer(SupportedInteraction.class, buffer, 1));

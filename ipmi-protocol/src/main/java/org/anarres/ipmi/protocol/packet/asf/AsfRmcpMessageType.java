@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /** Page 22. */
-public enum AsfRcmpMessageType implements Code.Wrapper {
+public enum AsfRmcpMessageType implements Code.Wrapper {
 
     Reset(0x10) {
         @Override
@@ -116,7 +116,7 @@ public enum AsfRcmpMessageType implements Code.Wrapper {
     };
     final byte code;
 
-    private AsfRcmpMessageType(@Nonnegative int code) {
+    private AsfRmcpMessageType(@Nonnegative int code) {
         this.code = UnsignedBytes.checkedCast(code);
     }
 

@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
@@ -27,13 +28,13 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  */
 public abstract class AbstractAsfData extends AbstractWireable implements RmcpData {
 
-    public static final int IANA_ENTERPRISE_NUMBER = 4542;
+    public static final IanaEnterpriseNumber IANA_ENTERPRISE_NUMBER = IanaEnterpriseNumber.Alerting_Specifications_Forum;
     // Page 33
     private byte messageTag;    // matches request/response
 
     // Page 22
     @Nonnull
-    public abstract AsfRcmpMessageType getMessageType();
+    public abstract AsfRmcpMessageType getMessageType();
 
     public byte getMessageTag() {
         return messageTag;
@@ -59,7 +60,7 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
 
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
-        buffer.putInt(IANA_ENTERPRISE_NUMBER);
+        buffer.putInt(IANA_ENTERPRISE_NUMBER.getNumber());
         buffer.put(getMessageType().getCode());
         buffer.put(getMessageTag());
         buffer.put((byte) 0);   // reserved
@@ -67,12 +68,12 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
         toWireData(buffer);
     }
 
-    /** Serializes the ASF data into this RCMP data. */
+    /** Serializes the ASF data into this RMCP data. */
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
 
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
         assertWireByte(buffer, getMessageType().getCode());
         setMessageTag(buffer.get());
         assertWireByte(buffer, (byte) 0);

@@ -33,8 +33,8 @@ public class AsfCloseSessionResponseData extends AbstractAsfData {
     }
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.CloseSessionResponse;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.CloseSessionResponse;
     }
 
     @Override

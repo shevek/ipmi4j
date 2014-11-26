@@ -18,8 +18,8 @@ import java.nio.ByteBuffer;
 public class AsfPresencePingData extends AbstractAsfData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.PresencePing;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.PresencePing;
     }
 
     @Override

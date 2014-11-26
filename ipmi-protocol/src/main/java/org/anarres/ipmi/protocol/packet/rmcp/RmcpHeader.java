@@ -17,7 +17,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 public class RmcpHeader extends AbstractWireable {
 
     public static final int LENGTH = 4;
-    private final RmcpVersion version = RmcpVersion.ASF_RMCP_1_0;
+    private final RmcpVersion version = RmcpVersion.ASF_RMCP_2_0;
     /** 0xFF means do not generate an ACK. */
     private byte sequenceNumber;
     private RmcpMessageClass messageClass;

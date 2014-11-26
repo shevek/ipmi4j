@@ -8,7 +8,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
-import org.anarres.ipmi.protocol.packet.asf.AsfRcmpMessageType;
+import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
@@ -30,9 +30,9 @@ public class IpmiPacketDecoder {
         switch (packet.getHeader().getMessageClass()) {
             case ASF:
                 int enterpriseNumber = buffer.getInt();
-                if (enterpriseNumber != AbstractAsfData.IANA_ENTERPRISE_NUMBER)
+                if (enterpriseNumber != AbstractAsfData.IANA_ENTERPRISE_NUMBER.getNumber())
                     throw new IllegalArgumentException("Unknown enterprise number 0x" + Integer.toHexString(enterpriseNumber));
-                AsfRcmpMessageType messageType = Code.fromBuffer(AsfRcmpMessageType.class, buffer);
+                AsfRmcpMessageType messageType = Code.fromBuffer(AsfRmcpMessageType.class, buffer);
                 packet.withData(messageType.newPacketData());
                 buffer.position(position);
                 packet.fromWireBody(buffer, start);

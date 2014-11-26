@@ -18,8 +18,8 @@ import java.nio.ByteBuffer;
 public class AsfCloseSessionRequestData extends AbstractAsfData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.CloseSessionRequest;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.CloseSessionRequest;
     }
 
     @Override

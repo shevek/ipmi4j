@@ -16,7 +16,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 public class AsfPowerUpData extends AbstractAsfBootData {
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.PowerUp;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.PowerUp;
     }
 }

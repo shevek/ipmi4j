@@ -80,8 +80,8 @@ public class AsfSystemStateResponseData extends AbstractAsfData {
     private WatchdogState watchdogState = WatchdogState.WATCHDOG_TIMER_NORMAL;
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.SystemStateResponse;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.SystemStateResponse;
     }
 
     @Nonnull

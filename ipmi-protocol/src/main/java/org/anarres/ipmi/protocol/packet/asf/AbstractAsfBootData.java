@@ -116,7 +116,7 @@ public abstract class AbstractAsfBootData extends AbstractAsfData {
 
     @Override
     public void toWireData(ByteBuffer buffer) {
-        buffer.putInt(IANA_ENTERPRISE_NUMBER);
+        buffer.putInt(IANA_ENTERPRISE_NUMBER.getNumber());
         buffer.put(getSpecialCommand());
         buffer.putChar(getSpecialCommandParameter());
         buffer.put(Bits.toBytes(2, getBootOptions()));
@@ -125,7 +125,7 @@ public abstract class AbstractAsfBootData extends AbstractAsfData {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
         withSpecialCommand(buffer.get());
         withSpecialCommandParameter(buffer.getChar());
         withBootOptions(Bits.fromBuffer(BootOption.class, buffer, 2));

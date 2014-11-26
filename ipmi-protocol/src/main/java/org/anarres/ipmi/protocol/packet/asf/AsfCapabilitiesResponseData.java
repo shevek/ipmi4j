@@ -96,8 +96,8 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
     private final Set<SystemFirmwareCapability> systemFirmwareCapabilities = EnumSet.noneOf(SystemFirmwareCapability.class);
 
     @Override
-    public AsfRcmpMessageType getMessageType() {
-        return AsfRcmpMessageType.CapabilitiesResponse;
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.CapabilitiesResponse;
     }
 
     public int getOemDefined() {
@@ -150,7 +150,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        buffer.putInt(IANA_ENTERPRISE_NUMBER);
+        buffer.putInt(IANA_ENTERPRISE_NUMBER.getNumber());
         buffer.putInt(getOemDefined());
         buffer.put(Bits.toBytes(2, getSpecialCommands()));
         buffer.put(Bits.toByte(getSystemCapabilities()));
@@ -160,7 +160,7 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER);
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
         withOemDefined(buffer.getInt());
         withSpecialCommands(Bits.fromBuffer(SpecialCommand.class, buffer, 2));
         withSystemCapabilities(Bits.fromBuffer(SystemCapability.class, buffer, 1));

@@ -5,9 +5,7 @@ import java.nio.ByteBuffer;
 /**
  * RMCP Packet.
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.3 page 23.
+ * [ASF2] Section 3.2.3 page 23.
  * 
  * Uses UDP port 0x026F.
  *
