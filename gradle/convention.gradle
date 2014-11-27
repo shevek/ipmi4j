@@ -11,6 +11,21 @@ subprojects { project ->
 	// Restore status after Java plugin
 	status = rootProject.status
 
+	repositories {
+		// mavenLocal()
+		mavenCentral()
+		// jcenter()
+	}
+
+	dependencies {
+		compile 'com.google.code.findbugs:jsr305:2.0.2'
+		compile 'org.slf4j:slf4j-api:1.7.7'
+
+		testCompile 'junit:junit:4.11'
+
+		testRuntime 'org.slf4j:slf4j-jcl:1.7.7'
+	}
+
 	test {
 		systemProperty 'org.apache.commons.logging.Log', 'org.apache.commons.logging.impl.SimpleLog'
 		systemProperty 'org.apache.commons.logging.simplelog.defaultlog', 'debug'
