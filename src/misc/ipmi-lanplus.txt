@@ -1,0 +1,15 @@
+chassis power status
+sol info 0
+channel info 0
+channel info 1
+channel info 2
+channel getciphers ipmi 1
+channel getciphers sol 1
+sel
+fru
+sensor
+sdr
+mc
+lan print 0 
+lan print 1 
+

@@ -1,0 +1,231 @@
+// IPM Device 'Global' Commands
+reserved                                   -   App   00h
+Get Device ID                            20.1  App   01h
+Broadcast 'Get Device ID'                20.9  App   01h
+Cold Reset                               20.2  App   02h
+Warm Reset                               20.3  App   03h
+Get Self Test Results                    20.4  App   04h
+Manufacturing Test On                    20.5  App   05h
+Set ACPI Power State                     20.6  App   06h
+Get ACPI Power State                     20.7  App   07h
+Get Device GUID                          20.8  App   08h
+Get NetFn Support                        21.2  App   09h
+Get Command Support                      21.3  App   0Ah
+Get Command Sub-function Support         21.4  App   0Bh
+Get Configurable Commands                21.5  App   0Ch
+Get Configurable Command Sub-functions   21.6  App   0Dh
+unassigned                                 -   App 0Eh-0Fh
+Set Command Enables                      21.7  App   60h
+Get Command Enables                      21.8  App   61h
+Set Command Sub-function Enables         21.9  App   62h
+Get Command Sub-function Enables        21.10  App   63h
+Get OEM NetFn IANA Support              21.11  App   64h
+
+// BMC Watchdog Timer Commands
+Reset Watchdog Timer                     27.5  App   22h
+Set Watchdog Timer                       27.6  App   24h
+Get Watchdog Timer                       27.7  App   25h
+
+// BMC Device and Messaging Commands
+Set BMC Global Enables                   22.1  App   2Eh
+Get BMC Global Enables                   22.2  App   2Fh
+Clear Message Flags                      22.3  App   30h
+Get Message Flags                        22.4  App   31h
+Enable Message Channel Receive           22.5  App   32h
+Get Message                              22.6  App   33h
+Send Message                             22.7  App   34h
+Read Event Message Buffer                22.8  App   35h
+Get BT Interface Capabilities           22.10  App   36h
+Get System GUID                         22.14  App   37h
+Set System Info Parameters              22.14a App   58h
+Get System Info Parameters              22.14b App   59h
+Get Channel Authentication Capabilities 22.13  App   38h
+Get Session Challenge                   22.15  App   39h
+Activate Session                        22.17  App   3Ah
+Set Session Privilege Level             22.18  App   3Bh
+Close Session                           22.19  App   3Ch
+Get Session Info                        22.20  App   3Dh
+unassigned                                 -   App   3Eh
+Get AuthCode                            22.21  App   3Fh
+Set Channel Access                      22.22  App   40h
+Get Channel Access                      22.23  App   41h
+Get Channel Info Command                22.24  App   42h
+Set User Access Command                 22.26  App   43h
+Get User Access Command                 22.27  App   44h
+Set User Name                            22.28  App      45h
+Get User Name Command                    22.29  App      46h
+Set User Password Command                22.30  App      47h
+Activate Payload                          24.1  App      48h
+Deactivate Payload                        24.2  App      49h
+Get Payload Activation Status             24.4  App      4Ah
+Get Payload Instance Info                 24.5  App      4Bh
+Set User Payload Access                   24.6  App      4Ch
+Get User Payload Access                   24.7  App      4Dh
+Get Channel Payload Support               24.8  App      4Eh
+Get Channel Payload Version               24.9  App      4Fh
+Get Channel OEM Payload Info             24.10  App      50h
+unassigned                                 -    App      51h
+Master Write-Read                        22.11  App      52h
+unassigned                                 -    App      53h
+Get Channel Cipher Suites                22.15  App      54h
+Suspend/Resume Payload Encryption         24.3  App      55h
+Set Channel Security Keys                22.25  App      56h
+Get System Interface Capabilities         22.9  App      57h
+unassigned                                 -    App    58h-5Fh
+Firmware Firewall Configuration (see IPM Device Commands, above)   -    App    60h-64h
+
+// Chassis Device Commands
+Get Chassis Capabilities                  28.1 Chassis   00h
+Get Chassis Status                        28.2 Chassis   01h
+Chassis Control                           28.3 Chassis   02h
+Chassis Reset                             28.4 Chassis   03h
+Chassis Identify                          28.5 Chassis   04h
+Set Front Panel Button Enables            28.6 Chassis   0Ah
+Set Chassis Capabilities                  28.7 Chassis   05h
+Set Power Restore Policy                  28.8 Chassis   06h
+Set Power Cycle Interval                  28.9 Chassis   0Bh
+Get System Restart Cause                 28.11 Chassis   07h
+Set System Boot Options                  28.12 Chassis   08h
+Get System Boot Options                  28.13 Chassis   09h
+unassigned                                 -   Chassis 0Ch-0Eh
+Get POH Counter                          28.14 Chassis   0Fh
+
+// Event Commands
+Set Event Receiver                        29.1  S/E      00h
+Get Event Receiver                        29.2  S/E      01h
+Platform Event (a.k.a. 'Event Message')   29.3  S/E      02h
+unassigned                                 -    S/E      03h-0Fh
+
+// PEF and Alerting Commands
+Get PEF Capabilities                      30.1  S/E      10h
+Arm PEF Postpone Timer                    30.2  S/E      11h
+Set PEF Configuration Parameters          30.3  S/E      12h
+Get PEF Configuration Parameters          30.4  S/E      13h
+Set Last Processed Event ID               30.5  S/E      14h
+Get Last Processed Event ID               30.6  S/E      15h
+Alert Immediate                           30.7  S/E      16h
+PET Acknowledge                           30.8  S/E      17h
+
+// Sensor Device Commands
+Get Device SDR Info                  35.2     S/E    20h
+Get Device SDR                       35.3     S/E    21h
+Reserve Device SDR Repository        35.4     S/E    22h
+Get Sensor Reading Factors           35.5     S/E    23h
+Set Sensor Hysteresis                35.6     S/E    24h
+Get Sensor Hysteresis                35.7     S/E    25h
+Set Sensor Threshold                 35.8     S/E    26h
+Get Sensor Threshold                 35.9     S/E    27h
+Set Sensor Event Enable             35.10     S/E    28h
+Get Sensor Event Enable             35.11     S/E    29h
+Re-arm Sensor Events                35.12     S/E    2Ah
+Get Sensor Event Status             35.13     S/E    2Bh
+Get Sensor Reading                  35.14     S/E    2Dh
+Set Sensor Type                     35.15     S/E    2Eh
+Get Sensor Type                     35.16     S/E    2Fh
+Set Sensor Reading And Event Status 35.17     S/E    30h
+
+// FRU Device Commands
+Get FRU Inventory Area Info          34.1   Storage  10h
+Read FRU Data                        34.2   Storage  11h
+Write FRU Data                       34.3   Storage  12h
+
+// SDR Device Commands
+Get SDR Repository Info              33.9   Storage  20h
+Get SDR Repository Allocation Info  33.10   Storage  21h
+Reserve SDR Repository              33.11   Storage  22h
+Get SDR                             33.12   Storage  23h
+Add SDR                             33.13   Storage  24h
+Partial Add SDR                     33.14   Storage  25h
+Delete SDR                          33.15   Storage  26h
+Clear SDR Repository                33.16   Storage  27h
+Get SDR Repository Time             33.17   Storage  28h
+Set SDR Repository Time             33.18   Storage  29h
+Enter SDR Repository Update Mode    33.19   Storage  2Ah
+Exit SDR Repository Update Mode     33.20   Storage  2Bh
+Run Initialization Agent            33.21   Storage  2Ch
+
+// SEL Device Commands
+Get SEL Info                         31.2   Storage  40h
+Get SEL Allocation Info              31.3   Storage  41h
+Reserve SEL                          31.4   Storage  42h
+Get SEL Entry                        31.5   Storage  43h
+Add SEL Entry                        31.6   Storage  44h
+Partial Add SEL Entry                31.7   Storage  45h
+Delete SEL Entry                     31.8   Storage  46h
+Clear SEL                            31.9   Storage  47h
+Get SEL Time                        31.10   Storage  48h
+Set SEL Time                        31.11   Storage  49h
+Get Auxiliary Log Status            31.12   Storage  5Ah
+Set Auxiliary Log Status            31.13   Storage  5Bh
+Get SEL Time UTC Offset             31.11a  Storage  5Ch
+Set SEL Time UTC Offset             31.11b  Storage  5Dh
+
+// LAN Device Commands
+Set LAN Configuration Parameters     23.1  Transport 01h
+Get LAN Configuration Parameters     23.2  Transport 02h
+Suspend BMC ARPs                     23.3  Transport 03h
+Get IP/UDP/RMCP Statistics          23.4 Transport 04h
+
+// Serial/Modem Device Commands
+Set Serial/Modem Configuration      25.1 Transport 10h
+Get Serial/Modem Configuration      25.2 Transport 11h
+Set Serial/Modem Mux                25.3 Transport 12h
+Get TAP Response Codes              25.4 Transport 13h
+Set PPP UDP Proxy Transmit Data     25.5 Transport 14h
+Get PPP UDP Proxy Transmit Data     25.6 Transport 15h
+Send PPP UDP Proxy Packet           25.7 Transport 16h
+Get PPP UDP Proxy Receive Data      25.8 Transport 17h
+Serial/Modem Connection Active      25.9 Transport 18h
+Callback                           25.10 Transport 19h
+Set User Callback Options          25.11 Transport 1Ah
+Get User Callback Options          25.12 Transport 1Bh
+Set Serial Routing Mux             25.13 Transport 1Ch
+SOL Activating                      26.1 Transport 20h
+Set SOL Configuration Parameters    26.2 Transport 21h
+Get SOL Configuration Parameters    26.3 Transport 22h
+
+// Command Forwarding Commands
+Forwarded Command                  35b.4 Transport 30h
+Set Forwarded Commands             35b.1 Transport 31h
+Get Forwarded Commands             35b.2 Transport 32h
+Enable Forwarded Commands          35b.3 Transport 33h
+
+// Bridge Management Commands (ICMB)
+Get Bridge State                  [ICMB]  Bridge   00h
+Set Bridge State                  [ICMB]  Bridge   01h
+Get ICMB Address                  [ICMB]  Bridge   02h
+Set ICMB Address                  [ICMB]  Bridge   03h
+Set Bridge ProxyAddress           [ICMB]  Bridge   04h
+Get Bridge Statistics             [ICMB]  Bridge   05h
+Get ICMB Capabilities             [ICMB]  Bridge   06h
+Clear Bridge Statistics           [ICMB]  Bridge   08h
+Get Bridge Proxy Address          [ICMB]  Bridge   09h
+Get ICMB Connector Info           [ICMB]  Bridge   0Ah
+Get ICMB Connection ID            [ICMB]  Bridge   0Bh
+Send ICMB Connection ID           [ICMB]  Bridge   0Ch
+
+// Discovery Commands (ICMB)
+PrepareForDiscovery               [ICMB]  Bridge   10h
+GetAddresses                      [ICMB]  Bridge   11h
+SetDiscovered                     [ICMB]  Bridge   12h
+GetChassisDeviceId                [ICMB]  Bridge   13h
+SetChassisDeviceId                [ICMB]  Bridge   14h
+
+// Bridging Commands (ICMB)
+BridgeRequest                     [ICMB]  Bridge   20h
+BridgeMessage                     [ICMB]  Bridge   21h
+
+// Event Commands (ICMB)
+GetEventCount                     [ICMB]  Bridge   30h
+SetEventDestination               [ICMB]  Bridge   31h
+SetEventReceptionState            [ICMB]  Bridge   32h
+SendICMBEventMessage              [ICMB]  Bridge   33h
+GetEventDestination (optional)    [ICMB]  Bridge   34h
+GetEventReceptionState (optional) [ICMB]  Bridge   35h
+
+// OEM Commands for Bridge NetFn
+OEM Commands            [ICMB]  Bridge C0h-FEh
+
+// Other Bridge Commands
+Error Report (optional) [ICMB]  Bridge   FFh
+

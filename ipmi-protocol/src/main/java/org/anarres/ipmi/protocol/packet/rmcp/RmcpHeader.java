@@ -19,7 +19,7 @@ public class RmcpHeader extends AbstractWireable {
     public static final int LENGTH = 4;
     private final RmcpVersion version = RmcpVersion.ASF_RMCP_2_0;
     /** 0xFF means do not generate an ACK. */
-    private byte sequenceNumber;
+    private byte sequenceNumber = (byte) 0xFF;
     private RmcpMessageClass messageClass;
     private RmcpMessageRole messageRole = RmcpMessageRole.REQ;
 
