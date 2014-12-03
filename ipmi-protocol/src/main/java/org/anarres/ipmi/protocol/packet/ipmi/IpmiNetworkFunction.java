@@ -9,6 +9,8 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * [IPMI2] Section 5.1, Pages 40-41.
+ * 
+ * Even numbers are requests. Odd numbers are responses.
  *
  * @author shevek
  */

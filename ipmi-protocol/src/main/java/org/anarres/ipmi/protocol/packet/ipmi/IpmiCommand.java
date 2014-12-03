@@ -5,9 +5,11 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
 
 /**
  * [IPMI2] Appendix G, pages 591-596.
@@ -18,106 +20,106 @@ public enum IpmiCommand implements Code.Wrapper {
 // IPM Device 'Global' Commands
 
     // reserved("reserved", IpmiNetworkFunction.App, 0x00),
-    GetDeviceID("Get Device ID", IpmiNetworkFunction.App, 0x01),
-    BroadcastGetDeviceID("Broadcast 'Get Device ID'", IpmiNetworkFunction.App, 0x01),
-    ColdReset("Cold Reset", IpmiNetworkFunction.App, 0x02),
-    WarmReset("Warm Reset", IpmiNetworkFunction.App, 0x03),
-    GetSelfTestResults("Get Self Test Results", IpmiNetworkFunction.App, 0x04),
-    ManufacturingTestOn("Manufacturing Test On", IpmiNetworkFunction.App, 0x05),
-    SetACPIPowerState("Set ACPI Power State", IpmiNetworkFunction.App, 0x06),
-    GetACPIPowerState("Get ACPI Power State", IpmiNetworkFunction.App, 0x07),
-    GetDeviceGUID("Get Device GUID", IpmiNetworkFunction.App, 0x08),
-    GetNetFnSupport("Get NetFn Support", IpmiNetworkFunction.App, 0x09),
-    GetCommandSupport("Get Command Support", IpmiNetworkFunction.App, 0x0A),
-    GetCommandSubFunctionSupport("Get Command Sub-function Support", IpmiNetworkFunction.App, 0x0B),
-    GetConfigurableCommands("Get Configurable Commands", IpmiNetworkFunction.App, 0x0C),
-    GetConfigurableCommandSubFunctions("Get Configurable Command Sub-functions", IpmiNetworkFunction.App, 0x0D),
+    GetDeviceID("Get Device ID", IpmiNetworkFunction.App, 0x01, User),
+    BroadcastGetDeviceID("Broadcast 'Get Device ID'", IpmiNetworkFunction.App, 0x01, null), // Local only
+    ColdReset("Cold Reset", IpmiNetworkFunction.App, 0x02, Administator),
+    WarmReset("Warm Reset", IpmiNetworkFunction.App, 0x03, Administator),
+    GetSelfTestResults("Get Self Test Results", IpmiNetworkFunction.App, 0x04, User),
+    ManufacturingTestOn("Manufacturing Test On", IpmiNetworkFunction.App, 0x05, Administator),
+    SetACPIPowerState("Set ACPI Power State", IpmiNetworkFunction.App, 0x06, Administator),
+    GetACPIPowerState("Get ACPI Power State", IpmiNetworkFunction.App, 0x07, User),
+    GetDeviceGUID("Get Device GUID", IpmiNetworkFunction.App, 0x08, User),
+    GetNetFnSupport("Get NetFn Support", IpmiNetworkFunction.App, 0x09, User),
+    GetCommandSupport("Get Command Support", IpmiNetworkFunction.App, 0x0A, User),
+    GetCommandSubFunctionSupport("Get Command Sub-function Support", IpmiNetworkFunction.App, 0x0B, User),
+    GetConfigurableCommands("Get Configurable Commands", IpmiNetworkFunction.App, 0x0C, User),
+    GetConfigurableCommandSubFunctions("Get Configurable Command Sub-functions", IpmiNetworkFunction.App, 0x0D, User),
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x0Eh-0F),
-    SetCommandEnables("Set Command Enables", IpmiNetworkFunction.App, 0x60),
-    GetCommandEnables("Get Command Enables", IpmiNetworkFunction.App, 0x61),
-    SetCommandSubFunctionEnables("Set Command Sub-function Enables", IpmiNetworkFunction.App, 0x62),
-    GetCommandSubFunctionEnables("Get Command Sub-function Enables", IpmiNetworkFunction.App, 0x63),
-    GetOEMNetFnIANASupport("Get OEM NetFn IANA Support", IpmiNetworkFunction.App, 0x64),
+    SetCommandEnables("Set Command Enables", IpmiNetworkFunction.App, 0x60, Administator),
+    GetCommandEnables("Get Command Enables", IpmiNetworkFunction.App, 0x61, User),
+    SetCommandSubFunctionEnables("Set Command Sub-function Enables", IpmiNetworkFunction.App, 0x62, Administator),
+    GetCommandSubFunctionEnables("Get Command Sub-function Enables", IpmiNetworkFunction.App, 0x63, User),
+    GetOEMNetFnIANASupport("Get OEM NetFn IANA Support", IpmiNetworkFunction.App, 0x64, User),
     // BMC Watchdog Timer Commands
-    ResetWatchdogTimer("Reset Watchdog Timer", IpmiNetworkFunction.App, 0x22),
-    SetWatchdogTimer("Set Watchdog Timer", IpmiNetworkFunction.App, 0x24),
-    GetWatchdogTimer("Get Watchdog Timer", IpmiNetworkFunction.App, 0x25),
+    ResetWatchdogTimer("Reset Watchdog Timer", IpmiNetworkFunction.App, 0x22, Operator),
+    SetWatchdogTimer("Set Watchdog Timer", IpmiNetworkFunction.App, 0x24, Operator),
+    GetWatchdogTimer("Get Watchdog Timer", IpmiNetworkFunction.App, 0x25, User),
     // BMC Device and Messaging Commands
-    SetBMCGlobalEnables("Set BMC Global Enables", IpmiNetworkFunction.App, 0x2E),
-    GetBMCGlobalEnables("Get BMC Global Enables", IpmiNetworkFunction.App, 0x2F),
-    ClearMessageFlags("Clear Message Flags", IpmiNetworkFunction.App, 0x30),
-    GetMessageFlags("Get Message Flags", IpmiNetworkFunction.App, 0x31),
-    EnableMessageChannelReceive("Enable Message Channel Receive", IpmiNetworkFunction.App, 0x32),
-    GetMessage("Get Message", IpmiNetworkFunction.App, 0x33),
-    SendMessage("Send Message", IpmiNetworkFunction.App, 0x34),
-    ReadEventMessageBuffer("Read Event Message Buffer", IpmiNetworkFunction.App, 0x35),
-    GetBTInterfaceCapabilities("Get BT Interface Capabilities", IpmiNetworkFunction.App, 0x36),
-    GetSystemGUID("Get System GUID", IpmiNetworkFunction.App, 0x37),
-    SetSystemInfoParameters("Set System Info Parameters", IpmiNetworkFunction.App, 0x58),
-    GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59),
-    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38),
-    GetSessionChallenge("Get Session Challenge", IpmiNetworkFunction.App, 0x39),
-    ActivateSession("Activate Session", IpmiNetworkFunction.App, 0x3A),
-    SetSessionPrivilegeLevel("Set Session Privilege Level", IpmiNetworkFunction.App, 0x3B),
-    CloseSession("Close Session", IpmiNetworkFunction.App, 0x3C),
-    GetSessionInfo("Get Session Info", IpmiNetworkFunction.App, 0x3D),
-    unassigned("unassigned", IpmiNetworkFunction.App, 0x3E),
-    GetAuthCode("Get AuthCode", IpmiNetworkFunction.App, 0x3F),
-    SetChannelAccess("Set Channel Access", IpmiNetworkFunction.App, 0x40),
-    GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41),
-    GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42),
-    SetUserAccessCommand("Set User Access Command", IpmiNetworkFunction.App, 0x43),
-    GetUserAccessCommand("Get User Access Command", IpmiNetworkFunction.App, 0x44),
-    SetUserName("Set User Name", IpmiNetworkFunction.App, 0x45),
-    GetUserNameCommand("Get User Name Command", IpmiNetworkFunction.App, 0x46),
-    SetUserPasswordCommand("Set User Password Command", IpmiNetworkFunction.App, 0x47),
-    ActivatePayload("Activate Payload", IpmiNetworkFunction.App, 0x48),
-    DeactivatePayload("Deactivate Payload", IpmiNetworkFunction.App, 0x49),
-    GetPayloadActivationStatus("Get Payload Activation Status", IpmiNetworkFunction.App, 0x4A),
-    GetPayloadInstanceInfo("Get Payload Instance Info", IpmiNetworkFunction.App, 0x4B),
-    SetUserPayloadAccess("Set User Payload Access", IpmiNetworkFunction.App, 0x4C),
-    GetUserPayloadAccess("Get User Payload Access", IpmiNetworkFunction.App, 0x4D),
-    GetChannelPayloadSupport("Get Channel Payload Support", IpmiNetworkFunction.App, 0x4E),
-    GetChannelPayloadVersion("Get Channel Payload Version", IpmiNetworkFunction.App, 0x4F),
-    GetChannelOEMPayloadInfo("Get Channel OEM Payload Info", IpmiNetworkFunction.App, 0x50),
+    SetBMCGlobalEnables("Set BMC Global Enables", IpmiNetworkFunction.App, 0x2E, null),
+    GetBMCGlobalEnables("Get BMC Global Enables", IpmiNetworkFunction.App, 0x2F, User),
+    ClearMessageFlags("Clear Message Flags", IpmiNetworkFunction.App, 0x30, null),
+    GetMessageFlags("Get Message Flags", IpmiNetworkFunction.App, 0x31, null),
+    EnableMessageChannelReceive("Enable Message Channel Receive", IpmiNetworkFunction.App, 0x32, null),
+    GetMessage("Get Message", IpmiNetworkFunction.App, 0x33, null),
+    SendMessage("Send Message", IpmiNetworkFunction.App, 0x34, User), // Administator for some channels
+    ReadEventMessageBuffer("Read Event Message Buffer", IpmiNetworkFunction.App, 0x35, null), // System interface only
+    GetBTInterfaceCapabilities("Get BT Interface Capabilities", IpmiNetworkFunction.App, 0x36, User),
+    GetSystemGUID("Get System GUID", IpmiNetworkFunction.App, 0x37, Unprotected),
+    SetSystemInfoParameters("Set System Info Parameters", IpmiNetworkFunction.App, 0x58, Administator),
+    GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59, User),
+    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected),
+    GetSessionChallenge("Get Session Challenge", IpmiNetworkFunction.App, 0x39, Unprotected),
+    ActivateSession("Activate Session", IpmiNetworkFunction.App, 0x3A, Unprotected),
+    SetSessionPrivilegeLevel("Set Session Privilege Level", IpmiNetworkFunction.App, 0x3B, User),
+    CloseSession("Close Session", IpmiNetworkFunction.App, 0x3C, IpmiChannelPrivilegeLevel.Callback),
+    GetSessionInfo("Get Session Info", IpmiNetworkFunction.App, 0x3D, User),
+    // unassigned("unassigned", IpmiNetworkFunction.App, 0x3E),
+    GetAuthCode("Get AuthCode", IpmiNetworkFunction.App, 0x3F, Operator),
+    SetChannelAccess("Set Channel Access", IpmiNetworkFunction.App, 0x40, Administator),
+    GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41, User),
+    GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42, User),
+    SetUserAccessCommand("Set User Access Command", IpmiNetworkFunction.App, 0x43, Administator),
+    GetUserAccessCommand("Get User Access Command", IpmiNetworkFunction.App, 0x44, Operator),
+    SetUserName("Set User Name", IpmiNetworkFunction.App, 0x45, Administator),
+    GetUserNameCommand("Get User Name Command", IpmiNetworkFunction.App, 0x46, Operator),
+    SetUserPasswordCommand("Set User Password Command", IpmiNetworkFunction.App, 0x47, Administator),
+    ActivatePayload("Activate Payload", IpmiNetworkFunction.App, 0x48), // Depends on payload type.
+    DeactivatePayload("Deactivate Payload", IpmiNetworkFunction.App, 0x49), // Depends on payload type.
+    GetPayloadActivationStatus("Get Payload Activation Status", IpmiNetworkFunction.App, 0x4A, User),
+    GetPayloadInstanceInfo("Get Payload Instance Info", IpmiNetworkFunction.App, 0x4B, User),
+    SetUserPayloadAccess("Set User Payload Access", IpmiNetworkFunction.App, 0x4C, Administator),
+    GetUserPayloadAccess("Get User Payload Access", IpmiNetworkFunction.App, 0x4D, Operator),
+    GetChannelPayloadSupport("Get Channel Payload Support", IpmiNetworkFunction.App, 0x4E, User),
+    GetChannelPayloadVersion("Get Channel Payload Version", IpmiNetworkFunction.App, 0x4F, User),
+    GetChannelOEMPayloadInfo("Get Channel OEM Payload Info", IpmiNetworkFunction.App, 0x50, User),
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x51),
-    MasterWriteRead("Master Write-Read", IpmiNetworkFunction.App, 0x52),
+    MasterWriteRead("Master Write-Read", IpmiNetworkFunction.App, 0x52, Operator),
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x53),
-    GetChannelCipherSuites("Get Channel Cipher Suites", IpmiNetworkFunction.App, 0x54),
-    SuspendResumePayloadEncryption("Suspend/Resume Payload Encryption", IpmiNetworkFunction.App, 0x55),
-    SetChannelSecurityKeys("Set Channel Security Keys", IpmiNetworkFunction.App, 0x56),
-    GetSystemInterfaceCapabilities("Get System Interface Capabilities", IpmiNetworkFunction.App, 0x57),
+    GetChannelCipherSuites("Get Channel Cipher Suites", IpmiNetworkFunction.App, 0x54, Unprotected),
+    SuspendResumePayloadEncryption("Suspend/Resume Payload Encryption", IpmiNetworkFunction.App, 0x55, User),
+    SetChannelSecurityKeys("Set Channel Security Keys", IpmiNetworkFunction.App, 0x56, Administator),
+    GetSystemInterfaceCapabilities("Get System Interface Capabilities", IpmiNetworkFunction.App, 0x57, User),
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x58h-5F),
     // FirmwareFirewallConfiguration("Firmware Firewall Configuration (see IPM Device Commands, above)", IpmiNetworkFunction.App, 0x60h-64),
     // Chassis Device Commands
-    GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00),
-    GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01),
-    ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02),
-    ChassisReset("Chassis Reset", IpmiNetworkFunction.Chassis, 0x03),
-    ChassisIdentify("Chassis Identify", IpmiNetworkFunction.Chassis, 0x04),
-    SetFrontPanelButtonEnables("Set Front Panel Button Enables", IpmiNetworkFunction.Chassis, 0x0A),
-    SetChassisCapabilities("Set Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x05),
-    SetPowerRestorePolicy("Set Power Restore Policy", IpmiNetworkFunction.Chassis, 0x06),
-    SetPowerCycleInterval("Set Power Cycle Interval", IpmiNetworkFunction.Chassis, 0x0B),
-    GetSystemRestartCause("Get System Restart Cause", IpmiNetworkFunction.Chassis, 0x07),
-    SetSystemBootOptions("Set System Boot Options", IpmiNetworkFunction.Chassis, 0x08),
-    GetSystemBootOptions("Get System Boot Options", IpmiNetworkFunction.Chassis, 0x09),
+    GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00, User),
+    GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01, User),
+    ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02, Operator),
+    ChassisReset("Chassis Reset", IpmiNetworkFunction.Chassis, 0x03, Operator),
+    ChassisIdentify("Chassis Identify", IpmiNetworkFunction.Chassis, 0x04, Operator),
+    SetFrontPanelButtonEnables("Set Front Panel Button Enables", IpmiNetworkFunction.Chassis, 0x0A, Administator),
+    SetChassisCapabilities("Set Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x05, Administator),
+    SetPowerRestorePolicy("Set Power Restore Policy", IpmiNetworkFunction.Chassis, 0x06, Operator),
+    SetPowerCycleInterval("Set Power Cycle Interval", IpmiNetworkFunction.Chassis, 0x0B, Administator),
+    GetSystemRestartCause("Get System Restart Cause", IpmiNetworkFunction.Chassis, 0x07, User),
+    SetSystemBootOptions("Set System Boot Options", IpmiNetworkFunction.Chassis, 0x08, Operator),
+    GetSystemBootOptions("Get System Boot Options", IpmiNetworkFunction.Chassis, 0x09, Operator),
     // unassigned("unassigned", IpmiNetworkFunction.Chassis, 0x0Ch-0E),
-    GetPOHCounter("Get POH Counter", IpmiNetworkFunction.Chassis, 0x0F),
+    GetPOHCounter("Get POH Counter", IpmiNetworkFunction.Chassis, 0x0F, User),
     // Event Commands
-    SetEventReceiver("Set Event Receiver", IpmiNetworkFunction.Sensor, 0x00),
-    GetEventReceiver("Get Event Receiver", IpmiNetworkFunction.Sensor, 0x01),
-    PlatformEvent("Platform Event (a.k.a. 'Event Message')", IpmiNetworkFunction.Sensor, 0x02),
+    SetEventReceiver("Set Event Receiver", IpmiNetworkFunction.Sensor, 0x00, Administator),
+    GetEventReceiver("Get Event Receiver", IpmiNetworkFunction.Sensor, 0x01, User),
+    PlatformEvent("Platform Event (a.k.a. 'Event Message')", IpmiNetworkFunction.Sensor, 0x02, Operator),
     // unassigned("unassigned", IpmiNetworkFunction.Sensor, 0x03h-0F),
     // PEF and Alerting Commands
-    GetPEFCapabilities("Get PEF Capabilities", IpmiNetworkFunction.Sensor, 0x10),
-    ArmPEFPostponeTimer("Arm PEF Postpone Timer", IpmiNetworkFunction.Sensor, 0x11),
-    SetPEFConfigurationParameters("Set PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x12),
-    GetPEFConfigurationParameters("Get PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x13),
-    SetLastProcessedEventID("Set Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x14),
-    GetLastProcessedEventID("Get Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x15),
-    AlertImmediate("Alert Immediate", IpmiNetworkFunction.Sensor, 0x16),
-    PETAcknowledge("PET Acknowledge", IpmiNetworkFunction.Sensor, 0x17),
+    GetPEFCapabilities("Get PEF Capabilities", IpmiNetworkFunction.Sensor, 0x10, User),
+    ArmPEFPostponeTimer("Arm PEF Postpone Timer", IpmiNetworkFunction.Sensor, 0x11, Administator),
+    SetPEFConfigurationParameters("Set PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x12, Administator),
+    GetPEFConfigurationParameters("Get PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x13, Operator),
+    SetLastProcessedEventID("Set Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x14, Administator),
+    GetLastProcessedEventID("Get Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x15, Administator),
+    AlertImmediate("Alert Immediate", IpmiNetworkFunction.Sensor, 0x16, Administator),
+    PETAcknowledge("PET Acknowledge", IpmiNetworkFunction.Sensor, 0x17, Unprotected),
     // Sensor Device Commands
     GetDeviceSDRInfo("Get Device SDR Info", IpmiNetworkFunction.Sensor, 0x20),
     GetDeviceSDR("Get Device SDR", IpmiNetworkFunction.Sensor, 0x21),
@@ -231,11 +233,18 @@ public enum IpmiCommand implements Code.Wrapper {
     private final String name;
     private final IpmiNetworkFunction networkFunction;
     private final byte code;
+    private final IpmiChannelPrivilegeLevel privilegeLevel;
 
-    private IpmiCommand(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code) {
+    private IpmiCommand(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {
         this.name = name;
         this.networkFunction = networkFunction;
         this.code = UnsignedBytes.checkedCast(code);
+        this.privilegeLevel = privilegeLevel;
+    }
+
+    @Deprecated
+    private IpmiCommand(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code) {
+        this(name, networkFunction, code, null);
     }
 
     @Nonnull
@@ -251,5 +260,15 @@ public enum IpmiCommand implements Code.Wrapper {
     @Override
     public byte getCode() {
         return code;
+    }
+
+    @CheckForNull
+    public IpmiChannelPrivilegeLevel getPrivilegeLevel() {
+        return privilegeLevel;
+    }
+
+    @Override
+    public String toString() {
+        return name() + "(" + getNetworkFunction().name() + ".0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getName() + " [" + getPrivilegeLevel() + "])";
     }
 }
