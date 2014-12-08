@@ -4,10 +4,25 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
+
 /**
+ * [IPMI2] Section 13.8 page 136.
+ * [IPMI2] Section 7.3 page 69?
  *
  * @author shevek
  */
-public class IpmiData {
-    
+public interface IpmiData extends RmcpData {
+    // IpmiSessionWrapper
+    // IpmiHeader
+    // Data
+
+    @Nonnull
+    public IpmiHeader getIpmiHeader();
+
+    /** Returns the length of the IPMI data part of this packet. */
+    @Nonnegative
+    public int getDataWireLength();
 }

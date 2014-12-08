@@ -14,9 +14,8 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
 /**
  * PresencePong.
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.4.3 page 36.
+ * [ASF2] Section 3.2.4.3 page 36.
+ * [IPMI2] Section 13.2.4 page 129.
  *
  * @author shevek
  */
@@ -109,7 +108,7 @@ public class AsfPresencePongData extends AbstractAsfData {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber(), "IANA enterprise number");
         withOemDefined(buffer.getInt());
         withSupportedEntities(Bits.fromBuffer(SupportedEntity.class, buffer, 1));
         withSupportedInteractions(Bits.fromBuffer(SupportedInteraction.class, buffer, 1));

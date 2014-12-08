@@ -17,7 +17,7 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
  * 
  * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
  * http://www.dmtf.org/standards/asf
- * Section 3.2.4.4 page 36.
+ * Section 3.2.4.4 pages 36-37.
  *
  * @author shevek
  */
@@ -160,11 +160,11 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber(), "IANA enterprise number");
         withOemDefined(buffer.getInt());
         withSpecialCommands(Bits.fromBuffer(SpecialCommand.class, buffer, 2));
         withSystemCapabilities(Bits.fromBuffer(SystemCapability.class, buffer, 1));
         withSystemFirmwareCapabilities(Bits.fromBuffer(SystemFirmwareCapability.class, buffer, 4));
-        assertWireByte(buffer, (byte) 0);
+        assertWireByte(buffer, (byte) 0, "reserved byte");
     }
 }

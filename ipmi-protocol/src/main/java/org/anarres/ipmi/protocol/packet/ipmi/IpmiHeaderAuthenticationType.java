@@ -15,7 +15,18 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public enum IpmiHeaderAuthenticationType implements Code.Wrapper {
 
-    NONE(0), MD2(1), MD5(2), PASSWORD(4), OEM_PROPRIETARY(5), RMCP(6);
+    /** This means IPMI v1.5 */
+    NONE(0),
+    /** This means IPMI v1.5 */
+    MD2(1),
+    /** This means IPMI v1.5 */
+    MD5(2),
+    /** This means IPMI v1.5 */
+    PASSWORD(4),
+    /** This means IPMI v1.5 */
+    OEM_PROPRIETARY(5),
+    /** This means IPMI v2.0 */
+    RMCPP(6);
     private final byte code;
 
     private IpmiHeaderAuthenticationType(int code) {

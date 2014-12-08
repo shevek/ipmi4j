@@ -24,7 +24,7 @@ public class Code {
         for (T value : type.getEnumConstants())
             if (value.getCode() == code)
                 return value;
-        throw new IllegalArgumentException("Unknown status code 0x" + UnsignedBytes.toString(code, 16));
+        throw new IllegalArgumentException("Unknown " + type.getSimpleName() + " code 0x" + UnsignedBytes.toString(code, 16));
     }
 
     @Nonnull

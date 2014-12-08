@@ -11,5 +11,5 @@ package org.anarres.ipmi.protocol.packet.ipmi;
 public enum IpmiChannelPrivilegeLevel {
 
     Unprotected,
-    Callback, User, Operator, Administator;
+    Callback, User, Operator, Administrator;
 }

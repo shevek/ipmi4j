@@ -9,9 +9,8 @@ import java.nio.ByteBuffer;
 /**
  * PresencePing.
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.4.8 page 40.
+ * [ASF2] Section 3.2.4.8 page 40.
+ * [IPMI2] Section 13.2.3 page 128.
  *
  * @author shevek
  */

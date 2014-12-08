@@ -1,8 +1,8 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Pad;
 
 /**
  * RMCP Security Extensions Protocol.
@@ -17,26 +17,6 @@ import javax.annotation.Nonnull;
  */
 public class RspRmcpPacket extends AbstractPacket {
 
-    private static final byte[] PAD0 = new byte[0];
-    private static final byte[] PAD1 = new byte[1];
-    private static final byte[] PAD2 = new byte[2];
-    private static final byte[] PAD3 = new byte[3];
-
-    @Nonnegative
-    private static byte[] PAD(@Nonnegative int length) {
-        switch (length & 0x03) {
-            case 0:
-                return PAD0;
-            case 1:
-                return PAD3;
-            case 2:
-                return PAD2;
-            case 3:
-                return PAD1;
-            default:
-                throw new IllegalStateException("Illegal length " + length);
-        }
-    }
     private int sessionId;
     private int sequenceNumber;
     // For this specification, the mandatory-to-implement integrity algorithm is HMAC-SHA1-96 defined in [RFC2404]. 
@@ -80,7 +60,7 @@ public class RspRmcpPacket extends AbstractPacket {
                 + getHeader().getWireLength()
                 + ((data == null) ? 0 : data.getWireLength());
         return length
-                + PAD(length).length // Padding
+                + Pad.PAD(length).length // Padding
                 + 1 // Padding length
                 + 1 // "Next header" length
                 + integrityData.length;
@@ -100,7 +80,7 @@ public class RspRmcpPacket extends AbstractPacket {
         if (sessionId != 0) {   // Page 24: Unsecured data.
             // Padding aligns us to a DWORD, which is 4 bytes.
             int length = buffer.position() - start;
-            byte[] pad = PAD(length);
+            byte[] pad = Pad.PAD(length);
             buffer.put(pad);
             buffer.put((byte) pad.length);
             buffer.put(header.getVersion().getCode());
@@ -124,9 +104,10 @@ public class RspRmcpPacket extends AbstractPacket {
         data.fromWire(buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             int length = buffer.position() - start;
-            byte[] pad = PAD(length);
+            byte[] pad = Pad.PAD(length);
             readBytes(buffer, pad.length);  // TODO: Write a temporary.
-            assertWireByte(buffer, getHeader().getVersion().getCode());
+            assertWireByte(buffer, (byte) pad.length, "padding length");
+            assertWireByte(buffer, getHeader().getVersion().getCode(), "header version");
             withIntegrityData(readBytes(buffer, buffer.remaining()));
         }
     }

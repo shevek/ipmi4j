@@ -79,8 +79,8 @@ public class RmcpHeader extends AbstractWireable {
 
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
-        assertWireByte(buffer, getVersion().getCode());
-        assertWireByte(buffer, (byte) 0);
+        assertWireByte(buffer, getVersion().getCode(), "RMCP version");
+        assertWireByte(buffer, (byte) 0, "reserved field");
         withSequenceNumber(buffer.get());
         byte messageClass = buffer.get();
         withMessageClass(Code.fromByte(RmcpMessageClass.class, (byte) (messageClass & 0x7f)));

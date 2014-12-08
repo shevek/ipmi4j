@@ -90,7 +90,7 @@ public class AsfRsspSessionAuthentication {
             return EndOfList.INSTANCE;
 
         byte type = buffer.get();
-        AbstractWireable.assertWireByte(buffer, (byte) 0);
+        AbstractWireable.assertWireByte(buffer, (byte) 0, "reserved byte");
         short length = buffer.getShort();
         byte[] data = new byte[length - 4];
         buffer.get(data);

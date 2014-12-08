@@ -5,7 +5,9 @@
 package org.anarres.ipmi.protocol.packet.common;
 
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
@@ -31,12 +33,46 @@ public class Bits {
         public Bits getBits();
     }
 
+    public static byte validate(int byteMask, int byteValue) {
+        UnsignedBytes.checkedCast(byteMask);
+        if ((byteValue & byteMask) != byteValue)
+            throw new IllegalArgumentException("Bad byte value extends outside mask: (" + Integer.toHexString(byteValue) + " & " + Integer.toHexString(byteMask) + ") != " + Integer.toHexString(byteValue));
+        return UnsignedBytes.checkedCast(byteValue);
+    }
+
     /** Serializer. */
     public static byte toByte(@Nonnull Iterable<? extends Wrapper> wrappers) {
         byte data = 0;
-        for (Wrapper wrapper : wrappers)
-            if (wrapper != null)
-                data = wrapper.getBits().set(data);
+        int mask = 0;
+        for (Wrapper wrapper : wrappers) {
+            if (wrapper != null) {
+                Bits bits = wrapper.getBits();
+                if ((mask & bits.getByteMask()) != 0)
+                    throw new IllegalArgumentException("Overlapping masks in " + wrappers);
+                mask |= bits.getByteMask();
+                data = bits.set(data);
+            }
+        }
+        return data;
+    }
+
+    /** Serializer. */
+    public static byte toByte(@Nonnull Wrapper... wrappers) {
+        return toByte(Arrays.asList(wrappers));
+    }
+
+    /** Serializer. */
+    public static byte toByte(@Nonnull Bits... bitses) {
+        byte data = 0;
+        int mask = 0;
+        for (Bits bits : bitses) {
+            if (bits != null) {
+                if ((mask & bits.getByteMask()) != 0)
+                    throw new IllegalArgumentException("Overlapping masks in " + Arrays.toString(bitses));
+                mask |= bits.getByteMask();
+                data = bits.set(data);
+            }
+        }
         return data;
     }
 
@@ -134,6 +170,7 @@ public class Bits {
     private final int byteValue;
 
     public Bits(@Nonnegative int byteIndex, int byteMask, int byteValue) {
+        validate(byteMask, byteValue);
         this.byteIndex = byteIndex;
         this.byteMask = byteMask;
         this.byteValue = byteValue;

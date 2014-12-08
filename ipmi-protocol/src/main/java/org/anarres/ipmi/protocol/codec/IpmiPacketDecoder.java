@@ -10,6 +10,8 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiHeaderAuthenticationType;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.slf4j.Logger;
@@ -38,6 +40,13 @@ public class IpmiPacketDecoder {
                 packet.fromWireBody(buffer, start);
                 break;
             case IPMI:
+                IpmiHeaderAuthenticationType format = Code.fromByte(IpmiHeaderAuthenticationType.class, buffer.get());
+                if (format == IpmiHeaderAuthenticationType.RMCPP) {
+                    // IPMI v2.0
+                    IpmiPayloadType payloadType = Code.fromByte(IpmiPayloadType.class, buffer.get());
+                } else {
+                    // IPMI v1.5
+                }
             case OEM:
             default:
                 throw new IllegalArgumentException("Can't decode buffer.");

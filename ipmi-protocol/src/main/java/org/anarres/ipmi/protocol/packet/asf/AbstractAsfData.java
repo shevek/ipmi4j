@@ -17,11 +17,12 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  *
  * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
  * http://www.dmtf.org/standards/asf
- * Section 3.2.2.3 page 22.
+ * [ASF2] Section 3.2.2.3 page 22.
+ * [IPMI2] Section 13.2 pages 126-127.
  * 
  * This class manages both the RMCP payload and the ASF payload.
  * Implementors desiring to provide the ASF payload should override
- * {@link #getDataWireLength()} and * {@link #toWireData(ByteBuffer)}
+ * {@link #getDataWireLength()} and {@link #toWireData(ByteBuffer)}
  * and ignore the RMCP wrapper.
  *
  * @author shevek
@@ -73,12 +74,13 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
 
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
-        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber());
-        assertWireByte(buffer, getMessageType().getCode());
+        assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber(), "IANA enterprise number");
+        assertWireByte(buffer, getMessageType().getCode(), "message type code");
         setMessageTag(buffer.get());
-        assertWireByte(buffer, (byte) 0);
-        buffer.get();   // Can't validate until we have the data. :-(
+        assertWireByte(buffer, (byte) 0, "reserved byte");
+        int length = buffer.get() & 0xFF;   // Can't validate until we have the data. :-(
         fromWireData(buffer);
+        // TODO: Validate data length on read.
     }
 
     protected abstract void fromWireData(@Nonnull ByteBuffer buffer);

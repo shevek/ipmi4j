@@ -50,6 +50,15 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
     protected final void fromWireUnchecked(ByteBuffer buffer) {
         int start = buffer.position();
         fromWireHeader(buffer);
+
+        /*
+        switch (header.getMessageClass()) {
+            case ASF:
+            case IPMI:
+            case OEM:
+        }
+        */
+
         fromWireBody(buffer, start);
     }
 }

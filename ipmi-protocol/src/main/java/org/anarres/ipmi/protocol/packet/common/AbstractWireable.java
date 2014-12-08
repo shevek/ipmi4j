@@ -51,29 +51,39 @@ public abstract class AbstractWireable implements Wireable {
         return data;
     }
 
-    public static void assertWireInt(@Nonnull ByteBuffer buffer, int expectValue) {
+    // TODO: Take a 'description' message too.
+    public static void assertWireInt(@Nonnull ByteBuffer buffer, int expectValue, String description) {
         int actualValue = buffer.getInt();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("Expected 0x" + Integer.toHexString(expectValue)
+            throw new IllegalArgumentException("In " + description + ": " +
+                    "Expected 0x" + Integer.toHexString(expectValue)
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
-    public static void assertWireChar(@Nonnull ByteBuffer buffer, char expectValue) {
+    public static void assertWireChar(@Nonnull ByteBuffer buffer, char expectValue, String description) {
         short actualValue = buffer.get();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("Expected 0x" + Integer.toHexString(expectValue)
+            throw new IllegalArgumentException("In " + description + ": " +
+                    "Expected 0x" + Integer.toHexString(expectValue)
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
-    public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue) {
+    public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, String description) {
         byte actualValue = buffer.get();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("Expected 0x" + UnsignedBytes.toString(expectValue, 16)
+            throw new IllegalArgumentException("In " + description + ": " +
+                    "Expected 0x" + UnsignedBytes.toString(expectValue, 16)
                     + " but got 0x" + UnsignedBytes.toString(actualValue, 16));
     }
 
     public static void assertWireBytes(@Nonnull ByteBuffer buffer, @Nonnull int... expectValues) {
         for (int expectValue : expectValues)
-            assertWireByte(buffer, (byte) (expectValue & 0xFF));
+            assertWireByte(buffer, (byte) (expectValue & 0xFF), "data byte at offset " + buffer.position());
+    }
+
+    protected int assertMask(int value, int nbits) {
+        if (Integer.numberOfLeadingZeros(value) < Integer.SIZE - nbits)
+            throw new IllegalArgumentException("Too many bits in " + Integer.toHexString(value) + "; expected max " + nbits);
+        return value;
     }
 }
