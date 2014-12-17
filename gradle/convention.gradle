@@ -27,7 +27,7 @@ subprojects { project ->
 	}
 
 	tasks.withType(JavaCompile) {
-		options.incremental = true
+		// options.incremental = true
 	}
 
 	test {
@@ -56,6 +56,9 @@ subprojects { project ->
 		}
 	}
 }
+
+apply plugin: 'build-announcements'
+apply plugin: 'build-dashboard'
 
 // Generate wrapper, which is distributed as part of source to alleviate the need of installing gradle
 wrapper {
