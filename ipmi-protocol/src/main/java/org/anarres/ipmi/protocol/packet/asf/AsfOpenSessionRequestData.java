@@ -12,9 +12,7 @@ import javax.annotation.Nonnull;
 /**
  * OpenSessionRequest.
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.4.11 page 41.
+ * [ASF2] Section 3.2.4.11 page 41.
  *
  * @author shevek
  */

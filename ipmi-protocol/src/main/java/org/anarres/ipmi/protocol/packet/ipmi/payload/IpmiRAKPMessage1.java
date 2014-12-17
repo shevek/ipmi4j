@@ -5,12 +5,10 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.base.Charsets;
-import com.google.common.primitives.Chars;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * [IPMI2] Section 13.20 page 150.
@@ -18,25 +16,6 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  * @author shevek
  */
 public class IpmiRAKPMessage1 extends TempIpmiWireable {
-
-    public static enum RequestedMaximumPrivilegeLevel implements Bits.Wrapper {
-
-        CALLBACK(1),
-        USER(2),
-        OPERATOR(3),
-        ADMINISTRATOR(4),
-        OEM(5);
-        private final Bits bits;
-
-        private RequestedMaximumPrivilegeLevel(int code) {
-            this.bits = new Bits(0, UnsignedBytes.checkedCast(code), 0x0F);
-        }
-
-        @Override
-        public Bits getBits() {
-            return bits;
-        }
-    }
 
     public static enum PrivilegeLookupMode implements Bits.Wrapper {
 
