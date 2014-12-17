@@ -14,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
+// TODO: Refactor with {@link IpmiAlgorithmPayload}?
 public class AsfRsspSessionAuthentication {
 
     public interface Payload {
@@ -21,6 +22,7 @@ public class AsfRsspSessionAuthentication {
         public void toWire(ByteBuffer buffer);
     }
 
+    /* TODO: Refactor with {@link IpmiAuthenticationAlgorithm}? */
     public enum AuthenticationAlgorithm implements Payload, Code.Wrapper {
 
         RAKP_HMAC_SHA1(0x01);
@@ -46,6 +48,7 @@ public class AsfRsspSessionAuthentication {
         }
     }
 
+    /* TODO: Refactor with {@link IpmiIntegrityAlgorithm}? */
     public enum IntegrityAlgorithm implements Payload, Code.Wrapper {
 
         HMAC_SHA1_96(0x01);
