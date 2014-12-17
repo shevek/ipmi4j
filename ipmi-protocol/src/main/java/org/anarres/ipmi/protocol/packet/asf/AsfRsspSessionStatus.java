@@ -13,9 +13,8 @@ import static org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType.*;
 /**
  * RSSP and RAKP Status Codes.
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.3.5.1 page 32.
+ * [ASF] Section 3.2.3.5.1 page 32.
+ * [IPMI2] Section 13.24 page 154. TODO: Needs checking. TODO: Need IpmiMessageType codes in here too.
  *
  * @author shevek
  */

@@ -17,6 +17,7 @@ public abstract class AbstractIpmiData extends AbstractWireable implements IpmiD
     protected IpmiSessionWrapper ipmiSessionWrapper;
     protected final IpmiHeader ipmiHeader = new IpmiHeader();
 
+    @Nonnull
     public IpmiSessionWrapper getIpmiSessionWrapper() {
         return ipmiSessionWrapper;
     }
