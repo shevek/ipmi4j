@@ -44,6 +44,7 @@ public abstract class AbstractWireable implements Wireable {
             throw new IllegalStateException("Object should deserialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this);
     }
 
+    /** Reads an array of bytes from the wire and returns them. */
     @Nonnull
     protected static byte[] readBytes(@Nonnull ByteBuffer buffer, @Nonnegative int length) {
         byte[] data = new byte[length];
@@ -52,6 +53,7 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     // TODO: Take a 'description' message too.
+    /** Reads a 4-byte signed int from the wire, and asserts it equal to the given expected value. */
     public static void assertWireInt(@Nonnull ByteBuffer buffer, int expectValue, String description) {
         int actualValue = buffer.getInt();
         if (actualValue != expectValue)
@@ -60,6 +62,7 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
+    /** Reads a 2-byte unsigned char from the wire, and asserts it equal to the given expected value. */
     public static void assertWireChar(@Nonnull ByteBuffer buffer, char expectValue, String description) {
         short actualValue = buffer.get();
         if (actualValue != expectValue)
@@ -68,7 +71,8 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
-    public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, String description) {
+    /** Reads a byte from the wire, and asserts it equal to the given expected value. */
+    public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, @Nonnull String description) {
         byte actualValue = buffer.get();
         if (actualValue != expectValue)
             throw new IllegalArgumentException("In " + description + ": " +
@@ -76,6 +80,7 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + UnsignedBytes.toString(actualValue, 16));
     }
 
+    /** Reads a number of bytes from the wire, and asserts them equal to the given expected values. */
     public static void assertWireBytes(@Nonnull ByteBuffer buffer, @Nonnull int... expectValues) {
         for (int expectValue : expectValues)
             assertWireByte(buffer, (byte) (expectValue & 0xFF), "data byte at offset " + buffer.position());
