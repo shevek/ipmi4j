@@ -7,7 +7,6 @@ package org.anarres.ipmi.protocol.packet.ipmi;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.common.Wireable;
 
 /**
  * [IPMI2] Section 13.6 pages 133-134, column 1.
@@ -31,63 +30,39 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
         return ipmiSessionSequenceNumber;
     }
 
-    private class Header extends AbstractWireable {
-
-        @Override
-        public int getWireLength() {
-            return 1 + 4 + 4 + (authenticationType != IpmiHeaderAuthenticationType.NONE ? 16 : 0);
-        }
-
-        @Override
-        protected void toWireUnchecked(ByteBuffer buffer) {
-            // Page 133
-            buffer.put(authenticationType.getCode());
-            buffer.putInt(ipmiSessionSequenceNumber);
-            buffer.putInt(ipmiSessionId);
-            if (authenticationType != IpmiHeaderAuthenticationType.NONE)
-                buffer.put(ipmiMessageAuthenticationCode);
-            // Page 134
-            // 1 byte payload length
-        }
-
-        @Override
-        protected void fromWireUnchecked(ByteBuffer buffer) {
-            authenticationType = Code.fromBuffer(IpmiHeaderAuthenticationType.class, buffer);
-            ipmiSessionSequenceNumber = buffer.getInt();
-            ipmiSessionId = buffer.getInt();
-            if (authenticationType != IpmiHeaderAuthenticationType.NONE)
-                ipmiMessageAuthenticationCode = readBytes(buffer, 16);
-            else
-                ipmiMessageAuthenticationCode = null;
-        }
+    @Override
+    public int getWireLength(IpmiHeader header, IpmiSessionData data) {
+        return 1 + 4 + 4 + (authenticationType != IpmiHeaderAuthenticationType.NONE ? 16 : 0)
+                + header.getWireLength()
+                + data.getWireLength();
     }
 
     @Override
-    public Wireable getIpmiSessionHeader(IpmiData data) {
-        return new Header();
-    }
+    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+        // Page 133
+        buffer.put(authenticationType.getCode());
+        buffer.putInt(ipmiSessionSequenceNumber);
+        buffer.putInt(ipmiSessionId);
+        if (authenticationType != IpmiHeaderAuthenticationType.NONE)
+            buffer.put(ipmiMessageAuthenticationCode);
+        // Page 134
+        // 1 byte payload length
 
-    // TODO: Legacy pad only.
-    private static class Trailer extends AbstractWireable {
-
-        private static final Trailer INSTANCE = new Trailer();
-
-        @Override
-        public int getWireLength() {
-            return 0;
-        }
-
-        @Override
-        protected void toWireUnchecked(ByteBuffer buffer) {
-        }
-
-        @Override
-        protected void fromWireUnchecked(ByteBuffer buffer) {
-        }
+        header.toWire(buffer);
+        data.toWire(buffer);
     }
 
     @Override
-    public Wireable getIpmiSessionTrailer(IpmiData data) {
-        return Trailer.INSTANCE;
+    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+        authenticationType = Code.fromBuffer(IpmiHeaderAuthenticationType.class, buffer);
+        ipmiSessionSequenceNumber = buffer.getInt();
+        ipmiSessionId = buffer.getInt();
+        if (authenticationType != IpmiHeaderAuthenticationType.NONE)
+            ipmiMessageAuthenticationCode = AbstractWireable.readBytes(buffer, 16);
+        else
+            ipmiMessageAuthenticationCode = null;
+
+        header.fromWire(buffer);
+        data.fromWire(buffer);
     }
 }

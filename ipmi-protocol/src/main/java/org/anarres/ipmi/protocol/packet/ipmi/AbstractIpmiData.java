@@ -9,6 +9,9 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 
 /**
+ * [IPMI2] Section 13.6, page 132, table 13-8.
+ *
+ * Hands the entire show off to the {@link IpmiSessionWrapper} for encoding.
  *
  * @author shevek
  */
@@ -27,12 +30,14 @@ public abstract class AbstractIpmiData extends AbstractWireable implements IpmiD
         return ipmiHeader;
     }
 
+    @Nonnull
+    public IpmiSessionData getIpmiSessionData() {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public int getWireLength() {
-        return getIpmiSessionWrapper().getIpmiSessionHeader(this).getWireLength()
-                + getIpmiHeader().getWireLength()
-                + getDataWireLength()
-                + getIpmiSessionWrapper().getIpmiSessionTrailer(this).getWireLength();
+        return getIpmiSessionWrapper().getWireLength(getIpmiHeader(), getIpmiSessionData());
     }
 
     /** Serializes the IPMI data into this RMCP data. */
@@ -40,19 +45,13 @@ public abstract class AbstractIpmiData extends AbstractWireable implements IpmiD
 
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
-        getIpmiSessionWrapper().getIpmiSessionHeader(this).toWire(buffer);
-        getIpmiHeader().toWire(buffer);
-        toWireData(buffer);
-        getIpmiSessionWrapper().getIpmiSessionTrailer(this).toWire(buffer);
+        getIpmiSessionWrapper().toWire(buffer, getIpmiHeader(), getIpmiSessionData());
     }
 
     protected abstract void fromWireData(@Nonnull ByteBuffer buffer);
 
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
-        getIpmiSessionWrapper().getIpmiSessionHeader(this).fromWire(buffer);
-        getIpmiHeader().fromWire(buffer);
-        fromWireData(buffer);
-        getIpmiSessionWrapper().getIpmiSessionTrailer(this).fromWire(buffer);
+        getIpmiSessionWrapper().fromWire(buffer, getIpmiHeader(), getIpmiSessionData());
     }
 }

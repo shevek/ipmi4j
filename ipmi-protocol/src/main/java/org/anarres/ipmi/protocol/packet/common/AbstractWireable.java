@@ -46,7 +46,7 @@ public abstract class AbstractWireable implements Wireable {
 
     /** Reads an array of bytes from the wire and returns them. */
     @Nonnull
-    protected static byte[] readBytes(@Nonnull ByteBuffer buffer, @Nonnegative int length) {
+    public static byte[] readBytes(@Nonnull ByteBuffer buffer, @Nonnegative int length) {
         byte[] data = new byte[length];
         buffer.get(data);
         return data;
@@ -57,8 +57,8 @@ public abstract class AbstractWireable implements Wireable {
     public static void assertWireInt(@Nonnull ByteBuffer buffer, int expectValue, String description) {
         int actualValue = buffer.getInt();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("In " + description + ": " +
-                    "Expected 0x" + Integer.toHexString(expectValue)
+            throw new IllegalArgumentException("In " + description + ": "
+                    + "Expected 0x" + Integer.toHexString(expectValue)
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
@@ -66,8 +66,8 @@ public abstract class AbstractWireable implements Wireable {
     public static void assertWireChar(@Nonnull ByteBuffer buffer, char expectValue, String description) {
         short actualValue = buffer.get();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("In " + description + ": " +
-                    "Expected 0x" + Integer.toHexString(expectValue)
+            throw new IllegalArgumentException("In " + description + ": "
+                    + "Expected 0x" + Integer.toHexString(expectValue)
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
@@ -75,8 +75,8 @@ public abstract class AbstractWireable implements Wireable {
     public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, @Nonnull String description) {
         byte actualValue = buffer.get();
         if (actualValue != expectValue)
-            throw new IllegalArgumentException("In " + description + ": " +
-                    "Expected 0x" + UnsignedBytes.toString(expectValue, 16)
+            throw new IllegalArgumentException("In " + description + ": "
+                    + "Expected 0x" + UnsignedBytes.toString(expectValue, 16)
                     + " but got 0x" + UnsignedBytes.toString(actualValue, 16));
     }
 

@@ -49,4 +49,15 @@ public enum IpmiPayloadType implements Code.Wrapper {
     public byte getCode() {
         return code;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(name());
+        if (majorFormat > 0) {
+            buf.append(" format=").append(majorFormat);
+            if (minorFormat >= 0)
+                buf.append('.').append(minorFormat);
+        }
+        return buf.toString();
+    }
 }

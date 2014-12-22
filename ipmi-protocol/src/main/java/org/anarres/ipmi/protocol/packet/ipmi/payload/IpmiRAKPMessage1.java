@@ -9,13 +9,14 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
 
 /**
  * [IPMI2] Section 13.20 page 150.
  *
  * @author shevek
  */
-public class IpmiRAKPMessage1 extends TempIpmiWireable {
+public class IpmiRAKPMessage1 extends IpmiPayload {
 
     public static enum PrivilegeLookupMode implements Bits.Wrapper {
 
@@ -38,6 +39,11 @@ public class IpmiRAKPMessage1 extends TempIpmiWireable {
     private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
     private PrivilegeLookupMode privilegeLookupMode;
     private String username;
+
+    @Override
+    public IpmiPayloadType getPayloadType() {
+        return IpmiPayloadType.RAKPMessage1;
+    }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {

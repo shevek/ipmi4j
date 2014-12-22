@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Bits;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
 import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiConfidentialityAlgorithm;
@@ -15,7 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiIntegrityAlgorithm;
  *
  * @author shevek
  */
-public class IpmiOpenSessionRequest extends TempIpmiWireable {
+public class IpmiOpenSessionRequest extends IpmiPayload {
 
     private byte messageTag;
     private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
@@ -23,6 +24,11 @@ public class IpmiOpenSessionRequest extends TempIpmiWireable {
     private IpmiAuthenticationAlgorithm authenticationAlgorithm;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
     private IpmiConfidentialityAlgorithm confidentialityAlgorithm;
+
+    @Override
+    public IpmiPayloadType getPayloadType() {
+        return IpmiPayloadType.RMCPOpenSessionRequest;
+    }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {

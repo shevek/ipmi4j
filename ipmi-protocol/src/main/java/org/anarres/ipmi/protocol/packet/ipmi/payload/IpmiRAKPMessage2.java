@@ -7,13 +7,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
 
 /**
  * [IPMI2] Section 13.21 page 151.
  *
  * @author shevek
  */
-public class IpmiRAKPMessage2 extends TempIpmiWireable {
+public class IpmiRAKPMessage2 extends IpmiPayload {
 
     private byte messageTag;
     private AsfRsspSessionStatus statusCode;
@@ -21,6 +22,11 @@ public class IpmiRAKPMessage2 extends TempIpmiWireable {
     private byte[] systemRandom;   // length = 16
     private UUID systemGuid;
     private byte[] keyExchangeAuthenticationCode;
+
+    @Override
+    public IpmiPayloadType getPayloadType() {
+        return IpmiPayloadType.RAKPMessage2;
+    }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
