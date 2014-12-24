@@ -5,13 +5,14 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
 
 /**
  * [IPMI2] Section 13.28.5, table 13-19, page 159.
  *
  * @author shevek
  */
-public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
+public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
 
     NONE(0x00),
     AES_CBC_128(0x01),
