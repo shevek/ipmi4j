@@ -57,7 +57,6 @@ public enum IpmiAuthenticationAlgorithm implements IpmiAlgorithm {
         this.integrityAlgorithm = integrityAlgorithm;
     }
 
-    /** [IPMI2] Section 13.7, table 13-9, page 147. */
     @Override
     public byte getPayloadType() {
         return PAYLOAD_TYPE;
@@ -79,6 +78,6 @@ public enum IpmiAuthenticationAlgorithm implements IpmiAlgorithm {
         return integrityAlgorithm;
     }
 
-    @Nonnull
+    @Override
     public abstract Hash newImplementation() throws NoSuchAlgorithmException;
 }

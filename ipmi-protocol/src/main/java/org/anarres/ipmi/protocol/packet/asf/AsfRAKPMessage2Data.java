@@ -104,7 +104,7 @@ public class AsfRAKPMessage2Data extends AbstractAsfData {
     protected void fromWireData(ByteBuffer buffer) {
         AsfRsspSessionStatus s = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         withStatus(s);
-        assertWireBytes(buffer, 0, 0, 0);
+        assertWireBytesZero(buffer, 3);
         withConsoleSessionId(buffer.getInt());
         if (!AsfRsspSessionStatus.NO_ERROR.equals(s))
             return;

@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
-import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -34,7 +33,7 @@ public enum IpmiNetworkFunction implements Code.Wrapper {
     ControllerSpecific5(0x3A),
     ControllerSpecific6(0x3C),
     ControllerSpecific7(0x3E);
-    private byte code;
+    private final byte code;
     // private Bits bits;
 
     private IpmiNetworkFunction(int code) {

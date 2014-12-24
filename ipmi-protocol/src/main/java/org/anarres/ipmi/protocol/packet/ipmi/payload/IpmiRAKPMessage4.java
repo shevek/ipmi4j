@@ -43,7 +43,7 @@ public class IpmiRAKPMessage4 extends AbstractIpmiPayload {
     protected void fromWireUnchecked(ByteBuffer buffer) {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
         consoleSessionId = buffer.getInt();
         throw new UnsupportedOperationException("integrityCheckValue");
     }

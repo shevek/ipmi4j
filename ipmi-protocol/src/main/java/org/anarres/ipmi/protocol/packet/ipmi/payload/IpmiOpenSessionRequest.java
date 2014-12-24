@@ -51,7 +51,7 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
         messageTag = buffer.get();
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
         authenticationAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiAuthenticationAlgorithm.class);
         integrityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiIntegrityAlgorithm.class);
         confidentialityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiConfidentialityAlgorithm.class);

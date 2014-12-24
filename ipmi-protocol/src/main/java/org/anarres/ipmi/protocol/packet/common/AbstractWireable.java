@@ -71,10 +71,6 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
-    public static void assertWireCharReserved(@Nonnull ByteBuffer buffer, @Nonnegative int expectValue) {
-        assertWireChar(buffer, (char) expectValue, "reserved bytes");
-    }
-
     /** Reads a byte from the wire, and asserts it equal to the given expected value. */
     public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, @Nonnull String description) {
         byte actualValue = buffer.get();
@@ -84,14 +80,16 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + UnsignedBytes.toString(actualValue, 16));
     }
 
-    public static void assertWireByteReserved(@Nonnull ByteBuffer buffer, @Nonnegative int expectValue) {
-        assertWireByte(buffer, (byte) expectValue, "reserved byte");
-    }
-
     /** Reads a number of bytes from the wire, and asserts them equal to the given expected values. */
     public static void assertWireBytes(@Nonnull ByteBuffer buffer, @Nonnull int... expectValues) {
         for (int expectValue : expectValues)
             assertWireByte(buffer, (byte) (expectValue & 0xFF), "data byte at offset " + buffer.position());
+    }
+
+    /** Reads a number of zero bytes from the buffer. */
+    public static void assertWireBytesZero(@Nonnull ByteBuffer buffer, @Nonnegative int count) {
+        for (int i = 0; i < count; i++)
+            assertWireByte(buffer, (byte) 0, "data byte at offset " + buffer.position());
     }
 
     protected int assertMask(int value, int nbits) {

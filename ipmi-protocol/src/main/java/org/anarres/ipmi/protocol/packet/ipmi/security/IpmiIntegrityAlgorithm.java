@@ -7,7 +7,6 @@ package org.anarres.ipmi.protocol.packet.ipmi.security;
 import com.google.common.primitives.UnsignedBytes;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_MD5_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA1_96;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA256_128;
@@ -61,7 +60,6 @@ public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm<MAC> {
         this.macLength = macLength;
     }
 
-    /** [IPMI2] Section 13.7, table 13-9, page 147. */
     @Override
     public byte getPayloadType() {
         return PAYLOAD_TYPE;
@@ -77,6 +75,6 @@ public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm<MAC> {
         return macLength;
     }
 
-    @Nonnull
+    @Override
     public abstract MAC newImplementation() throws NoSuchAlgorithmException;
 }

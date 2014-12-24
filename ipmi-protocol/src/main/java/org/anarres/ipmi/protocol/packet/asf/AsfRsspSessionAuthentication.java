@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -27,10 +28,10 @@ public class AsfRsspSessionAuthentication {
 
         RAKP_HMAC_SHA1(0x01);
         public static final short LENGTH = 8;
-        private byte code;
+        private final byte code;
 
-        private AuthenticationAlgorithm(int code) {
-            this.code = (byte) code;
+        private AuthenticationAlgorithm(@Nonnegative int code) {
+            this.code = UnsignedBytes.checkedCast(code);
         }
 
         @Override
@@ -53,10 +54,10 @@ public class AsfRsspSessionAuthentication {
 
         HMAC_SHA1_96(0x01);
         public static final short LENGTH = 8;
-        private byte code;
+        private final byte code;
 
         private IntegrityAlgorithm(int code) {
-            this.code = (byte) code;
+            this.code = UnsignedBytes.checkedCast(code);
         }
 
         @Override

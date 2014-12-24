@@ -122,6 +122,6 @@ public class AsfSystemStateResponseData extends AbstractAsfData {
     protected void fromWireData(ByteBuffer buffer) {
         withSystemState(Code.fromBuffer(SystemState.class, buffer));
         withWatchdogState(Code.fromBuffer(WatchdogState.class, buffer));
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
     }
 }

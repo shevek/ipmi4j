@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication;
 
 import java.security.NoSuchAlgorithmException;
+import javax.annotation.Nonnull;
 import javax.crypto.ShortBufferException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.AbstractJCEGenericMAC;
 
@@ -14,7 +15,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.AbstractJCE
  */
 public abstract class AbstractJCEHash extends AbstractJCEGenericMAC implements Hash {
 
-    public AbstractJCEHash(String algorithm) throws NoSuchAlgorithmException {
+    public AbstractJCEHash(@Nonnull String algorithm) throws NoSuchAlgorithmException {
         super(algorithm);
     }
 

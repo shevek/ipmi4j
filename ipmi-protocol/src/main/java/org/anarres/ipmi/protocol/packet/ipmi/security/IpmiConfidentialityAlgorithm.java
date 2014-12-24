@@ -6,7 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.security.NoSuchAlgorithmException;
-import javax.annotation.Nonnull;
+import javax.annotation.Nonnegative;
 import javax.crypto.NoSuchPaddingException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.AES_CBC_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
@@ -50,13 +50,12 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
     OEM_3E(0x3E),
     OEM_3F(0x3F);
     public static final byte PAYLOAD_TYPE = 2;
-    private byte code;
+    private final byte code;
 
-    private IpmiConfidentialityAlgorithm(int code) {
+    private IpmiConfidentialityAlgorithm(@Nonnegative int code) {
         this.code = UnsignedBytes.checkedCast(code);
     }
 
-    /** [IPMI2] Section 13.7, table 13-9, page 147. */
     @Override
     public byte getPayloadType() {
         return PAYLOAD_TYPE;
@@ -67,7 +66,7 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
         return code;
     }
 
-    @Nonnull
+    @Override
     public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
         throw new UnsupportedOperationException("Unsupported confidentiality algorithm " + this);
     }

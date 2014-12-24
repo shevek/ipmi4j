@@ -72,13 +72,13 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
         messageTag = buffer.get();
-        assertWireBytes(buffer, 0, 0, 0);
+        assertWireBytesZero(buffer, 3);
         systemSessionId = buffer.getInt();
         consoleRandom = readBytes(buffer, 16);
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
         privilegeLookupMode = Code.fromByte(PrivilegeLookupMode.class, (byte) (requestedMaximumPrivilegeLevelByte & PrivilegeLookupMode.MASK));
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
         int usernameLength = UnsignedBytes.toInt(buffer.get());
         byte[] usernameBytes = readBytes(buffer, usernameLength);
         username = new String(usernameBytes, Charsets.ISO_8859_1);

@@ -128,7 +128,7 @@ public class AsfRAKPMessage1Data extends AbstractAsfData {
         withClientSessionId(buffer.getInt());
         withConsoleRandom(readBytes(buffer, 16));
         withConsoleUserRole(Code.fromBuffer(UserRole.class, buffer));
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
 
         int userNameLength = UnsignedBytes.toInt(buffer.get());
         if (userNameLength > 0) {

@@ -15,6 +15,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
  * [IPMI2] Section 13.6 pages 133-134, column 3.
+ * Confidentiality wrappers from [IPMI2] Section 13.29 page 160, table 13-20.
  *
  * @author shevek
  */

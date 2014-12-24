@@ -31,9 +31,11 @@ public class IpmiAlgorithmUtils {
     @Nonnull
     public static <T extends Enum<T> & IpmiAlgorithm> T fromWireUnchecked(@Nonnull ByteBuffer buffer, @Nonnull Class<T> algorithmType) {
         byte algorithmTypeByte = algorithmType.getEnumConstants()[0].getPayloadType();
-        AbstractWireable.assertWireBytes(buffer, algorithmTypeByte, 0, 0, getWireLength());
+        AbstractWireable.assertWireByte(buffer, algorithmTypeByte, "Algorithm type byte");
+        AbstractWireable.assertWireBytesZero(buffer, 2);
+        AbstractWireable.assertWireByte(buffer, getWireLength(), "Algorithm wire length");
         T algorithm = Code.fromByte(algorithmType, buffer.get());
-        AbstractWireable.assertWireBytes(buffer, 0, 0, 0);
+        AbstractWireable.assertWireBytesZero(buffer, 3);
         return algorithm;
     }
 }

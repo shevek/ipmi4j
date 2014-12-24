@@ -37,11 +37,11 @@ public enum IpmiSessionStatus implements Code.Wrapper {
     NO_CIPHER_SUITE_MATCH(0x11, RMCPOpenSessionRequest),
     ILLEGAL_OR_UNRECOGNIZED_PARAMETER(0x12, RMCPOpenSessionRequest, RAKPMessage2, RAKPMessage3, RAKPMessage4);
     private final byte code;
-    private final IpmiPayloadType[] payloadTypes;
+    private final IpmiPayloadType[] allowedPayloadTypes;
 
-    private IpmiSessionStatus(@Nonnegative int code, @Nonnull IpmiPayloadType... payloadTypes) {
+    private IpmiSessionStatus(@Nonnegative int code, @Nonnull IpmiPayloadType... allowedPayloadTypes) {
         this.code = UnsignedBytes.checkedCast(code);
-        this.payloadTypes = payloadTypes;
+        this.allowedPayloadTypes = allowedPayloadTypes;
     }
 
     @Override

@@ -112,6 +112,6 @@ public class AsfPresencePongData extends AbstractAsfData {
         withOemDefined(buffer.getInt());
         withSupportedEntities(Bits.fromBuffer(SupportedEntity.class, buffer, 1));
         withSupportedInteractions(Bits.fromBuffer(SupportedInteraction.class, buffer, 1));
-        assertWireBytes(buffer, 0, 0, 0, 0, 0, 0);
+        assertWireBytesZero(buffer, 6);
     }
 }

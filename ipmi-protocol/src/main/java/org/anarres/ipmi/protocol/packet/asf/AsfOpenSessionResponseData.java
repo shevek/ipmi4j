@@ -78,7 +78,7 @@ public class AsfOpenSessionResponseData extends AbstractAsfData {
     @Override
     protected void fromWireData(ByteBuffer buffer) {
         withStatus(Code.fromBuffer(AsfRsspSessionStatus.class, buffer));
-        assertWireCharReserved(buffer, 0);
+        assertWireBytesZero(buffer, 2);
         withConsoleSessionId(buffer.getInt());
         withClientSessionId(buffer.getInt());
         authenticationAlgorithm = (AsfRsspSessionAuthentication.AuthenticationAlgorithm) AsfRsspSessionAuthentication.fromWire(buffer);
