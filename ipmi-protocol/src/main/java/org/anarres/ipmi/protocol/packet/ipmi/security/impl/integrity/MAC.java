@@ -4,25 +4,15 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.crypto.ShortBufferException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
  *
  * @author shevek
  */
-public interface MAC {
+public interface MAC extends GenericMAC {
 
     @Nonnull
     public IpmiIntegrityAlgorithm getName();
-
-    public void init(@Nonnull byte[] key) throws NoSuchAlgorithmException, InvalidKeyException;
-
-    public void update(@Nonnull byte[] data, @Nonnegative int off, @Nonnegative int len) throws IllegalStateException;
-
-    public void doFinal(@Nonnull byte[] out, @Nonnegative int off) throws ShortBufferException, IllegalStateException;
 }

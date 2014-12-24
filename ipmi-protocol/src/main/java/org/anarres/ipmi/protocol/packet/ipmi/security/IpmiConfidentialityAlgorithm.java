@@ -5,7 +5,12 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
+import java.security.NoSuchAlgorithmException;
+import javax.annotation.Nonnull;
+import javax.crypto.NoSuchPaddingException;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.AES_CBC_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.None;
 
 /**
  * [IPMI2] Section 13.28.5, table 13-19, page 159.
@@ -14,8 +19,18 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Ciphe
  */
 public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
 
-    NONE(0x00),
-    AES_CBC_128(0x01),
+    NONE(0x00) {
+        @Override
+        public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
+            return new None();
+        }
+    },
+    AES_CBC_128(0x01) {
+        @Override
+        public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
+            return new AES_CBC_128();
+        }
+    },
     xRC4_128(0x02),
     xRC4_40(0x03),
     OEM_30(0x30),
@@ -50,5 +65,10 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
     @Override
     public byte getCode() {
         return code;
+    }
+
+    @Nonnull
+    public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
+        throw new UnsupportedOperationException("Unsupported confidentiality algorithm " + this);
     }
 }
