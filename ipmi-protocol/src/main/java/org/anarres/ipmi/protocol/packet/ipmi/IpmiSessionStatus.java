@@ -4,11 +4,12 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import static org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType.*;
+import static org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType.*;
 
 /**
  *

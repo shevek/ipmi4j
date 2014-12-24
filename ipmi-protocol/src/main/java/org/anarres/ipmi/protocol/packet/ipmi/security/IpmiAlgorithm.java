@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.alg;
+package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import org.anarres.ipmi.protocol.packet.common.Code;
 

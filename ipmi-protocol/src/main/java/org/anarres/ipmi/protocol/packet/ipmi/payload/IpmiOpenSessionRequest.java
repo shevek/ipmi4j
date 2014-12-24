@@ -6,17 +6,17 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
-import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiAlgorithmUtils;
-import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiAuthenticationAlgorithm;
-import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiConfidentialityAlgorithm;
-import org.anarres.ipmi.protocol.packet.ipmi.alg.IpmiIntegrityAlgorithm;
+import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
  *
  * @author shevek
  */
-public class IpmiOpenSessionRequest extends IpmiPayload {
+public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
 
     private byte messageTag;
     private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
@@ -31,7 +31,12 @@ public class IpmiOpenSessionRequest extends IpmiPayload {
     }
 
     @Override
-    protected void toWireData(ByteBuffer buffer) {
+    public int getWireLength() {
+        return 32;
+    }
+
+    @Override
+    protected void toWireUnchecked(ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
         buffer.putChar((char) 0);   // reserved
@@ -39,5 +44,16 @@ public class IpmiOpenSessionRequest extends IpmiPayload {
         IpmiAlgorithmUtils.toWireUnchecked(buffer, authenticationAlgorithm);
         IpmiAlgorithmUtils.toWireUnchecked(buffer, integrityAlgorithm);
         IpmiAlgorithmUtils.toWireUnchecked(buffer, confidentialityAlgorithm);
+    }
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        messageTag = buffer.get();
+        byte requestedMaximumPrivilegeLevelByte = buffer.get();
+        requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
+        assertWireChar(buffer, (char) 0, "reserved bytes");
+        authenticationAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiAuthenticationAlgorithm.class);
+        integrityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiIntegrityAlgorithm.class);
+        confidentialityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiConfidentialityAlgorithm.class);
     }
 }

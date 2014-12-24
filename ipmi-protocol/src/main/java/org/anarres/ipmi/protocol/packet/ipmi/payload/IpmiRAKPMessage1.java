@@ -9,19 +9,20 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * [IPMI2] Section 13.20 page 150.
  *
  * @author shevek
  */
-public class IpmiRAKPMessage1 extends IpmiPayload {
+public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
 
-    public static enum PrivilegeLookupMode implements Bits.Wrapper {
+    public static enum PrivilegeLookupMode implements Bits.Wrapper, Code.Wrapper {
 
         USERNAME_PRIVILEGE(new Bits(0, 0, 1 << 4)),
         NAME_ONLY(new Bits(0, 1 << 4, 1 << 4));
+        public static final int MASK = 0x0F << 4;
         private final Bits bits;
 
         private PrivilegeLookupMode(@Nonnull Bits bits) {
@@ -31,6 +32,11 @@ public class IpmiRAKPMessage1 extends IpmiPayload {
         @Override
         public Bits getBits() {
             return bits;
+        }
+
+        @Override
+        public byte getCode() {
+            return UnsignedBytes.checkedCast(getBits().getByteValue());
         }
     }
     private byte messageTag;
@@ -46,7 +52,12 @@ public class IpmiRAKPMessage1 extends IpmiPayload {
     }
 
     @Override
-    protected void toWireData(ByteBuffer buffer) {
+    public int getWireLength() {
+        return 28 + ((username == null) ? 0 : username.length());
+    }
+
+    @Override
+    protected void toWireUnchecked(ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(new byte[3]);    // reserved
         buffer.putInt(systemSessionId);
@@ -56,5 +67,20 @@ public class IpmiRAKPMessage1 extends IpmiPayload {
         byte[] usernameBytes = username == null ? new byte[0] : username.getBytes(Charsets.ISO_8859_1);
         buffer.put(UnsignedBytes.checkedCast(usernameBytes.length));    // Max is 0x10.
         buffer.put(usernameBytes);
+    }
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        messageTag = buffer.get();
+        assertWireBytes(buffer, 0, 0, 0);
+        systemSessionId = buffer.getInt();
+        consoleRandom = readBytes(buffer, 16);
+        byte requestedMaximumPrivilegeLevelByte = buffer.get();
+        requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
+        privilegeLookupMode = Code.fromByte(PrivilegeLookupMode.class, (byte) (requestedMaximumPrivilegeLevelByte & PrivilegeLookupMode.MASK));
+        assertWireChar(buffer, (char) 0, "reserved bytes");
+        int usernameLength = UnsignedBytes.toInt(buffer.get());
+        byte[] usernameBytes = readBytes(buffer, usernameLength);
+        username = new String(usernameBytes, Charsets.ISO_8859_1);
     }
 }

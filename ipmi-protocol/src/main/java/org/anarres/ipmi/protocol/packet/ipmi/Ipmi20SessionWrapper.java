@@ -4,14 +4,14 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.Chars;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
-import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Pad;
-import org.anarres.ipmi.protocol.packet.common.Wireable;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
  * [IPMI2] Section 13.6 pages 133-134, column 3.
@@ -20,7 +20,7 @@ import org.anarres.ipmi.protocol.packet.common.Wireable;
  */
 public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
 
-    private IpmiHeaderAuthenticationType authenticationType;
+    private final IpmiHeaderAuthenticationType authenticationType = IpmiHeaderAuthenticationType.RMCPP;
     private IpmiPayloadType payloadType;
     private boolean encrypted;
     private boolean authenticated;
@@ -43,17 +43,17 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
     }
 
     @Nonnegative
-    private int getPayloadLength(@Nonnull IpmiHeader header, @Nonnull IpmiSessionData data) {
-        return confidentialityHeader.length
+    private int getPayloadLength(@Nonnull IpmiHeader header, @Nonnull IpmiPayload payload) {
+        return ((confidentialityHeader == null) ? 0 : confidentialityHeader.length)
                 + header.getWireLength()
-                + data.getWireLength()
-                + confidentialityTrailer.length;
+                + payload.getWireLength()
+                + ((confidentialityTrailer == null) ? 0 : confidentialityTrailer.length);
     }
 
     @Override
-    public int getWireLength(IpmiHeader header, IpmiSessionData data) {
+    public int getWireLength(IpmiHeader header, IpmiPayload payload) {
         boolean oem = IpmiPayloadType.OEM_EXPLICIT.equals(payloadType);
-        int payloadLength = getPayloadLength(header, data);
+        int payloadLength = getPayloadLength(header, payload);
         return 1 // authenticationType
                 + 1 // payloadType
                 + (oem ? 4 : 0) // oemEnterpriseNumber
@@ -61,19 +61,15 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
                 + 4 // ipmiSessionId
                 + 4 // ipmiSessionSequenceNumber
                 + 2 // payloadLength
-                + confidentialityHeader.length
-                + confidentialityTrailer.length
-                + header.getWireLength()
-                + data.getWireLength()
+                + getPayloadLength(header, payload)
                 + Pad.PAD(payloadLength).length
                 + 1 // pad length
                 + 1 // next header
                 + integrityData.length;
-
     }
 
     @Override
-    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
         // Page 133
         buffer.put(authenticationType.getCode());
         byte payloadTypeByte = payloadType.getCode();
@@ -91,12 +87,12 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
 
         // Page 134
         // 2 byte payload length
-        int payloadLength = getPayloadLength(header, data);
+        int payloadLength = getPayloadLength(header, payload);
         buffer.putChar(Chars.checkedCast(payloadLength));
         buffer.put(confidentialityHeader);
 
         header.toWire(buffer);
-        data.toWire(buffer);
+        payload.toWire(buffer);
 
         byte[] pad = Pad.PAD(payloadLength);
         buffer.put(pad);
@@ -108,7 +104,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
     /*
      @Override
      protected void fromWireUnchecked(ByteBuffer buffer) {
-     int payloadLength = getPayloadLength(data);
+     int payloadLength = getPayloadLength(payload);
      byte[] pad = Pad.PAD(payloadLength);
      AbstractWireable.readBytes(buffer, pad.length);
      AbstractWireable.assertWireByte(buffer, (byte) pad.length, "padding length");
@@ -117,7 +113,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
      }
      */
     @Override
-    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

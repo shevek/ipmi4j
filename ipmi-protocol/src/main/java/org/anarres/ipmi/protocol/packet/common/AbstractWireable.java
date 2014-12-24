@@ -71,6 +71,10 @@ public abstract class AbstractWireable implements Wireable {
                     + " but got 0x" + Integer.toHexString(actualValue));
     }
 
+    public static void assertWireCharReserved(@Nonnull ByteBuffer buffer, @Nonnegative int expectValue) {
+        assertWireChar(buffer, (char) expectValue, "reserved bytes");
+    }
+
     /** Reads a byte from the wire, and asserts it equal to the given expected value. */
     public static void assertWireByte(@Nonnull ByteBuffer buffer, byte expectValue, @Nonnull String description) {
         byte actualValue = buffer.get();
@@ -78,6 +82,10 @@ public abstract class AbstractWireable implements Wireable {
             throw new IllegalArgumentException("In " + description + ": "
                     + "Expected 0x" + UnsignedBytes.toString(expectValue, 16)
                     + " but got 0x" + UnsignedBytes.toString(actualValue, 16));
+    }
+
+    public static void assertWireByteReserved(@Nonnull ByteBuffer buffer, @Nonnegative int expectValue) {
+        assertWireByte(buffer, (byte) expectValue, "reserved byte");
     }
 
     /** Reads a number of bytes from the wire, and asserts them equal to the given expected values. */

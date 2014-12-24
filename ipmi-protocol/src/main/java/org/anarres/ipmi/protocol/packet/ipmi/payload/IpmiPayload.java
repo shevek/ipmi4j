@@ -4,21 +4,15 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
-import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.common.Wireable;
 
 /**
  *
  * @author shevek
  */
-public abstract class IpmiPayload {
+public interface IpmiPayload extends Wireable {
 
     @Nonnull
-    public abstract IpmiPayloadType getPayloadType();
-
-    // @Nonnegative public abstract int getDataWireLength();
-    /** Serializes the IPMI data into this RMCP data. */
-    protected abstract void toWireData(@Nonnull ByteBuffer buffer);
-    // protected abstract void fromWireData(@Nonnull ByteBuffer buffer);
+    public IpmiPayloadType getPayloadType();
 }

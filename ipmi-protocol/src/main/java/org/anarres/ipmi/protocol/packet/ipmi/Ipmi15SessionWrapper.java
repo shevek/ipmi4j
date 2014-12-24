@@ -4,9 +4,11 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
  * [IPMI2] Section 13.6 pages 133-134, column 1.
@@ -31,14 +33,18 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
     }
 
     @Override
-    public int getWireLength(IpmiHeader header, IpmiSessionData data) {
-        return 1 + 4 + 4 + (authenticationType != IpmiHeaderAuthenticationType.NONE ? 16 : 0)
+    public int getWireLength(IpmiHeader header, IpmiPayload payload) {
+        return 1    // authenticationType
+                + 4     // ipmiSessionSequenceNumber
+                + 4     // ipmiSessionId
+                + (authenticationType != IpmiHeaderAuthenticationType.NONE ? 16 : 0)
+                + 1     // payloadLength
                 + header.getWireLength()
-                + data.getWireLength();
+                + payload.getWireLength();
     }
 
     @Override
-    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
         // Page 133
         buffer.put(authenticationType.getCode());
         buffer.putInt(ipmiSessionSequenceNumber);
@@ -46,14 +52,15 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
         if (authenticationType != IpmiHeaderAuthenticationType.NONE)
             buffer.put(ipmiMessageAuthenticationCode);
         // Page 134
-        // 1 byte payload length
+        int payloadLength = header.getWireLength() + payload.getWireLength();
+        buffer.put(UnsignedBytes.checkedCast(payloadLength));
 
         header.toWire(buffer);
-        data.toWire(buffer);
+        payload.toWire(buffer);
     }
 
     @Override
-    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiSessionData data) {
+    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
         authenticationType = Code.fromBuffer(IpmiHeaderAuthenticationType.class, buffer);
         ipmiSessionSequenceNumber = buffer.getInt();
         ipmiSessionId = buffer.getInt();
@@ -61,8 +68,11 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
             ipmiMessageAuthenticationCode = AbstractWireable.readBytes(buffer, 16);
         else
             ipmiMessageAuthenticationCode = null;
+        byte payloadLength = buffer.get();
 
         header.fromWire(buffer);
-        data.fromWire(buffer);
+        payload.fromWire(buffer);
+
+        // assert payloadLength == header.getWireLength() + payload.getWireLength();
     }
 }

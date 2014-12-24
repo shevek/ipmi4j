@@ -7,14 +7,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * [IPMI2] Section 13.21 page 151.
  *
  * @author shevek
  */
-public class IpmiRAKPMessage2 extends IpmiPayload {
+public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
 
     private byte messageTag;
     private AsfRsspSessionStatus statusCode;
@@ -29,14 +29,33 @@ public class IpmiRAKPMessage2 extends IpmiPayload {
     }
 
     @Override
-    protected void toWireData(ByteBuffer buffer) {
+    public int getWireLength() {
+        return 40 + keyExchangeAuthenticationCode.length;
+    }
+
+    @Override
+    protected void toWireUnchecked(ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
-        buffer.putChar((char)0);    // reserved
+        buffer.putChar((char) 0);    // reserved
         buffer.putInt(consoleSessionId);
         buffer.put(systemRandom);
         buffer.putLong(systemGuid.getMostSignificantBits());
         buffer.putLong(systemGuid.getLeastSignificantBits());
         buffer.put(keyExchangeAuthenticationCode);
+    }
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        messageTag = buffer.get();
+        statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
+        assertWireCharReserved(buffer, 0);
+        consoleSessionId = buffer.getInt();
+        systemRandom = readBytes(buffer, 16);
+        long systemGuidMsb = buffer.getLong();
+        long systemGuidLsb = buffer.getLong();
+        systemGuid = new UUID(systemGuidMsb, systemGuidLsb);
+        // keyExchangeAuthenticationCode = buffer.
+        throw new UnsupportedOperationException("keyExchangeAuthenticationCode");
     }
 }

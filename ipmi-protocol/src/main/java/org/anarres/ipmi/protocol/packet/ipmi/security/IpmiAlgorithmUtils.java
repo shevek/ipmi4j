@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.alg;
+package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class IpmiAlgorithmUtils {
     }
 
     @Nonnull
-    protected <T extends Enum<T> & IpmiAlgorithm> T fromWireUnchecked(@Nonnull ByteBuffer buffer, @Nonnull Class<T> algorithmType) {
+    public static <T extends Enum<T> & IpmiAlgorithm> T fromWireUnchecked(@Nonnull ByteBuffer buffer, @Nonnull Class<T> algorithmType) {
         byte algorithmTypeByte = algorithmType.getEnumConstants()[0].getPayloadType();
         AbstractWireable.assertWireBytes(buffer, algorithmTypeByte, 0, 0, getWireLength());
         T algorithm = Code.fromByte(algorithmType, buffer.get());

@@ -11,7 +11,7 @@ import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiHeaderAuthenticationType;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.slf4j.Logger;

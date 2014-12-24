@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
  *
@@ -19,9 +20,9 @@ public interface IpmiSessionWrapper {
     public int getIpmiSessionSequenceNumber();
 
     @Nonnegative
-    public int getWireLength(@Nonnull IpmiHeader header, @Nonnull IpmiSessionData data);
+    public int getWireLength(@Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
 
-    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiHeader header, @Nonnull IpmiSessionData data);
+    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
 
-    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiHeader header, @Nonnull IpmiSessionData data);
+    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
 }

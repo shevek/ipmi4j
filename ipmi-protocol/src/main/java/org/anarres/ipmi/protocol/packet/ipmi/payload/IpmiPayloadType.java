@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi;
+package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.CheckForSigned;
