@@ -18,7 +18,7 @@ public interface Wireable {
      * Returns the wire length of this packet.
      *
      * This must be exact, and not an overestimate.
-     * If {@link #toWire(java.nio.ByteBuffer) writes fewer bytes than the
+     * If {@link #toWire(java.nio.ByteBuffer)} writes fewer bytes than the
      * computed length, the base class will assume error in the serializer
      * and throw an exception.
      */
