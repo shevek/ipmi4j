@@ -7,7 +7,7 @@ org.anarres.ipmi.protocol.packet.common
 org.anarres.ipmi.protocol.packet.ipmi
 org.anarres.ipmi.protocol.packet.ipmi.payload
 org.anarres.ipmi.protocol.packet.ipmi.security
-org.anarres.ipmi.protocol.packet.ipmi.security.impl
+org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity
 org.anarres.ipmi.protocol.packet.ipmi.session
