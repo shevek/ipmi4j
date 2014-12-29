@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 13.6, page 132, table 13-8.
@@ -20,8 +21,14 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 public abstract class AbstractIpmiData extends AbstractWireable implements IpmiData {
 
     private IpmiSessionWrapper ipmiSessionWrapper;
+    private IpmiSession ipmiSession;
     private final IpmiHeader ipmiHeader = new IpmiHeader();
     private IpmiPayload ipmiPayload;
+
+    @Nonnull
+    public IpmiSession getIpmiSession() {
+        return ipmiSession;
+    }
 
     @Nonnull
     public IpmiSessionWrapper getIpmiSessionWrapper() {
@@ -40,12 +47,12 @@ public abstract class AbstractIpmiData extends AbstractWireable implements IpmiD
 
     @Override
     public int getWireLength() {
-        return getIpmiSessionWrapper().getWireLength(getIpmiHeader(), getIpmiPayload());
+        return getIpmiSessionWrapper().getWireLength(getIpmiSession(), getIpmiHeader(), getIpmiPayload());
     }
 
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
-        getIpmiSessionWrapper().toWire(buffer, getIpmiHeader(), getIpmiPayload());
+        getIpmiSessionWrapper().toWire(buffer, getIpmiSession(), getIpmiHeader(), getIpmiPayload());
     }
 
     @Override
@@ -56,6 +63,6 @@ public abstract class AbstractIpmiData extends AbstractWireable implements IpmiD
             ipmiSessionWrapper = new Ipmi20SessionWrapper();
         else
             ipmiSessionWrapper = new Ipmi15SessionWrapper();
-        getIpmiSessionWrapper().fromWire(buffer, getIpmiHeader(), getIpmiPayload());
+        getIpmiSessionWrapper().fromWire(buffer, null, getIpmiHeader(), getIpmiPayload());
     }
 }

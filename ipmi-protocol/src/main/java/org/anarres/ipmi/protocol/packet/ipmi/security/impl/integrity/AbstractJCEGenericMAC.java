@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnull;
@@ -35,12 +36,12 @@ public abstract class AbstractJCEGenericMAC implements GenericMAC {
     }
 
     @Override
-    public void update(byte[] data, int off, int len) {
-        mac.update(data, off, len);
+    public void update(ByteBuffer input) {
+        mac.update(input);
     }
 
     @Override
-    public void doFinal(byte[] out, int offset) throws ShortBufferException {
-        mac.doFinal(out, offset);
+    public byte[] doFinal() {
+        return mac.doFinal();
     }
 }

@@ -78,6 +78,6 @@ public enum IpmiAuthenticationAlgorithm implements IpmiAlgorithm {
         return integrityAlgorithm;
     }
 
-    @Override
+    @Nonnull
     public abstract Hash newImplementation() throws NoSuchAlgorithmException;
 }

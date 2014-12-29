@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -36,7 +37,7 @@ public enum IpmiNetworkFunction implements Code.Wrapper {
     private final byte code;
     // private Bits bits;
 
-    private IpmiNetworkFunction(int code) {
+    private IpmiNetworkFunction(@Nonnegative int code) {
         this.code = UnsignedBytes.checkedCast(code);
         // this.bits = new Bits(0, 0xFC, code << 2);
     }

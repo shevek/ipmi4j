@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
+import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
@@ -11,6 +12,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
  * @author shevek
  */
 public class None implements MAC {
+
+    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     @Override
     public IpmiIntegrityAlgorithm getName() {
@@ -22,10 +25,11 @@ public class None implements MAC {
     }
 
     @Override
-    public void update(byte[] data, int start, int len) {
+    public void update(ByteBuffer input) {
     }
 
     @Override
-    public void doFinal(byte[] out, int offset) {
+    public byte[] doFinal() {
+        return EMPTY_BYTE_ARRAY;
     }
 }

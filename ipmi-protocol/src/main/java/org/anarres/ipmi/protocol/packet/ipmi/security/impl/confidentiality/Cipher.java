@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -40,10 +41,8 @@ public interface Cipher {
             throws InvalidKeyException, InvalidAlgorithmParameterException;
 
     /**
-     * @see javax.crypto.Cipher#update(byte[], int, int, byte[], int)
+     * @see javax.crypto.Cipher#update(ByteBuffer, ByteBuffer)
      */
-    public int update(
-            @Nonnull byte[] input, @Nonnegative int inputOffset, @Nonnegative int inputLen,
-            @Nonnull byte[] output, @Nonnegative int outputOffset)
+    public int update(@Nonnull ByteBuffer input, @Nonnull ByteBuffer output)
             throws ShortBufferException;
 }

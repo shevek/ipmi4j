@@ -18,6 +18,7 @@ public class None implements Hash {
     }
 
     @Override
-    public void doFinal(byte[] out, int off) {
+    public byte[] doFinal() {
+        return org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.None.EMPTY_BYTE_ARRAY;
     }
 }

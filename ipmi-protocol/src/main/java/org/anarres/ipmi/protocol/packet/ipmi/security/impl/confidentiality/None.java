@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import javax.crypto.ShortBufferException;
@@ -35,10 +36,9 @@ public class None implements Cipher {
     }
 
     @Override
-    public int update(byte[] input, int inputOffset, int inputLen, byte[] output, int outputOffset) throws ShortBufferException {
-        if (output.length - outputOffset < inputLen)
-            throw new ShortBufferException("Required " + inputLen + " bytes but only " + (output.length - outputOffset) + " available.");
-        System.arraycopy(input, inputOffset, output, outputOffset, inputLen);
-        return inputLen;
+    public int update(ByteBuffer input, ByteBuffer output) throws ShortBufferException {
+        int remaining = input.remaining();
+        output.put(input);
+        return remaining;
     }
 }

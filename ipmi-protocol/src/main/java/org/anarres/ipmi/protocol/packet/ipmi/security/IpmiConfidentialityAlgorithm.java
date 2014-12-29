@@ -5,34 +5,107 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
+import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiHeader;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.AES_CBC_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
-import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.None;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 13.28.5, table 13-19, page 159.
  *
  * @author shevek
  */
-public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
+public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
 
     NONE(0x00) {
         @Override
-        public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
-            return new None();
+        public int getWireLength(IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+            return header.getWireLength() + payload.getWireLength();
         }
-    },
-    AES_CBC_128(0x01) {
+
         @Override
-        public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
-            return new AES_CBC_128();
+        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+            header.toWire(buffer);
+            payload.toWire(buffer);
+        }
+
+        @Override
+        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+            header.fromWire(buffer);
+            payload.fromWire(buffer);
         }
     },
-    xRC4_128(0x02),
-    xRC4_40(0x03),
+    /** [IPMI2] Section 13.29, table 13-20, page 160. */
+    AES_CBC_128(0x01) {
+        private int pad(int dataLength) {
+            int m = dataLength % 16;
+            if (m == 0)
+                return 0;
+            return 16 - m;
+        }
+
+        @Override
+        public int getWireLength(IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+            int dataLength = header.getWireLength() + payload.getWireLength();
+            return 16 // IV
+                    + dataLength
+                    + pad(dataLength) // trailer: encrypted by AES
+                    + 1;    // pad length
+        }
+
+        @Override
+        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload)
+                throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
+            int dataLength = header.getWireLength() + payload.getWireLength();
+            int padLength = pad(dataLength);
+            ByteBuffer tmp = ByteBuffer.allocate(dataLength + padLength);
+            header.toWire(tmp);
+            payload.toWire(tmp);
+            // Pad bytes shall start at 1 and have a monotonically increasing value.
+            int i = 1;
+            while (tmp.hasRemaining())
+                tmp.put(UnsignedBytes.checkedCast(i++));
+
+            byte[] iv = session.newRandomSeed(16);
+            byte[] key = null;
+            buffer.put(iv);
+            AES_CBC_128 cipher = new AES_CBC_128();
+            cipher.init(Cipher.Mode.ENCRYPT, key, iv);
+            cipher.update(tmp, buffer);
+            buffer.put(UnsignedBytes.checkedCast(padLength));
+        }
+    },
+    /** [IPMI2] Section 13.30, table 13-21, page 161. */
+    xRC4_128(0x02) {
+        public int getConfidentialityHeaderLength() {
+            // Either a data offset of zero (4 bytes) and a 16 byte IV, or a nonzero data offset.
+            return 4 + 16;
+        }
+
+        public int getConfidentialityTrailerLength(int payloadLength) {
+            return 0;
+        }
+    },
+    /** [IPMI2] Section 13.30, table 13-21, page 161. */
+    xRC4_40(0x03) {
+        public int getConfidentialityHeaderLength() {
+            // Either a data offset of zero (4 bytes) and a 16 byte IV, or a nonzero data offset.
+            return 4 + 16;
+        }
+
+        public int getConfidentialityTrailerLength(int payloadLength) {
+            return 0;
+        }
+    },
     OEM_30(0x30),
     OEM_31(0x31),
     OEM_32(0x32),
@@ -66,8 +139,19 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm<Cipher> {
         return code;
     }
 
-    @Override
-    public Cipher newImplementation() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        throw new UnsupportedOperationException("Unsupported confidentiality algorithm " + this);
+    @Nonnegative
+    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+            throws NoSuchAlgorithmException {
+        throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
+    }
+
+    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
+        throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
+    }
+
+    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
+        throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }
 }

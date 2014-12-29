@@ -5,8 +5,10 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_MD5_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA1_96;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA256_128;
@@ -19,7 +21,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.None;
  *
  * @author shevek
  */
-public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm<MAC> {
+public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm {
 
     NONE(0x00, 0) {
         @Override
@@ -75,6 +77,13 @@ public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm<MAC> {
         return macLength;
     }
 
-    @Override
+    @Nonnull
     public abstract MAC newImplementation() throws NoSuchAlgorithmException;
+
+    @Nonnull
+    public byte[] sign(ByteBuffer integrityInput) throws NoSuchAlgorithmException {
+        MAC mac = newImplementation();
+        mac.update(integrityInput);
+        return mac.doFinal();
+    }
 }

@@ -4,11 +4,10 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.crypto.ShortBufferException;
 
 /**
  *
@@ -18,7 +17,8 @@ public interface GenericMAC {
 
     public void init(@Nonnull byte[] key) throws NoSuchAlgorithmException, InvalidKeyException;
 
-    public void update(@Nonnull byte[] data, @Nonnegative int off, @Nonnegative int len) throws IllegalStateException;
+    public void update(@Nonnull ByteBuffer input) throws IllegalStateException;
 
-    public void doFinal(@Nonnull byte[] out, @Nonnegative int off) throws ShortBufferException, IllegalStateException;
+    @Nonnull
+    public byte[] doFinal() throws IllegalStateException;
 }

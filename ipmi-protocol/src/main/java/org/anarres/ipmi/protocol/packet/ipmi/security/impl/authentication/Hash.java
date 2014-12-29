@@ -17,5 +17,6 @@ public interface Hash {
     @Nonnull
     public IpmiAuthenticationAlgorithm getName();
 
-    public void doFinal(@Nonnull byte[] out, @Nonnull int offset) throws ShortBufferException;
+    @Nonnull
+    public byte[] doFinal() throws ShortBufferException;
 }

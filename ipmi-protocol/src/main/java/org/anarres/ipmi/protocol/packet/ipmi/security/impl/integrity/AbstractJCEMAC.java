@@ -5,8 +5,8 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
-import javax.crypto.ShortBufferException;
 
 /**
  *
@@ -19,15 +19,11 @@ public abstract class AbstractJCEMAC extends AbstractJCEGenericMAC implements MA
     }
 
     @Override
-    public void doFinal(byte[] out, int offset) throws ShortBufferException {
+    public byte[] doFinal() {
+        byte[] out = super.doFinal();
         int requestedMacLength = getName().getMacLength();
-        int actualMacLength = getMac().getMacLength();
-        if (requestedMacLength != actualMacLength) {
-            byte[] tmp = new byte[requestedMacLength];
-            super.doFinal(tmp, 0);
-            System.arraycopy(tmp, 0, out, offset, requestedMacLength);
-        } else {
-            super.doFinal(out, offset);
-        }
+        if (requestedMacLength != out.length)
+            out = Arrays.copyOf(out, requestedMacLength);
+        return out;
     }
 }

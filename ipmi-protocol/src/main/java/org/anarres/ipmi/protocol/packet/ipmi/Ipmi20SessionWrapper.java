@@ -4,14 +4,21 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.base.Throwables;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.Chars;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.Pad;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 
 /**
  * [IPMI2] Section 13.6 pages 133-134, column 3.
@@ -22,39 +29,32 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
 
     private final IpmiHeaderAuthenticationType authenticationType = IpmiHeaderAuthenticationType.RMCPP;
-    private IpmiPayloadType payloadType;
-    private boolean encrypted;
-    private boolean authenticated;
+    // private IpmiPayloadType payloadType;
+    // private boolean encrypted;
+    // private boolean authenticated;
     private IanaEnterpriseNumber oemEnterpriseNumber;    // 3 byte oem iana; 1 byte zero
     private char oemPayloadId;
-    private int ipmiSessionId;
-    private int ipmiSessionSequenceNumber;
-    private byte[] confidentialityHeader;
-    private byte[] confidentialityTrailer;
-    private byte[] integrityData;
+    // private int ipmiSessionId;
+    // private int ipmiSessionSequenceNumber;
+    // private byte[] confidentialityHeader;
+    // private byte[] confidentialityTrailer;
+    // private byte[] integrityData;
 
-    @Override
-    public int getIpmiSessionId() {
-        return ipmiSessionId;
-    }
-
-    @Override
-    public int getIpmiSessionSequenceNumber() {
-        return ipmiSessionSequenceNumber;
-    }
-
+    // @Override public int getIpmiSessionId() { return ipmiSessionId; }
+    // @Override public int getIpmiSessionSequenceNumber() { return ipmiSessionSequenceNumber; }
     @Nonnegative
-    private int getPayloadLength(@Nonnull IpmiHeader header, @Nonnull IpmiPayload payload) {
-        return ((confidentialityHeader == null) ? 0 : confidentialityHeader.length)
-                + header.getWireLength()
-                + payload.getWireLength()
-                + ((confidentialityTrailer == null) ? 0 : confidentialityTrailer.length);
+    private int getPayloadLength(@Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload) {
+        try {
+            return session.getConfidentialityAlgorithm().getWireLength(session, header, payload);
+        } catch (NoSuchAlgorithmException e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Override
-    public int getWireLength(IpmiHeader header, IpmiPayload payload) {
-        boolean oem = IpmiPayloadType.OEM_EXPLICIT.equals(payloadType);
-        int payloadLength = getPayloadLength(header, payload);
+    public int getWireLength(IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+        boolean oem = IpmiPayloadType.OEM_EXPLICIT.equals(payload.getPayloadType());
+        int payloadLength = getPayloadLength(session, header, payload);
         return 1 // authenticationType
                 + 1 // payloadType
                 + (oem ? 4 : 0) // oemEnterpriseNumber
@@ -62,44 +62,55 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
                 + 4 // ipmiSessionId
                 + 4 // ipmiSessionSequenceNumber
                 + 2 // payloadLength
-                + getPayloadLength(header, payload)
+                + payloadLength
                 + Pad.PAD(payloadLength).length
                 + 1 // pad length
                 + 1 // next header
-                + integrityData.length;
+                + session.getIntegrityAlgorithm().getMacLength();
     }
 
     @Override
-    public void toWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
-        // Page 133
-        buffer.put(authenticationType.getCode());
-        byte payloadTypeByte = payloadType.getCode();
-        if (encrypted)
-            payloadTypeByte |= 0x80;
-        if (authenticated)
-            payloadTypeByte |= 0x40;
-        buffer.put(payloadTypeByte);
-        if (IpmiPayloadType.OEM_EXPLICIT.equals(payloadType)) {
-            buffer.putInt(oemEnterpriseNumber.getNumber() << Byte.SIZE);
-            buffer.putChar(oemPayloadId);
+    public void toWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload) {
+        try {
+            boolean encrypted = !IpmiConfidentialityAlgorithm.NONE.equals(session.getConfidentialityAlgorithm());
+            boolean authenticated = !IpmiAuthenticationAlgorithm.RAKP_NONE.equals(session.getAuthenticationAlgorithm());
+
+            // Page 133
+            buffer.put(authenticationType.getCode());
+            byte payloadTypeByte = payload.getPayloadType().getCode();
+            if (encrypted)
+                payloadTypeByte |= 0x80;
+            if (authenticated)
+                payloadTypeByte |= 0x40;
+            buffer.put(payloadTypeByte);
+            if (IpmiPayloadType.OEM_EXPLICIT.equals(payload.getPayloadType())) {
+                buffer.putInt(oemEnterpriseNumber.getNumber() << Byte.SIZE);
+                buffer.putChar(oemPayloadId);
+            }
+            buffer.putInt(session.getId());
+            int ipmiSessionSequenceNumber = encrypted ? session.nextEncryptedSequenceNumber() : session.nextUnencryptedSequenceNumber();
+            buffer.putInt(ipmiSessionSequenceNumber);
+
+            ByteBuffer integrityInput = buffer.duplicate();
+
+            // Page 134
+            // 2 byte payload length
+            int payloadLength = getPayloadLength(session, header, payload);
+            buffer.putChar(Chars.checkedCast(payloadLength));
+            session.getConfidentialityAlgorithm().toWire(buffer, session, header, payload);
+
+            // Integrity padding.
+            byte[] pad = Pad.PAD(payloadLength);
+            buffer.put(pad);
+            buffer.put((byte) pad.length);
+            buffer.put((byte) 0x07); // Reserved, [IPMI2] Page 134, next-header field.
+
+            integrityInput.limit(buffer.position());
+            byte[] integrityData = session.getIntegrityAlgorithm().sign(integrityInput);
+            buffer.put(integrityData);
+        } catch (GeneralSecurityException e) {
+            throw Throwables.propagate(e);
         }
-        buffer.putInt(ipmiSessionId);
-        buffer.putInt(ipmiSessionSequenceNumber);
-
-        // Page 134
-        // 2 byte payload length
-        int payloadLength = getPayloadLength(header, payload);
-        buffer.putChar(Chars.checkedCast(payloadLength));
-        buffer.put(confidentialityHeader);
-
-        header.toWire(buffer);
-        payload.toWire(buffer);
-
-        byte[] pad = Pad.PAD(payloadLength);
-        buffer.put(pad);
-        buffer.put((byte) pad.length);
-        buffer.put((byte) 0x07); // Reserved, [IPMI2] Page 134
-        buffer.put(integrityData);
     }
 
     /*
@@ -114,7 +125,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
      }
      */
     @Override
-    public void fromWire(ByteBuffer buffer, IpmiHeader header, IpmiPayload payload) {
+    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager session, IpmiHeader header, IpmiPayload payload) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

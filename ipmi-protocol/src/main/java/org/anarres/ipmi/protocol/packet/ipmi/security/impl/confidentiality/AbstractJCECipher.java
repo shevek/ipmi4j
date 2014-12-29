@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +52,7 @@ public abstract class AbstractJCECipher implements Cipher {
     }
 
     @Override
-    public int update(byte[] input, int inputOffset, int inputLen, byte[] output, int outputOffset) throws ShortBufferException {
-        return cipher.update(input, inputOffset, inputLen, output, outputOffset);
+    public int update(ByteBuffer input, ByteBuffer output) throws ShortBufferException {
+        return cipher.update(input, output);
     }
 }

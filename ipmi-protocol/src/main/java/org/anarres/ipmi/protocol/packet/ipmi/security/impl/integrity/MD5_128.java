@@ -4,10 +4,11 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.ShortBufferException;
+import java.util.Arrays;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
@@ -35,14 +36,16 @@ public class MD5_128 implements MAC {
     }
 
     @Override
-    public void update(byte[] data, int off, int len) throws IllegalStateException {
-        digest.update(data, off, len);
+    public void update(ByteBuffer input) throws IllegalStateException {
+        digest.update(input);
     }
 
     @Override
-    public void doFinal(byte[] out, int off) throws ShortBufferException, IllegalStateException {
-        byte[] tmp = digest.digest(key);
-        System.arraycopy(tmp, 0, out, off, Math.min(tmp.length, getName().getMacLength()));
-        this.key = null;
+    public byte[] doFinal() throws IllegalStateException {
+        byte[] out = digest.digest(key);
+        int requestedMacLength = getName().getMacLength();
+        if (requestedMacLength != out.length)
+            out = Arrays.copyOf(out, requestedMacLength);
+        return out;
     }
 }

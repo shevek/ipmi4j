@@ -6,7 +6,6 @@ package org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication;
 
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnull;
-import javax.crypto.ShortBufferException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.AbstractJCEGenericMAC;
 
 /**
@@ -34,11 +33,11 @@ public abstract class AbstractJCEHash extends AbstractJCEGenericMAC implements H
      }
      */
     @Override
-    public void doFinal(byte[] out, int offset) throws ShortBufferException {
+    public byte[] doFinal() {
+        byte[] out = super.doFinal();
         int requestedHashLength = getName().getHashLength();
-        int actualHashLength = getMac().getMacLength();
-        if (requestedHashLength != actualHashLength)
-            throw new IllegalStateException("Unexpected odd hash length in " + this + ": " + requestedHashLength + " != " + actualHashLength);
-        super.doFinal(out, offset);
+        if (requestedHashLength != out.length)
+            throw new IllegalStateException("Unexpected odd hash length in " + this + ": " + requestedHashLength + " != " + out.length);
+        return out;
     }
 }
