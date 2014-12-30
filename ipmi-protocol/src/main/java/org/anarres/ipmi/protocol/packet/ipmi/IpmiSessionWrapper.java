@@ -19,11 +19,10 @@ public interface IpmiSessionWrapper {
 
     // public int getIpmiSessionId(); 
     // public int getIpmiSessionSequenceNumber();
-
     @Nonnegative
-    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
+    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiPayload payload);
 
-    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
+    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiPayload payload);
 
-    public IpmiSession fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSessionManager sessionManager, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload);
+    public IpmiSession fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSessionManager sessionManager, @Nonnull IpmiPayload payload);
 }

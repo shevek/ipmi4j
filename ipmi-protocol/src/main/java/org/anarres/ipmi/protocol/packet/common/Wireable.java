@@ -21,6 +21,10 @@ public interface Wireable {
      * If {@link #toWire(java.nio.ByteBuffer)} writes fewer bytes than the
      * computed length, the base class will assume error in the serializer
      * and throw an exception.
+     * 
+     * It is generally not valid to call getWireLength() on a Wireable which
+     * does not contain complete data, as the length of data-dependent fields
+     * cannot be computed.
      */
     @Nonnegative
     public int getWireLength();

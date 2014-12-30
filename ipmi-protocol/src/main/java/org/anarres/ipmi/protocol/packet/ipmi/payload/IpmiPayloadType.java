@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.CheckForSigned;
+import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -39,7 +40,7 @@ public enum IpmiPayloadType implements Code.Wrapper {
     @CheckForSigned
     private final byte minorFormat;
 
-    private IpmiPayloadType(int code, int majorFormat, int minorFormat) {
+    private IpmiPayloadType(@Nonnegative int code, int majorFormat, int minorFormat) {
         this.code = UnsignedBytes.checkedCast(code);
         this.majorFormat = UnsignedBytes.checkedCast(majorFormat);
         this.minorFormat = UnsignedBytes.checkedCast(minorFormat);

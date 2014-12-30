@@ -4,11 +4,61 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
-import org.anarres.ipmi.protocol.packet.common.Wireable;
+import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
+import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**
+ * [IPMI2] Section 13.6, page 132, table 13-8.
+ *
+ * Hands the entire show off to the {@link IpmiSessionWrapper} for encoding.
  *
  * @author shevek
  */
-public interface IpmiSessionData extends Wireable {
+public abstract class IpmiSessionData extends AbstractWireable implements RmcpData {
+
+    private IpmiSessionWrapper ipmiSessionWrapper;
+    private IpmiSession ipmiSession;
+    private Integer ipmiSessionSequenceNumber;
+    private IpmiPayload ipmiPayload;
+
+    @Nonnull
+    public IpmiSession getIpmiSession() {
+        return ipmiSession;
+    }
+
+    @Nonnull
+    public IpmiSessionWrapper getIpmiSessionWrapper() {
+        return ipmiSessionWrapper;
+    }
+
+    @Nonnull
+    public IpmiPayload getIpmiPayload() {
+        return ipmiPayload;
+    }
+
+    @Override
+    public int getWireLength() {
+        return getIpmiSessionWrapper().getWireLength(getIpmiSession(), getIpmiPayload());
+    }
+
+    @Override
+    protected void toWireUnchecked(ByteBuffer buffer) {
+        getIpmiSessionWrapper().toWire(buffer, getIpmiSession(), getIpmiPayload());
+    }
+
+    @Override
+    protected void fromWireUnchecked(ByteBuffer buffer) {
+        byte authenticationTypeByte = buffer.get(0);
+        IpmiHeaderAuthenticationType authenticationType = Code.fromByte(IpmiHeaderAuthenticationType.class, authenticationTypeByte);
+        if (authenticationType == IpmiHeaderAuthenticationType.RMCPP)
+            ipmiSessionWrapper = new Ipmi20SessionWrapper();
+        else
+            ipmiSessionWrapper = new Ipmi15SessionWrapper();
+        getIpmiSessionWrapper().fromWire(buffer, null, getIpmiPayload());
+    }
 }

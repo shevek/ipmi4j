@@ -13,7 +13,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiHeader;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.AES_CBC_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
@@ -28,19 +27,17 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
 
     NONE(0x00) {
         @Override
-        public int getWireLength(IpmiSession session, IpmiHeader header, IpmiPayload payload) {
-            return header.getWireLength() + payload.getWireLength();
+        public int getWireLength(IpmiSession session, IpmiPayload payload) {
+            return payload.getWireLength();
         }
 
         @Override
-        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload) {
-            header.toWire(buffer);
+        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) {
             payload.toWire(buffer);
         }
 
         @Override
-        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload) {
-            header.fromWire(buffer);
+        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) {
             payload.fromWire(buffer);
         }
     },
@@ -54,8 +51,8 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
         }
 
         @Override
-        public int getWireLength(IpmiSession session, IpmiHeader header, IpmiPayload payload) {
-            int dataLength = header.getWireLength() + payload.getWireLength();
+        public int getWireLength(IpmiSession session, IpmiPayload payload) {
+            int dataLength = payload.getWireLength();
             return 16 // IV
                     + dataLength
                     + pad(dataLength) // trailer: encrypted by AES
@@ -63,12 +60,11 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
         }
 
         @Override
-        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiHeader header, IpmiPayload payload)
+        public void toWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload)
                 throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
-            int dataLength = header.getWireLength() + payload.getWireLength();
+            int dataLength = payload.getWireLength();
             int padLength = pad(dataLength);
             ByteBuffer tmp = ByteBuffer.allocate(dataLength + padLength);
-            header.toWire(tmp);
             payload.toWire(tmp);
             // Pad bytes shall start at 1 and have a monotonically increasing value.
             int i = 1;
@@ -140,17 +136,17 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
     }
 
     @Nonnegative
-    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiPayload payload)
             throws NoSuchAlgorithmException {
         throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }
 
-    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+    public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiPayload payload)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
         throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }
 
-    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiHeader header, @Nonnull IpmiPayload payload)
+    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiPayload payload)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
         throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }
