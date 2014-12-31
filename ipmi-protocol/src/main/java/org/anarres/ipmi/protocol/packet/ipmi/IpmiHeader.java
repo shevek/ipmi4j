@@ -70,13 +70,13 @@ public class IpmiHeader extends AbstractWireable {
         byte tmp;
         targetAddress = buffer.get();
         tmp = buffer.get();
-        IpmiNetworkFunction networkFunction = Code.fromByte(IpmiNetworkFunction.class, (byte) (tmp >>> 2));
-        targetLun = new IpmiLun(tmp & IpmiLun.MASK);
+        IpmiNetworkFunction networkFunction = Code.fromInt(IpmiNetworkFunction.class, tmp >>> 2);
+        targetLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         buffer.get();   // TOOD: Header checksum
         sourceAddress = buffer.get();
         tmp = buffer.get();
         sequenceNumber = new IpmiSequenceNumber(tmp >>> 2);
-        sourceLun = new IpmiLun(tmp & IpmiLun.MASK);
+        sourceLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         command = IpmiCommand.fromByte(networkFunction, buffer.get());
     }
 }

@@ -19,7 +19,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
  */
 public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
 
-    private IpmiHeaderAuthenticationType authenticationType = IpmiHeaderAuthenticationType.NONE;
+    private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.NONE;
     private int ipmiSessionSequenceNumber;
     private int ipmiSessionId;
     private byte[] ipmiMessageAuthenticationCode;   // 16 bytes
@@ -39,7 +39,7 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
         return 1 // authenticationType
                 + 4 // ipmiSessionSequenceNumber
                 + 4 // ipmiSessionId
-                + (authenticationType != IpmiHeaderAuthenticationType.NONE ? 16 : 0)
+                + (authenticationType != IpmiSessionAuthenticationType.NONE ? 16 : 0)
                 + 1 // payloadLength
                 + payload.getWireLength();
     }
@@ -50,7 +50,7 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
         buffer.put(authenticationType.getCode());
         buffer.putInt(ipmiSessionSequenceNumber);
         buffer.putInt(ipmiSessionId);
-        if (authenticationType != IpmiHeaderAuthenticationType.NONE)
+        if (authenticationType != IpmiSessionAuthenticationType.NONE)
             buffer.put(ipmiMessageAuthenticationCode);
         // Page 134
         int payloadLength = payload.getWireLength();
@@ -61,11 +61,11 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
 
     @Override
     public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager, IpmiPayload payload) {
-        authenticationType = Code.fromBuffer(IpmiHeaderAuthenticationType.class, buffer);
+        authenticationType = Code.fromBuffer(IpmiSessionAuthenticationType.class, buffer);
         ipmiSessionSequenceNumber = buffer.getInt();
         ipmiSessionId = buffer.getInt();
         IpmiSession session = sessionManager.getSession(ipmiSessionId);
-        if (authenticationType != IpmiHeaderAuthenticationType.NONE)
+        if (authenticationType != IpmiSessionAuthenticationType.NONE)
             ipmiMessageAuthenticationCode = AbstractWireable.readBytes(buffer, 16);
         else
             ipmiMessageAuthenticationCode = null;

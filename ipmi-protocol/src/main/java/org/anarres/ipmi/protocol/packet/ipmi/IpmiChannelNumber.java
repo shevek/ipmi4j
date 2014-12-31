@@ -9,29 +9,21 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
- * A LUN, between 0 and 3.
+ * [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public enum IpmiLun implements Code.Wrapper {
+public enum IpmiChannelNumber implements Code.Wrapper {
 
-    L0(0), L1(1), L2(2), L3(3);
-    public static final int MASK = 0x03;
+    C0(0x0), C1(0x1), C2(0x2), C3(0x3), C4(0x4), C5(0x5), C6(0x6), C7(0x7), C8(0x8), C9(0x9), CA(0xA), CB(0xB), CURRENT(0xE), CF(0xF);
     private final byte code;
 
-    /**
-     * @throws IllegalArgumentException if value is not between 0 and 3, inclusive.
-     */
-    private IpmiLun(@Nonnegative int value) {
-        this.code = Bits.validate(MASK, value);
+    private IpmiChannelNumber(@Nonnegative int code) {
+        this.code = Bits.validate(0xF, code);
     }
 
     @Override
     public byte getCode() {
         return code;
-    }
-
-    public int getValue() {
-        return getCode() & MASK;
     }
 }

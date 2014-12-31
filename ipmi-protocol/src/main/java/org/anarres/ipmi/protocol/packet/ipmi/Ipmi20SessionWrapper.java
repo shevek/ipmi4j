@@ -28,7 +28,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
  */
 public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
 
-    private final IpmiHeaderAuthenticationType authenticationType = IpmiHeaderAuthenticationType.RMCPP;
+    private final IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.RMCPP;
     // private IpmiPayloadType payloadType;
     // private boolean encrypted;
     // private boolean authenticated;

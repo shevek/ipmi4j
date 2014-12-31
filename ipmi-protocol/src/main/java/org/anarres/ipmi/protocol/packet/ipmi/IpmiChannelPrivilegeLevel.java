@@ -4,12 +4,29 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.Nonnegative;
+import org.anarres.ipmi.protocol.packet.common.Code;
+
 /**
+ * Referenced in [IPMI2] Appendix G, pages 591-596.
+ * Codes from [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public enum IpmiChannelPrivilegeLevel {
+public enum IpmiChannelPrivilegeLevel implements Code.Wrapper {
 
-    Unprotected,
-    Callback, User, Operator, Administrator;
+    Unprotected(0),
+    Callback(1),
+    User(2), Operator(3), Administrator(4), OEM(5);
+    private final byte code;
+
+    private IpmiChannelPrivilegeLevel(@Nonnegative int code) {
+        this.code = UnsignedBytes.checkedCast(code);
+    }
+
+    @Override
+    public byte getCode() {
+        return code;
+    }
 }

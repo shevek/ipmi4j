@@ -9,6 +9,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.message.GetChannelAuthenticationCapabilitiesRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.message.IpmiMessage;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
 
 /**
@@ -57,7 +59,12 @@ public enum IpmiCommand implements Code.Wrapper {
     GetSystemGUID("Get System GUID", IpmiNetworkFunction.App, 0x37, Unprotected),
     SetSystemInfoParameters("Set System Info Parameters", IpmiNetworkFunction.App, 0x58, Administrator),
     GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59, User),
-    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected),
+    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected) {
+        @Override
+        public IpmiMessage newRequestMessage() {
+            return new GetChannelAuthenticationCapabilitiesRequest();
+        }
+    },
     GetSessionChallenge("Get Session Challenge", IpmiNetworkFunction.App, 0x39, Unprotected),
     ActivateSession("Activate Session", IpmiNetworkFunction.App, 0x3A, Unprotected),
     SetSessionPrivilegeLevel("Set Session Privilege Level", IpmiNetworkFunction.App, 0x3B, User),
@@ -283,5 +290,15 @@ public enum IpmiCommand implements Code.Wrapper {
                 if (value.getCode() == code)
                     return value;
         throw new IllegalArgumentException("Unknown IpmiCommand code for netfn " + networkFunction + " 0x" + Integer.toHexString(code));
+    }
+
+    @Nonnull
+    public IpmiMessage newRequestMessage() {
+        throw new UnsupportedOperationException("Unsupported request " + this);
+    }
+
+    @Nonnull
+    public IpmiMessage newResponseMessage() {
+        throw new UnsupportedOperationException("Unsupported response " + this);
     }
 }

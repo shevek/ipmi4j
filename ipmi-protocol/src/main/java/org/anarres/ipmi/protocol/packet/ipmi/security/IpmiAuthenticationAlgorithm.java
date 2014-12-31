@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -24,25 +25,25 @@ public enum IpmiAuthenticationAlgorithm implements IpmiAlgorithm {
 
     RAKP_NONE(0x00, 0, IpmiIntegrityAlgorithm.NONE) {
         @Override
-        public Hash newImplementation() throws NoSuchAlgorithmException {
+        protected Hash newImplementation() throws NoSuchAlgorithmException {
             return new None();
         }
     },
     RAKP_HMAC_SHA1(0x01, 20, IpmiIntegrityAlgorithm.HMAC_SHA1_96) {
         @Override
-        public Hash newImplementation() throws NoSuchAlgorithmException {
+        protected Hash newImplementation() throws NoSuchAlgorithmException {
             return new RAKP_HMAC_SHA1();
         }
     },
     RAKP_HMAC_MD5(0x02, 16, IpmiIntegrityAlgorithm.HMAC_MD5_128) {
         @Override
-        public Hash newImplementation() throws NoSuchAlgorithmException {
+        protected Hash newImplementation() throws NoSuchAlgorithmException {
             return new RAKP_HMAC_MD5();
         }
     },
     RAKP_HMAC_SHA256(0x03, 32, IpmiIntegrityAlgorithm.HMAC_SHA256_128) {
         @Override
-        public Hash newImplementation() throws NoSuchAlgorithmException {
+        protected Hash newImplementation() throws NoSuchAlgorithmException {
             return new RAKP_HMAC_SHA256();
         }
     };
@@ -79,5 +80,12 @@ public enum IpmiAuthenticationAlgorithm implements IpmiAlgorithm {
     }
 
     @Nonnull
-    public abstract Hash newImplementation() throws NoSuchAlgorithmException;
+    protected abstract Hash newImplementation() throws NoSuchAlgorithmException;
+
+    @Nonnull
+    public byte[] hash(@Nonnull ByteBuffer input) throws NoSuchAlgorithmException {
+        Hash hash = newImplementation();
+        hash.update(input);
+        return hash.doFinal();
+    }
 }

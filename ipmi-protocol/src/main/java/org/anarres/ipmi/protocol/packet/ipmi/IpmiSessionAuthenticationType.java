@@ -13,7 +13,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum IpmiHeaderAuthenticationType implements Code.Wrapper {
+public enum IpmiSessionAuthenticationType implements Code.Wrapper {
 
     /** This means IPMI v1.5 */
     NONE(0),
@@ -29,7 +29,7 @@ public enum IpmiHeaderAuthenticationType implements Code.Wrapper {
     RMCPP(6);
     private final byte code;
 
-    private IpmiHeaderAuthenticationType(int code) {
+    private IpmiSessionAuthenticationType(int code) {
         this.code = UnsignedBytes.checkedCast(code);
     }
 

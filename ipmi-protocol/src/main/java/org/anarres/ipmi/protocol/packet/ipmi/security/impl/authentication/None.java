@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication;
 
+import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 
 /**
@@ -15,6 +16,10 @@ public class None implements Hash {
     @Override
     public IpmiAuthenticationAlgorithm getName() {
         return IpmiAuthenticationAlgorithm.RAKP_NONE;
+    }
+
+    @Override
+    public void update(ByteBuffer input) {
     }
 
     @Override

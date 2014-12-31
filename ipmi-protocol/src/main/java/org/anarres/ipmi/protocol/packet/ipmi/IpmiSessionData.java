@@ -54,8 +54,8 @@ public abstract class IpmiSessionData extends AbstractWireable implements RmcpDa
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
         byte authenticationTypeByte = buffer.get(0);
-        IpmiHeaderAuthenticationType authenticationType = Code.fromByte(IpmiHeaderAuthenticationType.class, authenticationTypeByte);
-        if (authenticationType == IpmiHeaderAuthenticationType.RMCPP)
+        IpmiSessionAuthenticationType authenticationType = Code.fromByte(IpmiSessionAuthenticationType.class, authenticationTypeByte);
+        if (authenticationType == IpmiSessionAuthenticationType.RMCPP)
             ipmiSessionWrapper = new Ipmi20SessionWrapper();
         else
             ipmiSessionWrapper = new Ipmi15SessionWrapper();

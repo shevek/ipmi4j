@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication;
 
+import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import javax.crypto.ShortBufferException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
@@ -17,6 +18,8 @@ public interface Hash {
     @Nonnull
     public IpmiAuthenticationAlgorithm getName();
 
+    public void update(@Nonnull ByteBuffer input);
+
     @Nonnull
-    public byte[] doFinal() throws ShortBufferException;
+    public byte[] doFinal();
 }

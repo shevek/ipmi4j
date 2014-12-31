@@ -4,8 +4,13 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.session;
 
+import com.google.common.primitives.UnsignedBytes;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
@@ -77,5 +82,14 @@ public class IpmiSession {
 
     public void setIntegrityAlgorithm(IpmiIntegrityAlgorithm integrityAlgorithm) {
         this.integrityAlgorithm = integrityAlgorithm;
+    }
+
+    /** [IPMI2] Section 13.32, page 165. */
+    @Nonnull
+    public byte[] getAdditionalKey(@Nonnegative int idx) throws NoSuchAlgorithmException {
+        IpmiAuthenticationAlgorithm algorithm = getAuthenticationAlgorithm();
+        byte[] raw = new byte[algorithm.getHashLength()];
+        Arrays.fill(raw, UnsignedBytes.checkedCast(idx));
+        return algorithm.hash(ByteBuffer.wrap(raw));
     }
 }
