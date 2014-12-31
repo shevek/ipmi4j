@@ -13,6 +13,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.AES_CBC_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality.Cipher;
@@ -72,12 +73,33 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
                 tmp.put(UnsignedBytes.checkedCast(i++));
 
             byte[] iv = session.newRandomSeed(16);
-            byte[] key = null;
+            byte[] key = session.getAdditionalKey(2);
             buffer.put(iv);
             AES_CBC_128 cipher = new AES_CBC_128();
             cipher.init(Cipher.Mode.ENCRYPT, key, iv);
             cipher.update(tmp, buffer);
             buffer.put(UnsignedBytes.checkedCast(padLength));
+        }
+
+        @Override
+        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
+            ByteBuffer tmp = ByteBuffer.allocate(buffer.remaining() * 2);
+
+            byte[] iv = AbstractWireable.readBytes(buffer, 16);
+            byte[] key = session.getAdditionalKey(2);
+            AES_CBC_128 cipher = new AES_CBC_128();
+            cipher.init(Cipher.Mode.DECRYPT, key, iv);
+            cipher.update(tmp, buffer); // TODO: Reads too much from buffer.
+
+            int padLength = UnsignedBytes.toInt(buffer.get());
+
+            payload.fromWire(tmp);
+            int i = 1;
+            while (tmp.hasRemaining())
+                if (UnsignedBytes.toInt(tmp.get()) != i++)
+                    throw new IllegalArgumentException("Bad pad byte " + i);
+            if (i != padLength) // TODO: Debug possibly -1
+                throw new IllegalArgumentException("Bad pad length " + i);
         }
     },
     /** [IPMI2] Section 13.30, table 13-21, page 161. */

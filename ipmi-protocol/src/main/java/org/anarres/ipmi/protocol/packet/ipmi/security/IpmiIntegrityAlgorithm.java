@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.security;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -15,6 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA256
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.MAC;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.MD5_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.None;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 13.28.4, table 13-18, page 159.
@@ -25,32 +27,39 @@ public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm {
 
     NONE(0x00, 0) {
         @Override
-        public MAC newImplementation() {
+        protected MAC newImplementation(IpmiSession session) {
             return new None();
         }
     },
     HMAC_SHA1_96(0x01, 12) {
         @Override
-        public MAC newImplementation() throws NoSuchAlgorithmException {
-            return new HMAC_SHA1_96();
+        protected MAC newImplementation(IpmiSession session) throws NoSuchAlgorithmException, InvalidKeyException {
+            MAC mac = new HMAC_SHA1_96();
+            mac.init(session.getAdditionalKey(1));
+            return mac;
         }
     },
     HMAC_MD5_128(0x02, 16) {
         @Override
-        public MAC newImplementation() throws NoSuchAlgorithmException {
-            return new HMAC_MD5_128();
+        protected MAC newImplementation(IpmiSession session) throws NoSuchAlgorithmException, InvalidKeyException {
+            MAC mac = new HMAC_MD5_128();
+            mac.init(session.getAdditionalKey(1));
+            return mac;
         }
     },
     MD5_128(0x03, 16) {
         @Override
-        public MAC newImplementation() throws NoSuchAlgorithmException {
+        protected MAC newImplementation(IpmiSession session) throws NoSuchAlgorithmException {
+            // TODO: Key this.
             return new MD5_128();
         }
     },
     HMAC_SHA256_128(0x04, 16) {
         @Override
-        public MAC newImplementation() throws NoSuchAlgorithmException {
-            return new HMAC_SHA256_128();
+        protected MAC newImplementation(IpmiSession session) throws NoSuchAlgorithmException, InvalidKeyException {
+            MAC mac = new HMAC_SHA256_128();
+            mac.init(session.getAdditionalKey(1));
+            return mac;
         }
     };
     public static final byte PAYLOAD_TYPE = 1;
@@ -78,11 +87,11 @@ public enum IpmiIntegrityAlgorithm implements IpmiAlgorithm {
     }
 
     @Nonnull
-    public abstract MAC newImplementation() throws NoSuchAlgorithmException;
+    protected abstract MAC newImplementation(@Nonnull IpmiSession session) throws NoSuchAlgorithmException, InvalidKeyException;
 
     @Nonnull
-    public byte[] sign(ByteBuffer integrityInput) throws NoSuchAlgorithmException {
-        MAC mac = newImplementation();
+    public byte[] sign(IpmiSession session, ByteBuffer integrityInput) throws NoSuchAlgorithmException, InvalidKeyException {
+        MAC mac = newImplementation(session);
         mac.update(integrityInput);
         return mac.doFinal();
     }

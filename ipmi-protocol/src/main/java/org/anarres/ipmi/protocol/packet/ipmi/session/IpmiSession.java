@@ -88,7 +88,7 @@ public class IpmiSession {
     @Nonnull
     public byte[] getAdditionalKey(@Nonnegative int idx) throws NoSuchAlgorithmException {
         IpmiAuthenticationAlgorithm algorithm = getAuthenticationAlgorithm();
-        byte[] raw = new byte[algorithm.getHashLength()];
+        byte[] raw = new byte[algorithm.getHashLength()];   // Should this be 20, or the hash length?
         Arrays.fill(raw, UnsignedBytes.checkedCast(idx));
         return algorithm.hash(ByteBuffer.wrap(raw));
     }

@@ -106,7 +106,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
             buffer.put((byte) 0x07); // Reserved, [IPMI2] Page 134, next-header field.
 
             integrityInput.limit(buffer.position());
-            byte[] integrityData = session.getIntegrityAlgorithm().sign(integrityInput);
+            byte[] integrityData = session.getIntegrityAlgorithm().sign(session, integrityInput);
             buffer.put(integrityData);
         } catch (GeneralSecurityException e) {
             throw Throwables.propagate(e);
