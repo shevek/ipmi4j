@@ -20,6 +20,7 @@ project(':ipmi-protocol') {
 		compile 'com.google.guava:guava:18.0'
 
 		testCompile 'commons-net:commons-net:3.3'
+		testCompile 'io.netty:netty-all:4.0.23.Final'
 	}
 }
 

@@ -18,7 +18,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommand;
 public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNonSessionMessage {
 
     public boolean getExtendedData;
-    public IpmiChannelNumber channelNumber;
+    public IpmiChannelNumber channelNumber = IpmiChannelNumber.CURRENT;
     public IpmiChannelPrivilegeLevel channelPrivilegeLevel;
 
     @Override
@@ -27,12 +27,12 @@ public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNon
     }
 
     @Override
-    public int getWireLength() {
+    public int getDataWireLength() {
         return 2;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireData(ByteBuffer buffer) {
         byte b = channelNumber.getCode();
         // If we fail with getExtendedData, we might have to try again without.
         if (getExtendedData)
@@ -42,7 +42,7 @@ public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNon
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireData(ByteBuffer buffer) {
         byte b = buffer.get();
         channelNumber = Code.fromByte(IpmiChannelNumber.class, (byte) (b & 0xF));
         channelPrivilegeLevel = Code.fromByte(IpmiChannelPrivilegeLevel.class, buffer.get());

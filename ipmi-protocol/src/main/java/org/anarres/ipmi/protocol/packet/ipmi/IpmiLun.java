@@ -11,6 +11,8 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 /**
  * A LUN, between 0 and 3.
  *
+ * [IPMI2] Section 13.8, page 137.
+ *
  * @author shevek
  */
 public enum IpmiLun implements Code.Wrapper {

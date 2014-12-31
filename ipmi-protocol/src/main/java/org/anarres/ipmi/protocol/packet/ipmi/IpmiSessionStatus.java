@@ -8,11 +8,14 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import static org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType.*;
 
 /**
+ * [IPMI2] Section 13.24, table 13-15, page 154.
  *
+ * @see AsfRsspSessionStatus
  * @author shevek
  */
 public enum IpmiSessionStatus implements Code.Wrapper {

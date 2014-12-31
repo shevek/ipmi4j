@@ -4,11 +4,11 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.message;
 
-import org.anarres.ipmi.protocol.packet.common.Wireable;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
  *
  * @author shevek
  */
-public interface IpmiMessage extends Wireable {
+public interface IpmiMessage extends IpmiPayload {
 }

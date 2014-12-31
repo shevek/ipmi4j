@@ -45,9 +45,8 @@ public class RmcpPacket extends AbstractPacket {
     protected void toWireUnchecked(ByteBuffer buffer) {
         getHeader().toWire(buffer);
         RmcpData data = getData();
-        if (data == null)
-            return;
-        data.toWire(buffer);
+        // if (data == null) return;
+        getData().toWire(buffer);
         if (isPaddingRequired(getNativeWireLength()))
             buffer.put((byte) 0);
     }

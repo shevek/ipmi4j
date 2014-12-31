@@ -8,14 +8,15 @@ import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionStatus;
 import static org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType.*;
 
 /**
  * RSSP and RAKP Status Codes.
  * 
  * [ASF] Section 3.2.3.5.1 page 32.
- * [IPMI2] Section 13.24 page 154. TODO: Needs checking. TODO: Need IpmiMessageType codes in here too.
  *
+ * @see IpmiSessionStatus
  * @author shevek
  */
 public enum AsfRsspSessionStatus implements Code.Wrapper {

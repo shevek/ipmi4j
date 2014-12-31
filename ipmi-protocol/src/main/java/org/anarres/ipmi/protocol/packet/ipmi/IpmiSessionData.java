@@ -19,7 +19,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  *
  * @author shevek
  */
-public abstract class IpmiSessionData extends AbstractWireable implements RmcpData {
+public class IpmiSessionData extends AbstractWireable implements RmcpData {
 
     private IpmiSessionWrapper ipmiSessionWrapper;
     private IpmiSession ipmiSession;
@@ -36,9 +36,17 @@ public abstract class IpmiSessionData extends AbstractWireable implements RmcpDa
         return ipmiSessionWrapper;
     }
 
+    public void setIpmiSessionWrapper(IpmiSessionWrapper ipmiSessionWrapper) {
+        this.ipmiSessionWrapper = ipmiSessionWrapper;
+    }
+
     @Nonnull
     public IpmiPayload getIpmiPayload() {
         return ipmiPayload;
+    }
+
+    public void setIpmiPayload(@Nonnull IpmiPayload ipmiPayload) {
+        this.ipmiPayload = ipmiPayload;
     }
 
     @Override

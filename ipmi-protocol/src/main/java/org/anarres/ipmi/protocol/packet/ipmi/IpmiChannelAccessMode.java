@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 /**
+ * [IPMI2] Section 6.6, table 6-4, page 50.
  *
  * @author shevek
  */

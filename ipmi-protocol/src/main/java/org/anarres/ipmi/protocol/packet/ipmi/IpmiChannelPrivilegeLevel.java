@@ -9,6 +9,7 @@ import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
+ * [IPMI2] Section 6.8, table 6-5, page 51.
  * Referenced in [IPMI2] Appendix G, pages 591-596.
  * Codes from [IPMI2] Section 22.13, table 22-15, page 283.
  *

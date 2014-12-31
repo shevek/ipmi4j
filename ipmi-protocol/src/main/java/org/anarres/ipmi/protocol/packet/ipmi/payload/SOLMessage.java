@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
  *
  * @author shevek
  */
-public class SOLIpmiPayload extends AbstractIpmiPayload {
+public class SOLMessage extends AbstractIpmiPayload {
 
     @Override
     public IpmiPayloadType getPayloadType() {

@@ -69,6 +69,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
                 + session.getIntegrityAlgorithm().getMacLength();
     }
 
+    /** Sequence number handling: [IPMI2] Section 6.12.13, page 59. */
     @Override
     public void toWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) {
         try {
