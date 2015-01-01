@@ -51,7 +51,7 @@ public class IpmiMessageTest {
         GetChannelAuthenticationCapabilitiesRequest request = new GetChannelAuthenticationCapabilitiesRequest();
         request.withSource(0x81, IpmiLun.L0);
         request.withTarget(0x20, IpmiLun.L0);
-        request.getExtendedData = true;
+        request.extendedCapabilities = true;
         request.channelPrivilegeLevel = IpmiChannelPrivilegeLevel.Administrator;
 
         IpmiSessionData data = new IpmiSessionData();

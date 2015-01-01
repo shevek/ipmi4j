@@ -5,8 +5,10 @@
 package org.anarres.ipmi.protocol.packet.ipmi.message;
 
 import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
@@ -156,6 +158,18 @@ public abstract class AbstractIpmiMessage extends AbstractWireable implements Ip
                     + " actual=" + UnsignedBytes.toString(actual, 16));
     }
 
+    /** [IPMI2] Section 20.8, table 20-10, page 252. */
+    @Nonnull
+    public UUID fromWireUUIDLE(@Nonnull ByteBuffer buf) {
+        byte[] uuid = readBytes(buf, 16);
+        long msb = Longs.fromBytes(uuid[15], uuid[14], uuid[13], uuid[12], uuid[11], uuid[10], uuid[9], uuid[8]);
+        long lsb = Longs.fromBytes(uuid[7], uuid[6], uuid[5], uuid[4], uuid[3], uuid[2], uuid[1], uuid[0]);
+        return new UUID(msb, lsb);
+    }
+
+    /**
+     * @see GetChannelAuthenticationCapabilitiesRequest
+     */
     public int fromWireOemIanaLE3(@Nonnull ByteBuffer buf) {
         byte b0 = buf.get();
         byte b1 = buf.get();
