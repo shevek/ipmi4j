@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 
 /**
  * ASF RMCP Data (Enterprise number 0x4542).
@@ -32,6 +33,11 @@ public abstract class AbstractAsfData extends AbstractWireable implements RmcpDa
     public static final IanaEnterpriseNumber IANA_ENTERPRISE_NUMBER = IanaEnterpriseNumber.Alerting_Specifications_Forum;
     // Page 33
     private byte messageTag;    // matches request/response
+
+    @Override
+    public RmcpMessageClass getMessageClass() {
+        return RmcpMessageClass.ASF;
+    }
 
     // Page 22
     @Nonnull

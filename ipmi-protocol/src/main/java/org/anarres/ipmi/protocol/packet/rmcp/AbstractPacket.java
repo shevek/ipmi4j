@@ -42,6 +42,7 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
 
     @Override
     public Packet withData(@Nonnull RmcpData data) {
+        getHeader().withMessageClass(data.getMessageClass());
         this.data = data;
         return this;
     }

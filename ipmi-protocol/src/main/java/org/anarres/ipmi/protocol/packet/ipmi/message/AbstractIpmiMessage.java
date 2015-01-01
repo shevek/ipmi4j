@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.message;
 
+import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
@@ -134,14 +135,11 @@ public abstract class AbstractIpmiMessage extends AbstractWireable implements Ip
 
     protected abstract void fromWireData(@Nonnull ByteBuffer buffer);
 
+    /** [IPMI2] Section 13.8, page 137. */
     private static byte toChecksum(@Nonnull ByteBuffer buffer, @Nonnegative int start) {
         int csum = 0;
-        for (int i = start; i < buffer.position(); i++) {
-            byte data = buffer.get(i);
-            LOG.info(csum + " = " + UnsignedBytes.toString((byte) csum, 16) + " + " + data + " = " + UnsignedBytes.toString(data, 16));
-            csum += UnsignedBytes.toInt(data);
-            LOG.info(" = " + csum);
-        }
+        for (int i = start; i < buffer.position(); i++)
+            csum += buffer.get(i);
         return (byte) -csum;
     }
 
@@ -156,5 +154,12 @@ public abstract class AbstractIpmiMessage extends AbstractWireable implements Ip
             throw new IllegalArgumentException("Checkum failure: " + description
                     + ": expected=" + UnsignedBytes.toString(expect, 16)
                     + " actual=" + UnsignedBytes.toString(actual, 16));
+    }
+
+    public int fromWireOemIanaLE3(@Nonnull ByteBuffer buf) {
+        byte b0 = buf.get();
+        byte b1 = buf.get();
+        byte b2 = buf.get();
+        return Ints.fromBytes((byte) 0, b2, b1, b0);
     }
 }

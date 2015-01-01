@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.rmcp;
 
+import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Wireable;
 
 /**
@@ -14,4 +15,7 @@ import org.anarres.ipmi.protocol.packet.common.Wireable;
  * @author shevek
  */
 public interface RmcpData extends Wireable {
+
+    @Nonnull
+    public RmcpMessageClass getMessageClass();
 }

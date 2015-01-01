@@ -5,12 +5,16 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.message.GetChannelAuthenticationCapabilitiesResponse;
 
 /**
  * [IPMI2] Section 13.6 page 133, right margin of table.
  * NOT [IPMI2] Section 13.28 page 157.
+ * Codes used as bit offsets in GetChannelAuthenticationCapabilitiesResponse.
  *
+ * @see GetChannelAuthenticationCapabilitiesResponse
  * @author shevek
  */
 public enum IpmiSessionAuthenticationType implements Code.Wrapper {
@@ -29,7 +33,7 @@ public enum IpmiSessionAuthenticationType implements Code.Wrapper {
     RMCPP(6);
     private final byte code;
 
-    private IpmiSessionAuthenticationType(int code) {
+    private IpmiSessionAuthenticationType(@Nonnegative int code) {
         this.code = UnsignedBytes.checkedCast(code);
     }
 

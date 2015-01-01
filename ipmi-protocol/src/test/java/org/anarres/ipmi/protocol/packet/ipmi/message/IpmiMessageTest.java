@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.message;
 
+import com.google.common.primitives.UnsignedBytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.logging.LoggingHandler;
@@ -37,6 +38,14 @@ public class IpmiMessageTest {
     }
     private final Formatter formatter = new Formatter();
 
+    @Nonnull
+    private static byte[] toByteArray(@Nonnull int... ints) {
+        byte[] out = new byte[ints.length];
+        for (int i = 0; i < ints.length; i++)
+            out[i] = UnsignedBytes.checkedCast(ints[i]);
+        return out;
+    }
+
     @Test
     public void testMessages() {
         GetChannelAuthenticationCapabilitiesRequest request = new GetChannelAuthenticationCapabilitiesRequest();
@@ -50,7 +59,6 @@ public class IpmiMessageTest {
         data.setIpmiPayload(request);
 
         RmcpPacket packet = new RmcpPacket();
-        packet.getHeader().withMessageClass(RmcpMessageClass.IPMI);
         packet.withData(data);
 
         ByteBuffer buf = ByteBuffer.allocate(packet.getWireLength());
@@ -58,6 +66,7 @@ public class IpmiMessageTest {
         buf.flip();
         LOG.info(formatter.format("Request", Unpooled.wrappedBuffer(buf)));
 
-        assertTrue(true);
+        byte[] expect = toByteArray(0x06, 0x00, 0xff, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x20, 0x18, 0xc8, 0x81, 0x00, 0x38, 0x8e, 0x04, 0xb5);
+        assertArrayEquals(expect, buf.array());
     }
 }
