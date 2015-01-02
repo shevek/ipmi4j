@@ -73,6 +73,6 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
             ipmiSessionWrapper = new Ipmi20SessionWrapper();
         else
             ipmiSessionWrapper = new Ipmi15SessionWrapper();
-        getIpmiSessionWrapper().fromWire(buffer, null, getIpmiPayload());
+        getIpmiSessionWrapper().fromWire(buffer, null);
     }
 }

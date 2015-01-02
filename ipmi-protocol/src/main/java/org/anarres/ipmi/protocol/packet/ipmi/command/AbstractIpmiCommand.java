@@ -103,15 +103,14 @@ public abstract class AbstractIpmiCommand extends AbstractWireable implements Ip
     @Nonnegative
     protected abstract int getDataWireLength();
 
-    /* pp */ byte toWireNetworkFunction() {
-        return getCommandName().getNetworkFunction().getCode();
-    }
-
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
         int chk1Start = buffer.position();
         buffer.put(getTargetAddress());
-        buffer.put((byte) (getCommandName().getNetworkFunction().getCode() << 2 | getTargetLun().getValue()));
+        byte networkFunctionByte = getCommandName().getNetworkFunction().getCode();
+        if (this instanceof IpmiResponse)
+            networkFunctionByte |= 1;
+        buffer.put((byte) (networkFunctionByte << 2 | getTargetLun().getValue()));
         AbstractIpmiCommand.toWireChecksum(buffer, chk1Start);
         int chk2Start = buffer.position();
         buffer.put(getSourceAddress());

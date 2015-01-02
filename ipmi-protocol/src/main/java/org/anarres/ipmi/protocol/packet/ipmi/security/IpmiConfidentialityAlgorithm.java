@@ -38,8 +38,8 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
         }
 
         @Override
-        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) {
-            payload.fromWire(buffer);
+        public ByteBuffer fromWire(ByteBuffer buffer, IpmiSession session) {
+            return buffer;
         }
     },
     /** [IPMI2] Section 13.29, table 13-20, page 160. */
@@ -62,7 +62,7 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
 
         @Override
         public void toWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload)
-                throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
+                throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException , ShortBufferException {
             int dataLength = payload.getWireLength();
             int padLength = pad(dataLength);
             ByteBuffer tmp = ByteBuffer.allocate(dataLength + padLength);
@@ -82,24 +82,24 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
         }
 
         @Override
-        public void fromWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
-            ByteBuffer tmp = ByteBuffer.allocate(buffer.remaining() * 2);
+        public ByteBuffer fromWire(ByteBuffer buffer, IpmiSession session) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
 
+            int limit = buffer.limit() - 1;
+            int padLength = UnsignedBytes.toInt(buffer.get(limit));
+            buffer.limit(limit);
+
+            ByteBuffer payload = ByteBuffer.allocate(buffer.remaining());
             byte[] iv = AbstractWireable.readBytes(buffer, 16);
             byte[] key = session.getAdditionalKey(2);
             AES_CBC_128 cipher = new AES_CBC_128();
             cipher.init(Cipher.Mode.DECRYPT, key, iv);
-            cipher.update(tmp, buffer); // TODO: Reads too much from buffer.
+            cipher.update(payload, buffer); // TODO: Reads too much from buffer.
 
-            int padLength = UnsignedBytes.toInt(buffer.get());
-
-            payload.fromWire(tmp);
-            int i = 1;
-            while (tmp.hasRemaining())
-                if (UnsignedBytes.toInt(tmp.get()) != i++)
+            for (int i= 1; i <= padLength; i++)
+                if (UnsignedBytes.toInt(payload.get(payload.limit() - i)) != i)
                     throw new IllegalArgumentException("Bad pad byte " + i);
-            if (i != padLength) // TODO: Debug possibly -1
-                throw new IllegalArgumentException("Bad pad length " + i);
+
+            return payload;
         }
     },
     /** [IPMI2] Section 13.30, table 13-21, page 161. */
@@ -168,7 +168,8 @@ public enum IpmiConfidentialityAlgorithm implements IpmiAlgorithm {
         throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }
 
-    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiPayload payload)
+    @Nonnull
+    public ByteBuffer fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, ShortBufferException {
         throw new NoSuchAlgorithmException("Unsupported confidentiality algorithm " + this);
     }

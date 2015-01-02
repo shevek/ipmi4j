@@ -7,13 +7,17 @@ package org.anarres.ipmi.protocol.packet.ipmi;
 import com.google.common.base.Throwables;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.Chars;
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
+import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.common.Pad;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
@@ -26,7 +30,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
  *
  * @author shevek
  */
-public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
+public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
 
     private final IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.RMCPP;
     // private IpmiPayloadType payloadType;
@@ -79,10 +83,8 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
             // Page 133
             buffer.put(authenticationType.getCode());
             byte payloadTypeByte = payload.getPayloadType().getCode();
-            if (encrypted)
-                payloadTypeByte |= 0x80;
-            if (authenticated)
-                payloadTypeByte |= 0x40;
+            payloadTypeByte = AbstractIpmiCommand.setBit(payloadTypeByte, 7, encrypted);
+            payloadTypeByte = AbstractIpmiCommand.setBit(payloadTypeByte, 6, authenticated);
             buffer.put(payloadTypeByte);
             if (IpmiPayloadType.OEM_EXPLICIT.equals(payload.getPayloadType())) {
                 buffer.putInt(oemEnterpriseNumber.getNumber() << Byte.SIZE);
@@ -114,20 +116,46 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
         }
     }
 
-    /*
-     @Override
-     protected void fromWireUnchecked(ByteBuffer buffer) {
-     int payloadLength = getPayloadLength(payload);
-     byte[] pad = Pad.PAD(payloadLength);
-     AbstractWireable.readBytes(buffer, pad.length);
-     AbstractWireable.assertWireByte(buffer, (byte) pad.length, "padding length");
-     AbstractWireable.assertWireByte(buffer, (byte) 0x07, "IPMI v2.0 next header byte (reserved as 0x07)");
-     integrityData = AbstractWireable.readBytes(buffer, integrityData.length);
-     }
-     */
     @Override
-    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager session, IpmiPayload payload) {
-        // TODO: Before calling payload.fromWire(), make sure to set the position and limit on the buffer.
-        throw new UnsupportedOperationException("Not supported yet.");
+    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager) {
+        try {
+            AbstractWireable.assertWireByte(buffer, authenticationType.getCode(), "IPMI session authentication type");
+            byte payloadTypeByte = buffer.get();
+            boolean encrypted = AbstractIpmiCommand.getBit(payloadTypeByte, 7);
+            boolean authenticated = AbstractIpmiCommand.getBit(payloadTypeByte, 6);
+            IpmiPayloadType payloadType = Code.fromInt(IpmiPayloadType.class, payloadTypeByte & 0x3F);
+
+            int sessionId = buffer.getInt();
+            IpmiSession session = sessionManager.getSession(sessionId);
+
+            int sessionSequenceNumber = buffer.getInt();
+
+            ByteBuffer integrityInput = buffer.duplicate();
+
+            // TODO: Before calling payload.fromWire(), make sure to set the position and limit on the buffer.
+            int payloadLength = buffer.getChar();
+            ByteBuffer payloadEncrypted = buffer.duplicate();
+            payloadEncrypted.limit(payloadEncrypted.position() + payloadLength);
+            buffer.position(payloadEncrypted.limit());
+
+            ByteBuffer payloadBuffer = session.getConfidentialityAlgorithm().fromWire(buffer, session);
+            IpmiPayload payload = newPayload(payloadBuffer, payloadType);
+            payload.fromWire(payloadBuffer);
+
+            int integrityPadLength = Pad.PAD(payloadLength).length;
+            byte[] integrityPad = AbstractWireable.readBytes(buffer, integrityPadLength);
+            // TODO: Assert integrityPad all 0xFF.
+
+            AbstractWireable.assertWireByte(buffer, UnsignedBytes.checkedCast(integrityPadLength), "Integrity pad length");
+            AbstractWireable.assertWireByte(buffer, (byte) 0x07, "Next-header field");
+
+            integrityInput.limit(buffer.position());
+            byte[] integrityData = session.getIntegrityAlgorithm().sign(session, integrityInput);
+            // TODO: Assert integrityData equal to outstanding buffer data.
+
+            return session;
+        } catch (GeneralSecurityException e) {
+            throw Throwables.propagate(e);
+        }
     }
 }

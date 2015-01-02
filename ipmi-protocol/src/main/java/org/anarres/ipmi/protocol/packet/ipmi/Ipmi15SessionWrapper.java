@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author shevek
  */
-public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
+public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(Ipmi15SessionWrapper.class);
     private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.NONE;
@@ -66,7 +67,7 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
     }
 
     @Override
-    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager, IpmiPayload payload) {
+    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager) {
         authenticationType = Code.fromBuffer(IpmiSessionAuthenticationType.class, buffer);
         ipmiSessionSequenceNumber = buffer.getInt();
         ipmiSessionId = buffer.getInt();
@@ -79,8 +80,10 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
 
         ByteBuffer payloadBuffer = buffer.duplicate();
         payloadBuffer.limit(payloadBuffer.position() + UnsignedBytes.toInt(payloadLength));
+        buffer.position(payloadBuffer.limit());
+
+        IpmiPayload payload = newPayload(payloadBuffer, IpmiPayloadType.IPMI);
         payload.fromWire(payloadBuffer);
-        buffer.position(payloadBuffer.position());
 
         // assert payloadLength == header.getWireLength() + payload.getWireLength();
         return session;

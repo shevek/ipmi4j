@@ -4,13 +4,18 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.base.Throwables;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
 
 /**
@@ -22,7 +27,7 @@ public enum IpmiCommandName implements Code.Wrapper {
 // IPM Device 'Global' Commands
 
     // reserved("reserved", IpmiNetworkFunction.App, 0x00),
-    GetDeviceID("Get Device ID", IpmiNetworkFunction.App, 0x01, User),
+    GetDeviceID("Get Device ID", IpmiNetworkFunction.App, 0x01, User, GetDeviceIdRequest.class, GetDeviceIdResponse.class),
     BroadcastGetDeviceID("Broadcast 'Get Device ID'", IpmiNetworkFunction.App, 0x01, null), // Local only
     ColdReset("Cold Reset", IpmiNetworkFunction.App, 0x02, Administrator),
     WarmReset("Warm Reset", IpmiNetworkFunction.App, 0x03, Administrator),
@@ -59,12 +64,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     GetSystemGUID("Get System GUID", IpmiNetworkFunction.App, 0x37, Unprotected),
     SetSystemInfoParameters("Set System Info Parameters", IpmiNetworkFunction.App, 0x58, Administrator),
     GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59, User),
-    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected) {
-        @Override
-        public IpmiCommand newRequestMessage() {
-            return new GetChannelAuthenticationCapabilitiesRequest();
-        }
-    },
+    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected, GetChannelAuthenticationCapabilitiesRequest.class, GetChannelAuthenticationCapabilitiesResponse.class),
     GetSessionChallenge("Get Session Challenge", IpmiNetworkFunction.App, 0x39, Unprotected),
     ActivateSession("Activate Session", IpmiNetworkFunction.App, 0x3A, Unprotected),
     SetSessionPrivilegeLevel("Set Session Privilege Level", IpmiNetworkFunction.App, 0x3B, User),
@@ -241,12 +241,21 @@ public enum IpmiCommandName implements Code.Wrapper {
     private final IpmiNetworkFunction networkFunction;
     private final byte code;
     private final IpmiChannelPrivilegeLevel privilegeLevel;
+    private final Class<? extends IpmiRequest> requestType;
+    private final Class<? extends IpmiResponse> responseType;
 
-    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {
+    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel,
+            @CheckForNull Class<? extends IpmiRequest> requestType, @CheckForNull Class<? extends IpmiResponse> responseType) {
         this.name = name;
         this.networkFunction = networkFunction;
         this.code = UnsignedBytes.checkedCast(code);
         this.privilegeLevel = privilegeLevel;
+        this.requestType = requestType;
+        this.responseType = responseType;
+    }
+
+    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {
+        this(name, networkFunction, code, privilegeLevel, null, null);
     }
 
     @Deprecated
@@ -293,12 +302,23 @@ public enum IpmiCommandName implements Code.Wrapper {
     }
 
     @Nonnull
-    public IpmiCommand newRequestMessage() {
-        throw new UnsupportedOperationException("Unsupported request " + this);
+    private <T> T newInstance(@CheckForNull Class<T> type) {
+        if (type == null)
+            throw new UnsupportedOperationException("Unsupported message type " + this);
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Nonnull
-    public IpmiCommand newResponseMessage() {
-        throw new UnsupportedOperationException("Unsupported response " + this);
+    public IpmiRequest newRequestMessage() {
+        return newInstance(requestType);
+    }
+
+    @Nonnull
+    public IpmiResponse newResponseMessage() {
+        return newInstance(responseType);
     }
 }
