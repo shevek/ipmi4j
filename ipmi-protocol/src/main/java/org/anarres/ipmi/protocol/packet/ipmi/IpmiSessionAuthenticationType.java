@@ -7,7 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.ipmi.message.GetChannelAuthenticationCapabilitiesResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 
 /**
  * [IPMI2] Section 13.6 page 133, right margin of table.

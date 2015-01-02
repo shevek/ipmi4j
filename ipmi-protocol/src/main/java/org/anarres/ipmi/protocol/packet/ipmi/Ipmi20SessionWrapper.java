@@ -127,6 +127,7 @@ public class Ipmi20SessionWrapper implements IpmiSessionWrapper {
      */
     @Override
     public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager session, IpmiPayload payload) {
+        // TODO: Before calling payload.fromWire(), make sure to set the position and limit on the buffer.
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

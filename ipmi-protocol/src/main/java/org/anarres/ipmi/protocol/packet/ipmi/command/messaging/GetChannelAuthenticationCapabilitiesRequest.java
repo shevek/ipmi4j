@@ -2,28 +2,29 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.message;
+package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionRequest;
 
 /**
  * [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNonSessionMessage {
+public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNonSessionRequest {
 
     public boolean extendedCapabilities;
     public IpmiChannelNumber channelNumber = IpmiChannelNumber.CURRENT;
     public IpmiChannelPrivilegeLevel channelPrivilegeLevel;
 
     @Override
-    public IpmiCommand getCommand() {
-        return IpmiCommand.GetChannelAuthenticationCapabilities;
+    public IpmiCommandName getCommandName() {
+        return IpmiCommandName.GetChannelAuthenticationCapabilities;
     }
 
     @Override

@@ -9,8 +9,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.ipmi.message.GetChannelAuthenticationCapabilitiesRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.message.IpmiMessage;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
 
 /**
@@ -18,7 +18,7 @@ import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
  *
  * @author shevek
  */
-public enum IpmiCommand implements Code.Wrapper {
+public enum IpmiCommandName implements Code.Wrapper {
 // IPM Device 'Global' Commands
 
     // reserved("reserved", IpmiNetworkFunction.App, 0x00),
@@ -61,7 +61,7 @@ public enum IpmiCommand implements Code.Wrapper {
     GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59, User),
     GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected) {
         @Override
-        public IpmiMessage newRequestMessage() {
+        public IpmiCommand newRequestMessage() {
             return new GetChannelAuthenticationCapabilitiesRequest();
         }
     },
@@ -242,7 +242,7 @@ public enum IpmiCommand implements Code.Wrapper {
     private final byte code;
     private final IpmiChannelPrivilegeLevel privilegeLevel;
 
-    private IpmiCommand(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {
+    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {
         this.name = name;
         this.networkFunction = networkFunction;
         this.code = UnsignedBytes.checkedCast(code);
@@ -250,7 +250,7 @@ public enum IpmiCommand implements Code.Wrapper {
     }
 
     @Deprecated
-    private IpmiCommand(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code) {
+    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code) {
         this(name, networkFunction, code, null);
     }
 
@@ -284,8 +284,8 @@ public enum IpmiCommand implements Code.Wrapper {
      * @see Code#fromByte(Class, byte)
      */
     @Nonnull
-    public static IpmiCommand fromByte(@Nonnull IpmiNetworkFunction networkFunction, byte code) {
-        for (IpmiCommand value : values())
+    public static IpmiCommandName fromByte(@Nonnull IpmiNetworkFunction networkFunction, byte code) {
+        for (IpmiCommandName value : values())
             if (networkFunction.equals(value.getNetworkFunction()))
                 if (value.getCode() == code)
                     return value;
@@ -293,12 +293,12 @@ public enum IpmiCommand implements Code.Wrapper {
     }
 
     @Nonnull
-    public IpmiMessage newRequestMessage() {
+    public IpmiCommand newRequestMessage() {
         throw new UnsupportedOperationException("Unsupported request " + this);
     }
 
     @Nonnull
-    public IpmiMessage newResponseMessage() {
+    public IpmiCommand newResponseMessage() {
         throw new UnsupportedOperationException("Unsupported response " + this);
     }
 }

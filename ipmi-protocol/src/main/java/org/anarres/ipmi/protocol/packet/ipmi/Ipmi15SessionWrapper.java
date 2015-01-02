@@ -77,7 +77,10 @@ public class Ipmi15SessionWrapper implements IpmiSessionWrapper {
             ipmiMessageAuthenticationCode = null;
         byte payloadLength = buffer.get();
 
-        payload.fromWire(buffer);
+        ByteBuffer payloadBuffer = buffer.duplicate();
+        payloadBuffer.limit(payloadBuffer.position() + UnsignedBytes.toInt(payloadLength));
+        payload.fromWire(payloadBuffer);
+        buffer.position(payloadBuffer.position());
 
         // assert payloadLength == header.getWireLength() + payload.getWireLength();
         return session;

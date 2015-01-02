@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.message;
+package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
@@ -10,16 +10,17 @@ import java.util.Set;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionResponse;
 
 /**
  * [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNonSessionMessage {
+public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNonSessionResponse {
 
     public static enum LoginStatus implements Bits.Wrapper {
 
@@ -63,8 +64,8 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNo
     public Set<ExtendedCapabilities> extendedCapabilities;
 
     @Override
-    public IpmiCommand getCommand() {
-        return IpmiCommand.GetChannelAuthenticationCapabilities;
+    public IpmiCommandName getCommandName() {
+        return IpmiCommandName.GetChannelAuthenticationCapabilities;
     }
 
     @Override

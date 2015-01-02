@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.message;
+package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import com.google.common.primitives.UnsignedBytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -14,7 +15,6 @@ import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionData;
-import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,9 +25,9 @@ import static org.junit.Assert.*;
  *
  * @author shevek
  */
-public class IpmiMessageTest {
+public class IpmiCommandTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IpmiMessageTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IpmiCommandTest.class);
 
     private static class Formatter extends LoggingHandler {
 
