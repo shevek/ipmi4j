@@ -117,7 +117,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
     }
 
     @Override
-    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager) {
+    public void fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager, IpmiSessionData sessionData) {
         try {
             AbstractWireable.assertWireByte(buffer, authenticationType.getCode(), "IPMI session authentication type");
             byte payloadTypeByte = buffer.get();
@@ -127,6 +127,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
 
             int sessionId = buffer.getInt();
             IpmiSession session = sessionManager.getSession(sessionId);
+            sessionData.setIpmiSession(session);
 
             int sessionSequenceNumber = buffer.getInt();
 
@@ -138,9 +139,10 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             payloadEncrypted.limit(payloadEncrypted.position() + payloadLength);
             buffer.position(payloadEncrypted.limit());
 
-            ByteBuffer payloadBuffer = session.getConfidentialityAlgorithm().fromWire(buffer, session);
+            ByteBuffer payloadBuffer = encrypted ? session.getConfidentialityAlgorithm().fromWire(payloadEncrypted, session) : payloadEncrypted;
             IpmiPayload payload = newPayload(payloadBuffer, payloadType);
             payload.fromWire(payloadBuffer);
+            sessionData.setIpmiPayload(payload);
 
             int integrityPadLength = Pad.PAD(payloadLength).length;
             byte[] integrityPad = AbstractWireable.readBytes(buffer, integrityPadLength);
@@ -152,8 +154,6 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             integrityInput.limit(buffer.position());
             byte[] integrityData = session.getIntegrityAlgorithm().sign(session, integrityInput);
             // TODO: Assert integrityData equal to outstanding buffer data.
-
-            return session;
         } catch (GeneralSecurityException e) {
             throw Throwables.propagate(e);
         }

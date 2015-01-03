@@ -24,5 +24,5 @@ public interface IpmiSessionWrapper {
 
     public void toWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSession session, @Nonnull IpmiPayload payload);
 
-    public IpmiSession fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSessionManager sessionManager);
+    public void fromWire(@Nonnull ByteBuffer buffer, @Nonnull IpmiSessionManager sessionManager, @Nonnull IpmiSessionData sessionData);
 }

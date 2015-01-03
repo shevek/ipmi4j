@@ -37,6 +37,10 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
         return ipmiSession;
     }
 
+    public void setIpmiSession(@Nonnull IpmiSession ipmiSession) {
+        this.ipmiSession = ipmiSession;
+    }
+
     @Nonnull
     public IpmiSessionWrapper getIpmiSessionWrapper() {
         return ipmiSessionWrapper;
@@ -73,6 +77,6 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
             ipmiSessionWrapper = new Ipmi20SessionWrapper();
         else
             ipmiSessionWrapper = new Ipmi15SessionWrapper();
-        getIpmiSessionWrapper().fromWire(buffer, null);
+        getIpmiSessionWrapper().fromWire(buffer, null, this);
     }
 }

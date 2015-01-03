@@ -67,11 +67,13 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     }
 
     @Override
-    public IpmiSession fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager) {
+    public void fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager, IpmiSessionData sessionData) {
         authenticationType = Code.fromBuffer(IpmiSessionAuthenticationType.class, buffer);
         ipmiSessionSequenceNumber = buffer.getInt();
         ipmiSessionId = buffer.getInt();
         IpmiSession session = sessionManager.getSession(ipmiSessionId);
+        sessionData.setIpmiSession(session);
+
         if (authenticationType != IpmiSessionAuthenticationType.NONE)
             ipmiMessageAuthenticationCode = AbstractWireable.readBytes(buffer, 16);
         else
@@ -84,8 +86,8 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
 
         IpmiPayload payload = newPayload(payloadBuffer, IpmiPayloadType.IPMI);
         payload.fromWire(payloadBuffer);
+        sessionData.setIpmiPayload(payload);
 
         // assert payloadLength == header.getWireLength() + payload.getWireLength();
-        return session;
     }
 }
