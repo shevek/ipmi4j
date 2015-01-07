@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.rmcp;
 
+import com.google.common.primitives.UnsignedBytes;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -12,16 +13,15 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public enum RmcpMessageRole implements Code.Wrapper {
 
-    REQ {
-        @Override
-        public byte getCode() {
-            return 0;
-        }
-    }, ACK {
-        @Override
-        public byte getCode() {
-            // TODO: -> 0x80 and correct all else to match.
-            return 1;
-        }
-    };
+    REQ(0), ACK(1);
+    private final byte code;
+
+    private RmcpMessageRole(int code) {
+        this.code = UnsignedBytes.checkedCast(code);
+    }
+
+    @Override
+    public byte getCode() {
+        return code;
+    }
 }

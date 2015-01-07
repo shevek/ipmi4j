@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.common.Pad;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
@@ -67,7 +67,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
                 + 4 // ipmiSessionSequenceNumber
                 + 2 // payloadLength
                 + payloadLength
-                + Pad.PAD(payloadLength).length
+                + IntegrityPad.PAD(payloadLength).length
                 + 1 // pad length
                 + 1 // next header
                 + session.getIntegrityAlgorithm().getMacLength();
@@ -103,7 +103,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             session.getConfidentialityAlgorithm().toWire(buffer, session, payload);
 
             // Integrity padding.
-            byte[] pad = Pad.PAD(payloadLength);
+            byte[] pad = IntegrityPad.PAD(payloadLength);
             buffer.put(pad);
             buffer.put((byte) pad.length);
             buffer.put((byte) 0x07); // Reserved, [IPMI2] Page 134, next-header field.
@@ -144,7 +144,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             payload.fromWire(payloadBuffer);
             sessionData.setIpmiPayload(payload);
 
-            int integrityPadLength = Pad.PAD(payloadLength).length;
+            int integrityPadLength = IntegrityPad.PAD(payloadLength).length;
             byte[] integrityPad = AbstractWireable.readBytes(buffer, integrityPadLength);
             // TODO: Assert integrityPad all 0xFF.
 

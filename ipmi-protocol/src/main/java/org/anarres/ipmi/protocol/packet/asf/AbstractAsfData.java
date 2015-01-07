@@ -28,7 +28,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
  *
  * @author shevek
  */
-public abstract class AbstractAsfData extends AbstractWireable implements RmcpData {
+public abstract class AbstractAsfData extends AbstractWireable implements AsfRmcpData {
 
     public static final IanaEnterpriseNumber IANA_ENTERPRISE_NUMBER = IanaEnterpriseNumber.Alerting_Specifications_Forum;
     // Page 33

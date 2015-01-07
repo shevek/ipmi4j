@@ -97,4 +97,30 @@ public abstract class AbstractWireable implements Wireable {
             throw new IllegalArgumentException("Too many bits in " + Integer.toHexString(value) + "; expected max " + nbits);
         return value;
     }
+
+    @Nonnull
+    protected StringBuilder indent(@Nonnull StringBuilder buf, int depth) {
+        for (int i = 0; i < depth; i++)
+            buf.append("  ");
+        return buf;
+    }
+
+    @Nonnull
+    protected StringBuilder append(@Nonnull StringBuilder buf, int depth, String name, Object value) {
+        indent(buf, depth);
+        buf.append(name).append(": ").append(value);
+        return buf;
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        indent(buf, depth).append(super.toString()).append('\n');
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        toStringBuilder(buf, 0);
+        return buf.toString();
+    }
 }

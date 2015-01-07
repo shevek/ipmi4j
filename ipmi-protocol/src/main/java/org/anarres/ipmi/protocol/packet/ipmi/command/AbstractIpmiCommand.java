@@ -15,12 +15,12 @@ import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiNetworkFunction;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author shevek
  */
-public abstract class AbstractIpmiCommand extends AbstractWireable implements IpmiCommand {
+public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements IpmiCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIpmiCommand.class);
     public static final int SEQUENCE_NUMBER_MASK = 0x3F;

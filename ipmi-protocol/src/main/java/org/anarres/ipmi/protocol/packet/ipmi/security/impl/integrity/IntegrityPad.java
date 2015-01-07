@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.common;
+package org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
  *
  * @author shevek
  */
-public class Pad {
+public class IntegrityPad {
 
     private static final byte[] PAD0 = new byte[]{};
     private static final byte[] PAD1 = new byte[]{(byte) 0xFF};

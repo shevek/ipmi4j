@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
+ * An actual IPMI command.
  *
  * @author shevek
  */

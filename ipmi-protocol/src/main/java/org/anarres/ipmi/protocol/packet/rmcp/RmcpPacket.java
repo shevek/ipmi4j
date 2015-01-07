@@ -1,6 +1,7 @@
 package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnegative;
 
 /**
  * RMCP Packet.
@@ -13,14 +14,8 @@ import java.nio.ByteBuffer;
  */
 public class RmcpPacket extends AbstractPacket {
 
-    private int getNativeWireLength() {
-        RmcpData data = getData();
-        return getHeader().getWireLength()
-                + ((data == null) ? 0 : data.getWireLength());
-    }
-
-    /** Intel IPMI spec page 134 footnote 1. */
-    private static boolean isPaddingRequired(int length) {
+    /** [IPMI2] Page 134, footnote 1. */
+    private static boolean isPaddingRequired(@Nonnegative int length) {
         switch (length) {
             case 56:
             case 84:
@@ -35,7 +30,7 @@ public class RmcpPacket extends AbstractPacket {
 
     @Override
     public int getWireLength() {
-        int length = getNativeWireLength();
+        int length = getRawWireLength();
         if (isPaddingRequired(length))
             length++;
         return length;
@@ -43,24 +38,26 @@ public class RmcpPacket extends AbstractPacket {
 
     @Override
     protected void toWireUnchecked(ByteBuffer buffer) {
-        getHeader().toWire(buffer);
-        RmcpData data = getData();
-        // if (data == null) return;
-        getData().toWire(buffer);
-        if (isPaddingRequired(getNativeWireLength()))
+        toWireRaw(buffer);
+        if (isPaddingRequired(getRawWireLength()))
             buffer.put((byte) 0);
     }
 
     @Override
-    public void fromWireHeader(ByteBuffer buffer) {
-        getHeader().fromWire(buffer);
+    protected final void fromWireUnchecked(ByteBuffer buffer) {
+        fromWireRaw(buffer);
+        // There may or may not be one additional byte here.
     }
 
     @Override
-    public void fromWireBody(ByteBuffer buffer, int start) {
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        indent(buf, depth).append("RmcpHeader:\n");
+        super.toStringBuilder(buf, depth + 1);  // Header
+        indent(buf, depth).append("RmcpData:\n");
         RmcpData data = getData();
         if (data == null)
-            return;
-        data.fromWire(buffer);
+            indent(buf, depth + 1).append("null:\n");
+        else
+            data.toStringBuilder(buf, depth + 1);
     }
 }

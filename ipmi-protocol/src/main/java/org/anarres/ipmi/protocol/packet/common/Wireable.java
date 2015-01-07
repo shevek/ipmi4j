@@ -38,4 +38,6 @@ public interface Wireable {
      * Reads bytes from the wire into this object, deserializing it.
      */
     public void fromWire(@Nonnull ByteBuffer buffer);
+
+    public void toStringBuilder(@Nonnull StringBuilder buf, @Nonnegative int depth);
 }

@@ -2,14 +2,12 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.common.Pad;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
 
 /**
- * RMCP Security Extensions Protocol.
+ * RMCP Security Extensions Protocol (RSP).
  * 
- * http://www.dmtf.org/sites/default/files/standards/documents/DSP0136.pdf
- * http://www.dmtf.org/standards/asf
- * Section 3.2.3 pages 23-25.
+ * [ASF] Section 3.2.3 pages 23-25.
  * 
  * Uses UDP port 0x0298.
  *
@@ -18,7 +16,7 @@ import org.anarres.ipmi.protocol.packet.common.Pad;
 public class RspRmcpPacket extends AbstractPacket {
 
     private int sessionId;
-    private int sequenceNumber;
+    private int sessionSequenceNumber;
     // For this specification, the mandatory-to-implement integrity algorithm is HMAC-SHA1-96 defined in [RFC2404]. 
     private byte[] integrityData;
 
@@ -32,13 +30,13 @@ public class RspRmcpPacket extends AbstractPacket {
         return this;
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public int getSessionSequenceNumber() {
+        return sessionSequenceNumber;
     }
 
     @Nonnull
-    public RspRmcpPacket withSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public RspRmcpPacket withSessionSequenceNumber(int sessionSequenceNumber) {
+        this.sessionSequenceNumber = sessionSequenceNumber;
         return this;
     }
 
@@ -56,11 +54,10 @@ public class RspRmcpPacket extends AbstractPacket {
     public int getWireLength() {
         RmcpData data = getData();
         int length = 4 // sessionId
-                + 4 // sequenceNumber
-                + getHeader().getWireLength()
-                + ((data == null) ? 0 : data.getWireLength());
+                + 4 // sessionSequenceNumber
+                + getRawWireLength();
         return length
-                + Pad.PAD(length).length // Padding
+                + IntegrityPad.PAD(length).length // Padding
                 + 1 // Padding length
                 + 1 // "Next header" length
                 + integrityData.length;
@@ -70,44 +67,32 @@ public class RspRmcpPacket extends AbstractPacket {
     protected void toWireUnchecked(ByteBuffer buffer) {
         int start = buffer.position();
         buffer.putInt(sessionId);
-        buffer.putInt(sequenceNumber);
-        RmcpHeader header = getHeader();
-        header.toWire(buffer);
-        RmcpData data = getData();
-        if (data == null)
-            return;
-        data.toWire(buffer);
+        buffer.putInt(sessionSequenceNumber);
+        toWireRaw(buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             // Padding aligns us to a DWORD, which is 4 bytes.
             int length = buffer.position() - start;
-            byte[] pad = Pad.PAD(length);
+            byte[] pad = IntegrityPad.PAD(length);
             buffer.put(pad);
             buffer.put((byte) pad.length);
-            buffer.put(header.getVersion().getCode());
+            buffer.put(getVersion().getCode());
             buffer.put(integrityData);
         }
     }
 
     @Override
-    public void fromWireHeader(ByteBuffer buffer) {
+    protected final void fromWireUnchecked(ByteBuffer buffer) {
+        int start = buffer.position();
         int sessionId = buffer.getInt();
         withSessionId(sessionId);
-        withSequenceNumber(buffer.getInt());
-        getHeader().fromWire(buffer);
-    }
-
-    @Override
-    public void fromWireBody(ByteBuffer buffer, int start) {
-        RmcpData data = getData();
-        if (data == null)   // We can't deserialize the trailer without data.
-            return;
-        data.fromWire(buffer);
+        withSessionSequenceNumber(buffer.getInt());
+        fromWireRaw(buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             int length = buffer.position() - start;
-            byte[] pad = Pad.PAD(length);
+            byte[] pad = IntegrityPad.PAD(length);
             readBytes(buffer, pad.length);  // TODO: Write a temporary.
             assertWireByte(buffer, (byte) pad.length, "padding length");
-            assertWireByte(buffer, getHeader().getVersion().getCode(), "header version");
+            assertWireByte(buffer, getVersion().getCode(), "header version");
             withIntegrityData(readBytes(buffer, buffer.remaining()));
         }
     }

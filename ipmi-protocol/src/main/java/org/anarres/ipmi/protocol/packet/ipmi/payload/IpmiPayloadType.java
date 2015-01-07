@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.CheckForSigned;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -51,6 +52,7 @@ public enum IpmiPayloadType implements Code.Wrapper {
         return code;
     }
 
+    // @Nonnull public abstract IpmiPayload newIpmiPayload();
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(name());
