@@ -148,9 +148,11 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
                 } else {
                     // IPMI v1.5
                 }
+                buffer.position(position);
+                break;
             case OEM:
             default:
-                throw new IllegalArgumentException("Can't decode buffer.");
+                throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + getMessageClass());
         }
 
         withData(data);
