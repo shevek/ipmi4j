@@ -24,19 +24,15 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(Ipmi15SessionWrapper.class);
     private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.NONE;
-    private int ipmiSessionSequenceNumber;
-    private int ipmiSessionId;
+    // private int ipmiSessionSequenceNumber;
+    // private int ipmiSessionId;
     private byte[] ipmiMessageAuthenticationCode;   // 16 bytes
 
     // @Override
-    public int getIpmiSessionId() {
-        return ipmiSessionId;
-    }
+    // public int getIpmiSessionId() { return ipmiSessionId; }
 
     // @Override
-    public int getIpmiSessionSequenceNumber() {
-        return ipmiSessionSequenceNumber;
-    }
+    // public int getIpmiSessionSequenceNumber() { return ipmiSessionSequenceNumber; }
 
     @Override
     public int getWireLength(IpmiSession session, IpmiPayload payload) {
@@ -53,8 +49,8 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     public void toWire(ByteBuffer buffer, IpmiSession session, IpmiPayload payload) {
         // Page 133
         buffer.put(authenticationType.getCode());
-        buffer.putInt(ipmiSessionSequenceNumber);
-        buffer.putInt(ipmiSessionId);
+        buffer.putInt(0 /* ipmiSessionSequenceNumber */);
+        buffer.putInt(session == null ? 0 : session.getId());
         if (authenticationType != IpmiSessionAuthenticationType.NONE)
             buffer.put(ipmiMessageAuthenticationCode);
         // Page 134
@@ -69,8 +65,8 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     @Override
     public void fromWire(ByteBuffer buffer, IpmiSessionManager sessionManager, IpmiSessionData sessionData) {
         authenticationType = Code.fromBuffer(IpmiSessionAuthenticationType.class, buffer);
-        ipmiSessionSequenceNumber = buffer.getInt();
-        ipmiSessionId = buffer.getInt();
+        int ipmiSessionSequenceNumber = buffer.getInt();
+        int ipmiSessionId = buffer.getInt();
         IpmiSession session = sessionManager.getSession(ipmiSessionId);
         sessionData.setIpmiSession(session);
 

@@ -13,8 +13,9 @@ import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,6 +23,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
  */
 public abstract class AbstractPacket extends AbstractWireable implements Packet {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPacket.class);
     private SocketAddress remoteAddress;
     protected static final int RMCP_HEADER_LENGTH = 4;
     private final RmcpVersion version = RmcpVersion.ASF_RMCP_2_0;
@@ -128,11 +130,11 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
 
     protected void fromWireRaw(@Nonnull ByteBuffer buffer) {
         fromWireHeader(buffer);
-        RmcpData data = null;
+        RmcpData data;
 
-        int position = buffer.position();
         switch (getMessageClass()) {
             case ASF:
+                int position = buffer.position();
                 int enterpriseNumber = buffer.getInt();
                 if (enterpriseNumber != AbstractAsfData.IANA_ENTERPRISE_NUMBER.getNumber())
                     throw new IllegalArgumentException("Unknown enterprise number 0x" + Integer.toHexString(enterpriseNumber));
@@ -141,20 +143,14 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
                 buffer.position(position);
                 break;
             case IPMI:
-                IpmiSessionAuthenticationType format = Code.fromByte(IpmiSessionAuthenticationType.class, buffer.get());
-                if (format == IpmiSessionAuthenticationType.RMCPP) {
-                    // IPMI v2.0
-                    IpmiPayloadType payloadType = Code.fromByte(IpmiPayloadType.class, buffer.get());
-                } else {
-                    // IPMI v1.5
-                }
-                buffer.position(position);
+                data = new IpmiSessionData();
                 break;
             case OEM:
             default:
                 throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + getMessageClass());
         }
 
+        // LOG.info("Buffer position pre-data is " + buffer.position());
         withData(data);
         data.fromWire(buffer);
     }

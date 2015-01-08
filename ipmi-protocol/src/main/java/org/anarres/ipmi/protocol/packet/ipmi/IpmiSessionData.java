@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import java.nio.ByteBuffer;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -12,6 +13,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * [IPMI2] Section 13.6, page 132, table 13-8.
@@ -22,6 +25,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
  */
 public class IpmiSessionData extends AbstractWireable implements RmcpData {
 
+    private static final Logger LOG = LoggerFactory.getLogger(IpmiSessionData.class);
     private IpmiSessionWrapper ipmiSessionWrapper;
     private IpmiSession ipmiSession;
     private Integer ipmiSessionSequenceNumber;
@@ -32,12 +36,12 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
         return RmcpMessageClass.IPMI;
     }
 
-    @Nonnull
+    @CheckForNull
     public IpmiSession getIpmiSession() {
         return ipmiSession;
     }
 
-    public void setIpmiSession(@Nonnull IpmiSession ipmiSession) {
+    public void setIpmiSession(@CheckForNull IpmiSession ipmiSession) {
         this.ipmiSession = ipmiSession;
     }
 
@@ -71,8 +75,9 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
 
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
-        byte authenticationTypeByte = buffer.get(0);
+        byte authenticationTypeByte = buffer.get(buffer.position());
         IpmiSessionAuthenticationType authenticationType = Code.fromByte(IpmiSessionAuthenticationType.class, authenticationTypeByte);
+        // LOG.info("IpmiSessionAuthenticationType is " + authenticationType);
         if (authenticationType == IpmiSessionAuthenticationType.RMCPP)
             ipmiSessionWrapper = new Ipmi20SessionWrapper();
         else
