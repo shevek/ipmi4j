@@ -13,12 +13,12 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicitPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
@@ -36,8 +36,8 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
     // private IpmiPayloadType payloadType;
     // private boolean encrypted;
     // private boolean authenticated;
-    private IanaEnterpriseNumber oemEnterpriseNumber;    // 3 byte oem iana; 1 byte zero
-    private char oemPayloadId;
+    // private IanaEnterpriseNumber oemEnterpriseNumber;    // 3 byte oem iana; 1 byte zero
+    // private char oemPayloadId;
     // private int ipmiSessionId;
     // private int ipmiSessionSequenceNumber;
     // private byte[] confidentialityHeader;
@@ -87,8 +87,9 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             payloadTypeByte = AbstractIpmiCommand.setBit(payloadTypeByte, 6, authenticated);
             buffer.put(payloadTypeByte);
             if (IpmiPayloadType.OEM_EXPLICIT.equals(payload.getPayloadType())) {
-                buffer.putInt(oemEnterpriseNumber.getNumber() << Byte.SIZE);
-                buffer.putChar(oemPayloadId);
+                OemExplicitPayload oemPayload = (OemExplicitPayload) payload;
+                buffer.putInt(oemPayload.getOemEnterpriseNumber() << Byte.SIZE);
+                buffer.putChar(oemPayload.getOemPayloadId());
             }
             buffer.putInt(session.getId());
             int ipmiSessionSequenceNumber = encrypted ? session.nextEncryptedSequenceNumber() : session.nextUnencryptedSequenceNumber();

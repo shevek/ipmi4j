@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
@@ -25,6 +26,7 @@ public class IpmiSession {
     private final int id;
     private AtomicInteger encryptedSequenceNumber = new AtomicInteger(0);
     private AtomicInteger unencryptedSequenceNumber = new AtomicInteger(0);
+    private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.RMCPP;
     private IpmiAuthenticationAlgorithm authenticationAlgorithm;
     private IpmiConfidentialityAlgorithm confidentialityAlgorithm;
     private Object confidentialityAlgorithmState;
@@ -50,6 +52,11 @@ public class IpmiSession {
     public byte[] newRandomSeed(int length) {
         SecureRandom r = new SecureRandom();
         return r.generateSeed(length);
+    }
+
+    @Nonnull
+    public IpmiSessionAuthenticationType getAuthenticationType() {
+        return authenticationType;
     }
 
     public IpmiAuthenticationAlgorithm getAuthenticationAlgorithm() {
