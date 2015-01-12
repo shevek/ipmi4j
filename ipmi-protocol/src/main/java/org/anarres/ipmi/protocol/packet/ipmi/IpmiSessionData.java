@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 public class IpmiSessionData extends AbstractWireable implements RmcpData {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiSessionData.class);
-    private IpmiSessionWrapper ipmiSessionWrapper;
     private IpmiSession ipmiSession;
+    private IpmiSessionWrapper ipmiSessionWrapper;
     private Integer ipmiSessionSequenceNumber;
     private IpmiPayload ipmiPayload;
 
@@ -83,5 +83,14 @@ public class IpmiSessionData extends AbstractWireable implements RmcpData {
         else
             ipmiSessionWrapper = new Ipmi15SessionWrapper();
         getIpmiSessionWrapper().fromWire(buffer, null, this);
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, "IpmiSessionData");
+        depth++;
+        appendValue(buf, depth, "Session", getIpmiSession());
+        appendValue(buf, depth, "SessionWrapper", getIpmiSessionWrapper());
+        appendChild(buf, depth, "IpmiPayload", getIpmiPayload());
     }
 }

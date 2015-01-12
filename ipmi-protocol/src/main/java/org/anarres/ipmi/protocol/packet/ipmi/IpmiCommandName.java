@@ -304,7 +304,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     @Nonnull
     private <T> T newInstance(@CheckForNull Class<T> type) {
         if (type == null)
-            throw new UnsupportedOperationException("Unsupported message type " + this);
+            throw new UnsupportedOperationException("Unsupported IPMI command " + this);
         try {
             return type.newInstance();
         } catch (Exception e) {

@@ -72,6 +72,6 @@ public class IpmiCommandTest {
         buf = ByteBuffer.wrap(expect);
         packet = new RmcpPacket();
         packet.fromWire(buf);
-        LOG.info("Packet is " + packet);
+        LOG.info("Packet is\n" + packet);
     }
 }

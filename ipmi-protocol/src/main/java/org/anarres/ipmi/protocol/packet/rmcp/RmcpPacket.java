@@ -51,13 +51,8 @@ public class RmcpPacket extends AbstractPacket {
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
-        indent(buf, depth).append("RmcpHeader:\n");
+        appendHeader(buf, depth, "RmcpHeader");
         super.toStringBuilder(buf, depth + 1);  // Header
-        indent(buf, depth).append("RmcpData:\n");
-        RmcpData data = getData();
-        if (data == null)
-            indent(buf, depth + 1).append("null:\n");
-        else
-            data.toStringBuilder(buf, depth + 1);
+        appendChild(buf, depth, "RmcpData", getData());
     }
 }

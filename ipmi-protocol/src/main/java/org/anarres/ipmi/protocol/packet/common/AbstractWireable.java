@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.common;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -99,16 +100,33 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
-    protected StringBuilder indent(@Nonnull StringBuilder buf, int depth) {
+    protected static StringBuilder indent(@Nonnull StringBuilder buf, int depth) {
         for (int i = 0; i < depth; i++)
             buf.append("  ");
         return buf;
     }
 
     @Nonnull
-    protected StringBuilder append(@Nonnull StringBuilder buf, int depth, String name, Object value) {
+    protected static StringBuilder appendHeader(@Nonnull StringBuilder buf, int depth, String name) {
         indent(buf, depth);
-        buf.append(name).append(": ").append(value);
+        buf.append(name).append(":").append('\n');
+        return buf;
+    }
+
+    @Nonnull
+    protected static StringBuilder appendValue(@Nonnull StringBuilder buf, int depth, String name, Object value) {
+        indent(buf, depth);
+        buf.append(name).append(": ").append(value).append('\n');
+        return buf;
+    }
+
+    @Nonnull
+    protected static StringBuilder appendChild(@Nonnull StringBuilder buf, int depth, @Nonnull String name, @CheckForNull Wireable value) {
+        appendHeader(buf, depth, name);
+        if (value == null)
+            indent(buf, depth).append("null\n");
+        else
+            value.toStringBuilder(buf, depth + 1);
         return buf;
     }
 

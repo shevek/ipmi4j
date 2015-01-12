@@ -21,7 +21,7 @@ public interface IpmiSessionWrapper {
     // public int getIpmiSessionId(); 
     // public int getIpmiSessionSequenceNumber();
     @Nonnegative
-    public int getWireLength(@Nonnull IpmiSession session, @Nonnull IpmiPayload payload);
+    public int getWireLength(@CheckForNull IpmiSession session, @Nonnull IpmiPayload payload);
 
     public void toWire(@Nonnull ByteBuffer buffer, @CheckForNull IpmiSession session, @Nonnull IpmiPayload payload);
 

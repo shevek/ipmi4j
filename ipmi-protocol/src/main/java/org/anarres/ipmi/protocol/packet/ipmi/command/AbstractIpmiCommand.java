@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.AbstractIpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiNetworkFunction;
@@ -111,7 +112,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         if (this instanceof IpmiResponse)
             networkFunctionByte |= 1;
         buffer.put((byte) (networkFunctionByte << 2 | getTargetLun().getValue()));
-        AbstractIpmiCommand.toWireChecksum(buffer, chk1Start);
+        toWireChecksum(buffer, chk1Start);
         int chk2Start = buffer.position();
         buffer.put(getSourceAddress());
         int seq = getSequenceNumber() & SEQUENCE_NUMBER_MASK;
@@ -129,6 +130,8 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
      * This implementation must be called with a buffer of exactly decodeable
      * length, as some packet types require consumption of "optional" or
      * "remaining" data without an auxiliary embedded length field.
+     * 
+     * @see AbstractIpmiSessionWrapper#newPayload(ByteBuffer, IpmiPayloadType)
      */
     @Override
     protected void fromWireUnchecked(ByteBuffer buffer) {
@@ -138,7 +141,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         tmp = buffer.get();
         IpmiNetworkFunction networkFunction = Code.fromInt(IpmiNetworkFunction.class, (tmp >>> 2) & ~1);
         targetLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
-        AbstractIpmiCommand.fromWireChecksum(buffer, chk1Start, "IPMI header checksum");
+        fromWireChecksum(buffer, chk1Start, "IPMI header checksum");
         int chk2Start = buffer.position();
         sourceAddress = buffer.get();
         tmp = buffer.get();

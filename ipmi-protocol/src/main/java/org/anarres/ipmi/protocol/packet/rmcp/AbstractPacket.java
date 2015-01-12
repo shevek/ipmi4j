@@ -157,8 +157,8 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
-        append(buf, depth, "RmcpSequenceNumber", UnsignedBytes.toInt(getSequenceNumber()));
-        append(buf, depth, "RmcpMessageClass", getMessageClass());
-        append(buf, depth, "RmcpMessageRole", getMessageRole());
+        appendValue(buf, depth, "RmcpSequenceNumber", UnsignedBytes.toInt(getSequenceNumber()));
+        appendValue(buf, depth, "RmcpMessageClass", getMessageClass());
+        appendValue(buf, depth, "RmcpMessageRole", getMessageRole());
     }
 }

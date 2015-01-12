@@ -37,14 +37,14 @@ public enum IpmiPayloadType implements Code.Wrapper {
     // 6 bits only.
     private final byte code;
     @CheckForSigned
-    private final byte majorFormat;
+    private final int majorFormat;
     @CheckForSigned
-    private final byte minorFormat;
+    private final int minorFormat;
 
     private IpmiPayloadType(@Nonnegative int code, int majorFormat, int minorFormat) {
         this.code = UnsignedBytes.checkedCast(code);
-        this.majorFormat = UnsignedBytes.checkedCast(majorFormat);
-        this.minorFormat = UnsignedBytes.checkedCast(minorFormat);
+        this.majorFormat = majorFormat;
+        this.minorFormat = minorFormat;
     }
 
     @Override
