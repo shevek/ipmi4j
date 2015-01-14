@@ -61,27 +61,47 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
     protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(new byte[3]);    // reserved
-        buffer.putInt(systemSessionId);
+        toWireIntLE(buffer, systemSessionId);
         buffer.put(consoleRandom);
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel, privilegeLookupMode));
         buffer.putChar((char) 0); // reserved
-        byte[] usernameBytes = username == null ? new byte[0] : username.getBytes(Charsets.ISO_8859_1);
-        buffer.put(UnsignedBytes.checkedCast(usernameBytes.length));    // Max is 0x10.
-        buffer.put(usernameBytes);
+        if (username != null) {
+            byte[] usernameBytes = username.getBytes(Charsets.ISO_8859_1);
+            buffer.put(UnsignedBytes.checkedCast(usernameBytes.length));    // Max is 0x10.
+            buffer.put(usernameBytes);
+        } else {
+            buffer.put((byte) 0);
+        }
     }
 
     @Override
     protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         assertWireBytesZero(buffer, 3);
-        systemSessionId = buffer.getInt();
+        systemSessionId = fromWireIntLE(buffer);
         consoleRandom = readBytes(buffer, 16);
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
         privilegeLookupMode = Code.fromByte(PrivilegeLookupMode.class, (byte) (requestedMaximumPrivilegeLevelByte & PrivilegeLookupMode.MASK));
         assertWireBytesZero(buffer, 2);
         int usernameLength = UnsignedBytes.toInt(buffer.get());
-        byte[] usernameBytes = readBytes(buffer, usernameLength);
-        username = new String(usernameBytes, Charsets.ISO_8859_1);
+        if (usernameLength > 0) {
+            byte[] usernameBytes = readBytes(buffer, usernameLength);
+            username = new String(usernameBytes, Charsets.ISO_8859_1);
+        } else {
+            username = null;
+        }
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
+        appendValue(buf, depth, "SystemSessionId", "0x" + Integer.toHexString(systemSessionId));
+        appendValue(buf, depth, "ConsoleRandom", consoleRandom);
+        appendValue(buf, depth, "RequestedMaximumPrivilegeLevel", requestedMaximumPrivilegeLevel);
+        appendValue(buf, depth, "PrivilegeLookupMode", privilegeLookupMode);
+        appendValue(buf, depth, "Username", username);
     }
 }

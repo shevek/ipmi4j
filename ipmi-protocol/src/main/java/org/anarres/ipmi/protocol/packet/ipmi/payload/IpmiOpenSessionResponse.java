@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Bits;
@@ -70,5 +71,19 @@ public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
         authenticationAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiAuthenticationAlgorithm.class);
         integrityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiIntegrityAlgorithm.class);
         confidentialityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiConfidentialityAlgorithm.class);
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
+        appendValue(buf, depth, "StatusCode", statusCode);
+        appendValue(buf, depth, "RequestedMaximumPrivilegeLevel", requestedMaximumPrivilegeLevel);
+        appendValue(buf, depth, "ConsoleSessionId", "0x" + Integer.toHexString(consoleSessionId));
+        appendValue(buf, depth, "SystemSessionId", "0x" + Integer.toHexString(systemSessionId));
+        appendValue(buf, depth, "AuthenticationAlgorithm", authenticationAlgorithm);
+        appendValue(buf, depth, "IntegrityAlgorithm", integrityAlgorithm);
+        appendValue(buf, depth, "ConfidentialityAlgorithm", confidentialityAlgorithm);
     }
 }
