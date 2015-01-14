@@ -9,4 +9,6 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
  * @author shevek
  */
 public interface IpmiResponse extends IpmiCommand {
+
+    // public byte getCompletionCode();
 }

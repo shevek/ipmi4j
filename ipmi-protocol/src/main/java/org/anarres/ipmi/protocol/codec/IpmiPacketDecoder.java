@@ -9,6 +9,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.slf4j.Logger;
@@ -21,12 +22,17 @@ import org.slf4j.LoggerFactory;
 public class IpmiPacketDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiPacketDecoder.class);
+    private final IpmiContext context;
+
+    public IpmiPacketDecoder(@Nonnull IpmiContext context) {
+        this.context = context;
+    }
 
     @Nonnull
     public DatagramPacket encode(@Nonnull Packet packet) throws SocketException {
-        int length = packet.getWireLength();
+        int length = packet.getWireLength(context);
         ByteBuffer buf = ByteBuffer.allocate(length);
-        packet.toWire(buf);
+        packet.toWire(context, buf);
         return new DatagramPacket(buf.array(), buf.position(), packet.getRemoteAddress());
     }
 
@@ -34,7 +40,7 @@ public class IpmiPacketDecoder {
     public Packet decode(@Nonnull SocketAddress remoteAddress, @Nonnull ByteBuffer buf) {
         RmcpPacket packet = new RmcpPacket();
         packet.withRemoteAddress(remoteAddress);
-        packet.fromWire(buf);
+        packet.fromWire(context, buf);
         if (buf.position() < buf.limit()) {
             LOG.warn("Discarded " + (buf.limit() - buf.position()) + " trailing bytes in RMCP packet: " + buf);
             buf.position(buf.limit());

@@ -14,7 +14,9 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionData;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ public class IpmiCommandTest {
         }
     }
     private final Formatter formatter = new Formatter();
+    private final IpmiContext context = new IpmiSessionManager();
 
     @Nonnull
     private static byte[] toByteArray(@Nonnull int... ints) {
@@ -54,15 +57,15 @@ public class IpmiCommandTest {
         request.extendedCapabilities = true;
         request.channelPrivilegeLevel = IpmiChannelPrivilegeLevel.Administrator;
 
-        IpmiSessionData data = new IpmiSessionData();
-        data.setIpmiSessionWrapper(new Ipmi15SessionWrapper());
+        IpmiSessionWrapper data = new Ipmi15SessionWrapper();
         data.setIpmiPayload(request);
 
         RmcpPacket packet = new RmcpPacket();
         packet.withData(data);
 
-        ByteBuffer buf = ByteBuffer.allocate(packet.getWireLength());
-        packet.toWire(buf);
+
+        ByteBuffer buf = ByteBuffer.allocate(packet.getWireLength(context));
+        packet.toWire(context, buf);
         buf.flip();
         LOG.info(formatter.format("Request", Unpooled.wrappedBuffer(buf)));
 
@@ -71,7 +74,7 @@ public class IpmiCommandTest {
 
         buf = ByteBuffer.wrap(expect);
         packet = new RmcpPacket();
-        packet.fromWire(buf);
+        packet.fromWire(context, buf);
         LOG.info("Packet is\n" + packet);
     }
 }

@@ -10,6 +10,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 
@@ -52,7 +53,7 @@ public abstract class AbstractAsfData extends AbstractWireable implements AsfRmc
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return 0
                 + 4 // ianaEnterpriseNumber
                 + 1 // message type
@@ -66,7 +67,7 @@ public abstract class AbstractAsfData extends AbstractWireable implements AsfRmc
     protected abstract int getDataWireLength();
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         buffer.putInt(IANA_ENTERPRISE_NUMBER.getNumber());
         buffer.put(getMessageType().getCode());
         buffer.put(getMessageTag());
@@ -79,7 +80,7 @@ public abstract class AbstractAsfData extends AbstractWireable implements AsfRmc
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         assertWireInt(buffer, IANA_ENTERPRISE_NUMBER.getNumber(), "IANA enterprise number");
         assertWireByte(buffer, getMessageType().getCode(), "message type code");
         setMessageTag(buffer.get());

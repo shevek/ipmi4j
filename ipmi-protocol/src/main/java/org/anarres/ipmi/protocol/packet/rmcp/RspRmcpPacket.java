@@ -3,6 +3,7 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  * RMCP Security Extensions Protocol (RSP).
@@ -15,6 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPa
  */
 public class RspRmcpPacket extends AbstractPacket {
 
+    public static final int PORT = 0x298;
     private int sessionId;
     private int sessionSequenceNumber;
     // For this specification, the mandatory-to-implement integrity algorithm is HMAC-SHA1-96 defined in [RFC2404]. 
@@ -51,11 +53,10 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    public int getWireLength() {
-        RmcpData data = getData();
+    public int getWireLength(IpmiContext context) {
         int length = 4 // sessionId
                 + 4 // sessionSequenceNumber
-                + getRawWireLength();
+                + getRawWireLength(context);
         return length
                 + IntegrityPad.PAD(length).length // Padding
                 + 1 // Padding length
@@ -64,11 +65,11 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         int start = buffer.position();
         buffer.putInt(sessionId);
         buffer.putInt(sessionSequenceNumber);
-        toWireRaw(buffer);
+        toWireRaw(context, buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             // Padding aligns us to a DWORD, which is 4 bytes.
             int length = buffer.position() - start;
@@ -81,12 +82,12 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    protected final void fromWireUnchecked(ByteBuffer buffer) {
+    protected final void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         int start = buffer.position();
         int sessionId = buffer.getInt();
         withSessionId(sessionId);
         withSessionSequenceNumber(buffer.getInt());
-        fromWireRaw(buffer);
+        fromWireRaw(context, buffer);
         if (sessionId != 0) {   // Page 24: Unsecured data.
             int length = buffer.position() - start;
             byte[] pad = IntegrityPad.PAD(length);

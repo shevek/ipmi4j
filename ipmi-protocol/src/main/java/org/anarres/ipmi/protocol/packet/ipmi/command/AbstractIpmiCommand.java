@@ -23,6 +23,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiNetworkFunction;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +95,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     public abstract IpmiCommandName getCommandName();
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return 6
                 + getDataWireLength()
                 + 1;    // data checksum.
@@ -105,7 +106,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     protected abstract int getDataWireLength();
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         int chk1Start = buffer.position();
         buffer.put(getTargetAddress());
         byte networkFunctionByte = getCommandName().getNetworkFunction().getCode();
@@ -134,7 +135,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
      * @see AbstractIpmiSessionWrapper#newPayload(ByteBuffer, IpmiPayloadType)
      */
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         int chk1Start = buffer.position();
         byte tmp;
         targetAddress = buffer.get();

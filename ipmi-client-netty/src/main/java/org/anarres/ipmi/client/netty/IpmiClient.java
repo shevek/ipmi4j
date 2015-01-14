@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.engine.AbstractIpmiClient;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  *
@@ -21,8 +22,12 @@ import org.anarres.ipmi.protocol.engine.AbstractIpmiClient;
 public class IpmiClient extends AbstractIpmiClient {
 
     private Channel channel;
-    private final IpmiPipelineInitializer.SharedHandlers sharedHandlers = new IpmiPipelineInitializer.SharedHandlers();
+    private IpmiPipelineInitializer.SharedHandlers sharedHandlers;
     private IpmiChannelType channelType = IpmiChannelType.NIO;
+
+    public IpmiClient(@Nonnull IpmiContext context) {
+        this.sharedHandlers = new IpmiPipelineInitializer.SharedHandlers(context);
+    }
 
     public void setDebug(boolean debug) {
         sharedHandlers.setDebug(debug);

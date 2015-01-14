@@ -4,6 +4,8 @@
  */
 package org.anarres.ipmi.protocol.codec;
 
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -16,7 +18,8 @@ public class IpmiPacketDecoderTest {
     // A trivial enough test suite to make Jenkins pass.
     @Test
     public void testSomeMethod() {
-        IpmiPacketDecoder decoder = new IpmiPacketDecoder();
+        IpmiContext context = new IpmiSessionManager();
+        IpmiPacketDecoder decoder = new IpmiPacketDecoder(context);
         assertNotNull(decoder);
     }
 }

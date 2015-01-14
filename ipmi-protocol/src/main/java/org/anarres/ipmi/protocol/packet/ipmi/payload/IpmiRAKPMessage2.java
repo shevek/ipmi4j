@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  * [IPMI2] Section 13.21 page 151.
@@ -29,12 +30,12 @@ public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return 40 + keyExchangeAuthenticationCode.length;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.putChar((char) 0);    // reserved
@@ -46,7 +47,7 @@ public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         assertWireBytesZero(buffer, 2);

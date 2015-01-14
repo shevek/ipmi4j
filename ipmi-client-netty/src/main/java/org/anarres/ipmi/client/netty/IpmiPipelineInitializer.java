@@ -10,6 +10,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.logging.LoggingHandler;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +27,13 @@ public class IpmiPipelineInitializer extends ChannelInitializer<Channel> {
 
         // private final TftpExceptionHandler exceptionHandler = new TftpExceptionHandler();
         private final LoggingHandler wireLogger = new LoggingHandler("tftp-datagram");
-        private final IpmiCodec codec = new IpmiCodec();
+        private final IpmiCodec codec;
         private final LoggingHandler packetLogger = new LoggingHandler("tftp-packet");
-
         private boolean debug = false;
+
+        public SharedHandlers(@Nonnull IpmiContext context) {
+            this.codec = new IpmiCodec(context);
+        }
 
         public void setDebug(boolean debug) {
             this.debug = debug;

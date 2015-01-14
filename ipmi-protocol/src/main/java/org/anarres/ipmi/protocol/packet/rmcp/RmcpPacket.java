@@ -2,6 +2,7 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  * RMCP Packet.
@@ -13,6 +14,8 @@ import javax.annotation.Nonnegative;
  * @author shevek
  */
 public class RmcpPacket extends AbstractPacket {
+
+    public static final int PORT = 0x26F;
 
     /** [IPMI2] Page 134, footnote 1. */
     private static boolean isPaddingRequired(@Nonnegative int length) {
@@ -29,23 +32,24 @@ public class RmcpPacket extends AbstractPacket {
     }
 
     @Override
-    public int getWireLength() {
-        int length = getRawWireLength();
+    public int getWireLength(IpmiContext context) {
+        int length = getRawWireLength(context);
         if (isPaddingRequired(length))
             length++;
         return length;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
-        toWireRaw(buffer);
-        if (isPaddingRequired(getRawWireLength()))
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+        toWireRaw(context, buffer);
+        // TODO: Compute this based on buffer position rather than re-walking the packet.
+        if (isPaddingRequired(getRawWireLength(context)))
             buffer.put((byte) 0);
     }
 
     @Override
-    protected final void fromWireUnchecked(ByteBuffer buffer) {
-        fromWireRaw(buffer);
+    protected final void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+        fromWireRaw(context, buffer);
         // There may or may not be one additional byte here.
     }
 

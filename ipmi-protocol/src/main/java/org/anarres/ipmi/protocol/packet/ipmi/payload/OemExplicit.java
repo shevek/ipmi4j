@@ -5,12 +5,13 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  *
  * @author shevek
  */
-public class OemExplicitPayload extends AbstractIpmiPayload {
+public class OemExplicit extends AbstractIpmiPayload {
 
     private int oemEnterpriseNumber;    // 3 byte oem iana; 1 byte zero
     private char oemPayloadId;
@@ -38,17 +39,17 @@ public class OemExplicitPayload extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return data.length;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         buffer.put(data);
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         data = new byte[buffer.remaining()];
         buffer.get(data);
     }

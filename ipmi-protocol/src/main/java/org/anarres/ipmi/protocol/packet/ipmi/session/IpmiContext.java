@@ -4,9 +4,14 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.session;
 
+import javax.annotation.CheckForNull;
+
 /**
  *
  * @author shevek
  */
 public interface IpmiContext {
+
+    @CheckForNull
+    public IpmiSession getIpmiSession(int sessionId);
 }

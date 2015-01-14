@@ -5,11 +5,14 @@
 package org.anarres.ipmi.protocol.packet.common;
 
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Chars;
+import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  *
@@ -17,32 +20,32 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractWireable implements Wireable {
 
-    protected abstract void toWireUnchecked(@Nonnull ByteBuffer buffer);
+    protected abstract void toWireUnchecked(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
 
     @Override
-    public void toWire(@Nonnull ByteBuffer buffer) {
+    public void toWire(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
         Preconditions.checkNotNull(buffer, "ByteBuffer was null.");
         int start = buffer.position();
-        toWireUnchecked(buffer);
+        toWireUnchecked(context, buffer);
 
-        int expectedLength = getWireLength();
+        int expectedLength = getWireLength(context);
         int actualLength = buffer.position() - start;
         if (actualLength != expectedLength)
             throw new IllegalStateException("Object should serialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this);
     }
 
-    protected abstract void fromWireUnchecked(@Nonnull ByteBuffer buffer);
+    protected abstract void fromWireUnchecked(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
 
     @Override
-    public void fromWire(ByteBuffer buffer) {
+    public void fromWire(@Nonnull IpmiContext context, ByteBuffer buffer) {
         Preconditions.checkNotNull(buffer, "ByteBuffer was null.");
         int start = buffer.position();
-        fromWireUnchecked(buffer);
+        fromWireUnchecked(context, buffer);
 
-        int expectedLength = getWireLength();
+        int expectedLength = getWireLength(context);
         int actualLength = buffer.position() - start;
         if (actualLength != expectedLength)
-            throw new IllegalStateException("Object should deserialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this);
+            throw new IllegalStateException("Object should deserialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this.getClass() + ": " + this);
     }
 
     /** Reads an array of bytes from the wire and returns them. */
@@ -97,6 +100,32 @@ public abstract class AbstractWireable implements Wireable {
         if (Integer.numberOfLeadingZeros(value) < Integer.SIZE - nbits)
             throw new IllegalArgumentException("Too many bits in " + Integer.toHexString(value) + "; expected max " + nbits);
         return value;
+    }
+
+    protected int getIntLE(@Nonnull ByteBuffer buffer) {
+        byte b0 = buffer.get();
+        byte b1 = buffer.get();
+        byte b2 = buffer.get();
+        byte b3 = buffer.get();
+        return Ints.fromBytes(b3, b2, b1, b0);
+    }
+
+    protected void putIntLE(@Nonnull ByteBuffer buffer, int c) {
+        buffer.put((byte) (c));
+        buffer.put((byte) (c >> 8));
+        buffer.put((byte) (c >> 16));
+        buffer.put((byte) (c >> 24));
+    }
+
+    protected char getCharLE(@Nonnull ByteBuffer buffer) {
+        byte lsb = buffer.get();
+        byte msb = buffer.get();
+        return Chars.fromBytes(msb, lsb);
+    }
+
+    protected void putCharLE(@Nonnull ByteBuffer buffer, char c) {
+        buffer.put((byte) (c & 0xFF));
+        buffer.put((byte) (c >>> Byte.SIZE));
     }
 
     @Nonnull

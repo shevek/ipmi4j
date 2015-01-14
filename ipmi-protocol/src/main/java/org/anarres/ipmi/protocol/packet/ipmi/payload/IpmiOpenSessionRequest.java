@@ -11,6 +11,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  *
@@ -31,12 +32,12 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return 32;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
         buffer.putChar((char) 0);   // reserved
@@ -47,7 +48,7 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));

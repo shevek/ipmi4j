@@ -15,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.codec.IpmiPacketDecoder;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,13 @@ import org.slf4j.LoggerFactory;
 public class IpmiCodec extends ChannelDuplexHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiCodec.class);
-    private final IpmiPacketDecoder decoder = new IpmiPacketDecoder();
+    private final IpmiContext context;
+    private final IpmiPacketDecoder decoder;
+
+    public IpmiCodec(IpmiContext context) {
+        this.context = context;
+        this.decoder = new IpmiPacketDecoder(context);
+    }
 
     @Nonnull
     public Packet decode(@Nonnull ChannelHandlerContext ctx, @Nonnull DatagramPacket packet) throws Exception {
@@ -36,9 +43,9 @@ public class IpmiCodec extends ChannelDuplexHandler {
 
     @Nonnull
     public DatagramPacket encode(@Nonnull ChannelHandlerContext ctx, @Nonnull Packet packet) throws Exception {
-        ByteBuf buf = ctx.alloc().buffer(packet.getWireLength());
+        ByteBuf buf = ctx.alloc().buffer(packet.getWireLength(context));
         ByteBuffer buffer = buf.nioBuffer(buf.writerIndex(), buf.writableBytes());
-        packet.toWire(buffer);
+        packet.toWire(context, buffer);
         buffer.flip();
         buf.writerIndex(buf.writerIndex() + buffer.remaining());
         return new DatagramPacket(buf, (InetSocketAddress) packet.getRemoteAddress());

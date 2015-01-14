@@ -12,6 +12,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  *
@@ -34,12 +35,12 @@ public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         return 36;
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context,ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
@@ -52,7 +53,7 @@ public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context,ByteBuffer buffer) {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         byte requestedMaximumPrivilegeLevelByte = buffer.get();

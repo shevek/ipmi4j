@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
  * [IPMI2] Section 15.9, page 210.
@@ -19,17 +20,17 @@ public class SOLMessage extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength() {
+    public int getWireLength(IpmiContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    protected void toWireUnchecked(ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    protected void fromWireUnchecked(ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

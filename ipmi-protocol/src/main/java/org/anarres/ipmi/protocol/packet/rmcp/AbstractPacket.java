@@ -13,7 +13,11 @@ import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionData;
+import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.Ipmi20SessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,8 +99,8 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
     }
 
     @Nonnegative
-    protected int getRawWireLength() {
-        return RMCP_HEADER_LENGTH + getData().getWireLength();
+    protected int getRawWireLength(@Nonnull IpmiContext context) {
+        return RMCP_HEADER_LENGTH + getData().getWireLength(context);
     }
 
     /**
@@ -114,9 +118,9 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         buffer.put(messageClass);
     }
 
-    protected void toWireRaw(@Nonnull ByteBuffer buffer) {
+    protected void toWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
         toWireHeader(buffer);
-        getData().toWire(buffer);
+        getData().toWire(context, buffer);
     }
 
     private void fromWireHeader(@Nonnull ByteBuffer buffer) {
@@ -128,31 +132,36 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         withMessageRole(Code.fromByte(RmcpMessageRole.class, (byte) (messageClass >>> 7)));
     }
 
-    protected void fromWireRaw(@Nonnull ByteBuffer buffer) {
+    protected void fromWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
         fromWireHeader(buffer);
         RmcpData data;
 
+        int position = buffer.position();
         switch (getMessageClass()) {
             case ASF:
-                int position = buffer.position();
                 int enterpriseNumber = buffer.getInt();
                 if (enterpriseNumber != AbstractAsfData.IANA_ENTERPRISE_NUMBER.getNumber())
                     throw new IllegalArgumentException("Unknown enterprise number 0x" + Integer.toHexString(enterpriseNumber));
                 AsfRmcpMessageType messageType = Code.fromBuffer(AsfRmcpMessageType.class, buffer);
                 data = messageType.newPacketData();
-                buffer.position(position);
                 break;
             case IPMI:
-                data = new IpmiSessionData();
+                byte authenticationTypeByte = buffer.get(buffer.position());
+                IpmiSessionAuthenticationType authenticationType = Code.fromByte(IpmiSessionAuthenticationType.class, authenticationTypeByte);
+                if (authenticationType == IpmiSessionAuthenticationType.RMCPP)
+                    data = new Ipmi20SessionWrapper();
+                else
+                    data = new Ipmi15SessionWrapper();
                 break;
             case OEM:
             default:
                 throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + getMessageClass());
         }
+        buffer.position(position);
 
         // LOG.info("Buffer position pre-data is " + buffer.position());
         withData(data);
-        data.fromWire(buffer);
+        data.fromWire(context, buffer);
     }
 
     @Override

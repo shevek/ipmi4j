@@ -10,7 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
@@ -30,7 +29,7 @@ public class IpmiSession {
     private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.RMCPP;
     private IpmiAuthenticationAlgorithm authenticationAlgorithm;
     private IpmiConfidentialityAlgorithm confidentialityAlgorithm;
-    private Object confidentialityAlgorithmState;
+    private IpmiConfidentialityAlgorithm.State confidentialityAlgorithmState;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
 
     public IpmiSession(int id) {
@@ -76,11 +75,11 @@ public class IpmiSession {
         this.confidentialityAlgorithm = confidentialityAlgorithm;
     }
 
-    public Object getConfidentialityAlgorithmState() {
+    public IpmiConfidentialityAlgorithm.State getConfidentialityAlgorithmState() {
         return confidentialityAlgorithmState;
     }
 
-    public void setConfidentialityAlgorithmState(Object confidentialityAlgorithmState) {
+    public void setConfidentialityAlgorithmState(IpmiConfidentialityAlgorithm.State confidentialityAlgorithmState) {
         this.confidentialityAlgorithmState = confidentialityAlgorithmState;
     }
 
