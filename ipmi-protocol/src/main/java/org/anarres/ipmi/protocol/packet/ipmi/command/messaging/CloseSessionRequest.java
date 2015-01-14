@@ -31,14 +31,14 @@ public class CloseSessionRequest extends AbstractIpmiSessionRequest {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        putIntLE(buffer, sessionId);
+        toWireIntLE(buffer, sessionId);
         if (sessionId == 0)
             buffer.put(sessionHandle);
     }
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        sessionId = getIntLE(buffer);
+        sessionId = fromWireIntLE(buffer);
         if (sessionId == 0)
             sessionHandle = buffer.get();
     }

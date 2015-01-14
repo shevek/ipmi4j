@@ -21,7 +21,7 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
 
     public static enum PrivilegeLookupMode implements Bits.Wrapper, Code.Wrapper {
 
-        USERNAME_PRIVILEGE(new Bits(0, 0, 1 << 4)),
+        USERNAME_PRIVILEGE(new Bits(0, 1 << 4, 0)),
         NAME_ONLY(new Bits(0, 1 << 4, 1 << 4));
         public static final int MASK = 0x0F << 4;
         private final Bits bits;

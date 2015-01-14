@@ -35,7 +35,8 @@ public class IpmiAlgorithmUtils {
         AbstractWireable.assertWireBytesZero(buffer, 2);
         AbstractWireable.assertWireByte(buffer, getWireLength(), "Algorithm wire length");
         T algorithm = Code.fromByte(algorithmType, buffer.get());
-        AbstractWireable.assertWireBytesZero(buffer, 3);
+        AbstractWireable.assertWireBytesZero(buffer, 2);
+        buffer.get();   // This is set to 8 in the packet trace I grabbed.
         return algorithm;
     }
 }

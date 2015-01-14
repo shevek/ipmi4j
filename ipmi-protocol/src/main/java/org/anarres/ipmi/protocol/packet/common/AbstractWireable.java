@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.common;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Chars;
 import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
@@ -45,7 +46,7 @@ public abstract class AbstractWireable implements Wireable {
         int expectedLength = getWireLength(context);
         int actualLength = buffer.position() - start;
         if (actualLength != expectedLength)
-            throw new IllegalStateException("Object should deserialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this.getClass() + ": " + this);
+            throw new IllegalStateException("Object should deserialize from " + expectedLength + " bytes, but consumed " + actualLength + ": " + this.getClass() + ": " + this);
     }
 
     /** Reads an array of bytes from the wire and returns them. */
@@ -93,7 +94,7 @@ public abstract class AbstractWireable implements Wireable {
     /** Reads a number of zero bytes from the buffer. */
     public static void assertWireBytesZero(@Nonnull ByteBuffer buffer, @Nonnegative int count) {
         for (int i = 0; i < count; i++)
-            assertWireByte(buffer, (byte) 0, "data byte at offset " + buffer.position());
+            assertWireByte(buffer, (byte) 0, "data byte at offset " + buffer.position() + " (reserved byte " + i + ")");
     }
 
     protected int assertMask(int value, int nbits) {
@@ -102,7 +103,37 @@ public abstract class AbstractWireable implements Wireable {
         return value;
     }
 
-    protected int getIntLE(@Nonnull ByteBuffer buffer) {
+    public static long fromWireLongLE(@Nonnull ByteBuffer buffer) {
+        byte b0 = buffer.get();
+        byte b1 = buffer.get();
+        byte b2 = buffer.get();
+        byte b3 = buffer.get();
+        byte b4 = buffer.get();
+        byte b5 = buffer.get();
+        byte b6 = buffer.get();
+        byte b7 = buffer.get();
+        return Longs.fromBytes(b7, b6, b5, b4, b3, b2, b1, b0);
+    }
+
+    public static void toWireLongLE(@Nonnull ByteBuffer buffer, long c) {
+        buffer.put((byte) (c));
+        buffer.put((byte) (c >> 8));
+        buffer.put((byte) (c >> 16));
+        buffer.put((byte) (c >> 24));
+        buffer.put((byte) (c >> 32));
+        buffer.put((byte) (c >> 40));
+        buffer.put((byte) (c >> 48));
+        buffer.put((byte) (c >> 56));
+    }
+
+    public static void toWireIntLE(@Nonnull ByteBuffer buffer, int data) {
+        buffer.put((byte) (data));
+        buffer.put((byte) (data >> 8));
+        buffer.put((byte) (data >> 16));
+        buffer.put((byte) (data >> 24));
+    }
+
+    public static int fromWireIntLE(@Nonnull ByteBuffer buffer) {
         byte b0 = buffer.get();
         byte b1 = buffer.get();
         byte b2 = buffer.get();
@@ -110,22 +141,15 @@ public abstract class AbstractWireable implements Wireable {
         return Ints.fromBytes(b3, b2, b1, b0);
     }
 
-    protected void putIntLE(@Nonnull ByteBuffer buffer, int c) {
-        buffer.put((byte) (c));
-        buffer.put((byte) (c >> 8));
-        buffer.put((byte) (c >> 16));
-        buffer.put((byte) (c >> 24));
+    public static void toWireCharLE(@Nonnull ByteBuffer buffer, char data) {
+        buffer.put((byte) (data));
+        buffer.put((byte) (data >> 8));
     }
 
-    protected char getCharLE(@Nonnull ByteBuffer buffer) {
-        byte lsb = buffer.get();
-        byte msb = buffer.get();
-        return Chars.fromBytes(msb, lsb);
-    }
-
-    protected void putCharLE(@Nonnull ByteBuffer buffer, char c) {
-        buffer.put((byte) (c & 0xFF));
-        buffer.put((byte) (c >>> Byte.SIZE));
+    public static char fromWireCharLE(@Nonnull ByteBuffer buffer) {
+        byte b0 = buffer.get();
+        byte b1 = buffer.get();
+        return Chars.fromBytes(b1, b0);
     }
 
     @Nonnull

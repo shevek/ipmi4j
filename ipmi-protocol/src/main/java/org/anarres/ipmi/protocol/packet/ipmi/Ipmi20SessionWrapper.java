@@ -142,8 +142,8 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
                 buffer.putInt(oemPayload.getOemEnterpriseNumber() << Byte.SIZE);
                 buffer.putChar(oemPayload.getOemPayloadId());
             }
-            putIntLE(buffer, getIpmiSessionId());
-            putIntLE(buffer, getIpmiSessionSequenceNumber());
+            toWireIntLE(buffer, getIpmiSessionId());
+            toWireIntLE(buffer, getIpmiSessionSequenceNumber());
 
             ByteBuffer integrityInput = buffer.duplicate();
 
@@ -151,7 +151,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             // 2 byte payload length
             int unencryptedLength = payload.getWireLength(context);
             int encryptedLength = confidentialityAlgorithm.getEncryptedLength(session, unencryptedLength);
-            putCharLE(buffer, Chars.checkedCast(encryptedLength));
+            toWireCharLE(buffer, Chars.checkedCast(encryptedLength));
 
             ENCRYPT:
             {
@@ -192,9 +192,9 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             authenticated = AbstractIpmiCommand.getBit(payloadTypeByte, 6);
             IpmiPayloadType payloadType = Code.fromInt(IpmiPayloadType.class, payloadTypeByte & 0x3F);
 
-            int sessionId = getIntLE(buffer);
+            int sessionId = fromWireIntLE(buffer);
             setIpmiSessionId(sessionId);
-            setIpmiSessionSequenceNumber(getIntLE(buffer));
+            setIpmiSessionSequenceNumber(fromWireIntLE(buffer));
 
             IpmiSession session = context.getIpmiSession(sessionId);
             IpmiAuthenticationAlgorithm authenticationAlgorithm = getAuthenticationAlgorithm(session);
@@ -204,7 +204,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             ByteBuffer integrityInput = buffer.duplicate();
 
             // TODO: Before calling payload.fromWire(), make sure to set the position and limit on the buffer.
-            int payloadLength = getCharLE(buffer);
+            int payloadLength = fromWireCharLE(buffer);
             ByteBuffer encryptedBuffer = buffer.duplicate();
             // LOG.info("position=" + encryptedBuffer.position());
             // LOG.info("length=0x" + Integer.toHexString(payloadLength));

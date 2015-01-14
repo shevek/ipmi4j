@@ -8,6 +8,5 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
  *
  * @author shevek
  */
-public abstract class AbstractIpmiSessionResponse extends AbstractIpmiSessionCommand implements IpmiResponse {
-    // TODO: Completion code
+public abstract class AbstractIpmiSessionResponse extends AbstractIpmiResponse {
 }

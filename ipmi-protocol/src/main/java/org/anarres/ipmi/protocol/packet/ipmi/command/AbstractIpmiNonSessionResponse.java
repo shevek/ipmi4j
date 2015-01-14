@@ -4,10 +4,11 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import java.nio.ByteBuffer;
+
 /**
  *
  * @author shevek
  */
-public abstract class AbstractIpmiNonSessionResponse extends AbstractIpmiNonSessionCommand implements IpmiResponse {
-    // TODO: Completion code
+public abstract class AbstractIpmiNonSessionResponse extends AbstractIpmiResponse {
 }

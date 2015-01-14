@@ -5,9 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 import com.google.common.base.Preconditions;
-import com.google.common.primitives.Chars;
 import com.google.common.primitives.Ints;
-import com.google.common.primitives.Longs;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -119,8 +117,12 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         int seq = getSequenceNumber() & SEQUENCE_NUMBER_MASK;
         buffer.put((byte) (seq << 2 | getSourceLun().getValue()));
         buffer.put(getCommandName().getCode());
+        toWireCompletionCode(buffer);
         toWireData(buffer);
         toWireChecksum(buffer, chk2Start);
+    }
+
+    protected void toWireCompletionCode(@Nonnull ByteBuffer buffer) {
     }
 
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
@@ -150,9 +152,13 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         sourceLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, buffer.get());
         buffer.limit(buffer.limit() - 1);   // Represent an accurate data length to the packet data decoder.
+        fromWireCompletionCode(buffer);
         fromWireData(buffer);
         buffer.limit(buffer.limit() + 1);   // And let us get the checksum out.
         fromWireChecksum(buffer, chk2Start, "IPMI data checksum");
+    }
+
+    protected void fromWireCompletionCode(@Nonnull ByteBuffer buffer) {
     }
 
     protected abstract void fromWireData(@Nonnull ByteBuffer buffer);
@@ -173,7 +179,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         byte expect = toChecksum(buffer, start);
         byte actual = buffer.get();
         if (expect != actual)
-            throw new IllegalArgumentException("Checkum failure: " + description
+            throw new IllegalArgumentException("Checksum failure: " + description
                     + ": expected=" + UnsignedBytes.toString(expect, 16)
                     + " actual=" + UnsignedBytes.toString(actual, 16));
     }
@@ -184,21 +190,15 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
 
     /** [IPMI2] Section 20.8, table 20-10, page 252. */
     public static void toWireUUIDLE(@Nonnull ByteBuffer buf, @Nonnull UUID uuid) {
-        byte[] lsb = Longs.toByteArray(uuid.getLeastSignificantBits());
-        reverse(lsb);
-        buf.put(lsb);
-
-        byte[] msb = Longs.toByteArray(uuid.getMostSignificantBits());
-        reverse(msb);
-        buf.put(msb);
+        toWireLongLE(buf, uuid.getLeastSignificantBits());
+        toWireLongLE(buf, uuid.getMostSignificantBits());
     }
 
     /** [IPMI2] Section 20.8, table 20-10, page 252. */
     @Nonnull
     public static UUID fromWireUUIDLE(@Nonnull ByteBuffer buf) {
-        byte[] uuid = readBytes(buf, 16);
-        long msb = Longs.fromBytes(uuid[15], uuid[14], uuid[13], uuid[12], uuid[11], uuid[10], uuid[9], uuid[8]);
-        long lsb = Longs.fromBytes(uuid[7], uuid[6], uuid[5], uuid[4], uuid[3], uuid[2], uuid[1], uuid[0]);
+        long lsb = fromWireLongLE(buf);
+        long msb = fromWireLongLE(buf);
         return new UUID(msb, lsb);
     }
 
@@ -216,32 +216,6 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         byte b1 = buf.get();
         byte b2 = buf.get();
         return Ints.fromBytes((byte) 0, b2, b1, b0);
-    }
-
-    public static void toWireIntLE(@Nonnull ByteBuffer buf, int data) {
-        buf.put((byte) (data));
-        buf.put((byte) (data >> 8));
-        buf.put((byte) (data >> 16));
-        buf.put((byte) (data >> 24));
-    }
-
-    public static int fromWireIntLE(@Nonnull ByteBuffer buf) {
-        byte b0 = buf.get();
-        byte b1 = buf.get();
-        byte b2 = buf.get();
-        byte b3 = buf.get();
-        return Ints.fromBytes(b3, b2, b1, b0);
-    }
-
-    public static void toWireCharLE(@Nonnull ByteBuffer buf, char data) {
-        buf.put((byte) (data));
-        buf.put((byte) (data >> 8));
-    }
-
-    public static char fromWireCharLE(@Nonnull ByteBuffer buf) {
-        byte b0 = buf.get();
-        byte b1 = buf.get();
-        return Chars.fromBytes(b1, b0);
     }
 
     /**
@@ -282,5 +256,15 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
             return setBit(data, bit);
         else
             return data;
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendValue(buf, depth, "IpmiPayloadType", getPayloadType());
+        appendValue(buf, depth, "IpmiCommand", getCommandName());
+        appendValue(buf, depth, "SourceAddress", "0x" + UnsignedBytes.toString(getSourceAddress(), 16));
+        appendValue(buf, depth, "SourceLun", getSourceLun());
+        appendValue(buf, depth, "TargetAddress", "0x" + UnsignedBytes.toString(getTargetAddress(), 16));
+        appendValue(buf, depth, "TargetLun", getTargetLun());
     }
 }

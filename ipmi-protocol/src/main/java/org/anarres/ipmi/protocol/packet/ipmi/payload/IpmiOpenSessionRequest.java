@@ -14,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
+ * [IPMI2] Section 13.17, table 13-9, page 147.
  *
  * @author shevek
  */
@@ -41,7 +42,7 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
         buffer.put(messageTag);
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
         buffer.putChar((char) 0);   // reserved
-        buffer.putInt(consoleSessionId);
+        toWireIntLE(buffer, consoleSessionId);
         IpmiAlgorithmUtils.toWireUnchecked(buffer, authenticationAlgorithm);
         IpmiAlgorithmUtils.toWireUnchecked(buffer, integrityAlgorithm);
         IpmiAlgorithmUtils.toWireUnchecked(buffer, confidentialityAlgorithm);
@@ -53,6 +54,7 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));
         assertWireBytesZero(buffer, 2);
+        consoleSessionId = fromWireIntLE(buffer);
         authenticationAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiAuthenticationAlgorithm.class);
         integrityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiIntegrityAlgorithm.class);
         confidentialityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiConfidentialityAlgorithm.class);

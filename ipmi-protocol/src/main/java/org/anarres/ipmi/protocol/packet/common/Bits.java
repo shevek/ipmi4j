@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A bit-masked subset of a byte array.
@@ -26,6 +28,8 @@ import javax.annotation.Nonnull;
  */
 public class Bits {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Bits.class);
+
     /** Implement this, probably in an enum. */
     public static interface Wrapper {
 
@@ -34,6 +38,8 @@ public class Bits {
     }
 
     public static byte validate(int byteMask, int byteValue) {
+        // LOG.info("Validate mask=" + byteMask + ", value=" + byteValue);
+        Preconditions.checkArgument(byteMask != 0, "Illegal byte mask 0");
         UnsignedBytes.checkedCast(byteMask);
         if ((byteValue & byteMask) != byteValue)
             throw new IllegalArgumentException("Bad byte value extends outside mask: (" + Integer.toHexString(byteValue) + " & " + Integer.toHexString(byteMask) + ") != " + Integer.toHexString(byteValue));
