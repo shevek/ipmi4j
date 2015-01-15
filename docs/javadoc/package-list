@@ -5,6 +5,9 @@ org.anarres.ipmi.protocol.engine
 org.anarres.ipmi.protocol.packet.asf
 org.anarres.ipmi.protocol.packet.common
 org.anarres.ipmi.protocol.packet.ipmi
+org.anarres.ipmi.protocol.packet.ipmi.command
+org.anarres.ipmi.protocol.packet.ipmi.command.global
+org.anarres.ipmi.protocol.packet.ipmi.command.messaging
 org.anarres.ipmi.protocol.packet.ipmi.payload
 org.anarres.ipmi.protocol.packet.ipmi.security
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication
