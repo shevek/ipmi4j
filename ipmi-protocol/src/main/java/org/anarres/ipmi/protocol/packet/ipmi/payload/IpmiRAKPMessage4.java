@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -36,7 +37,7 @@ public class IpmiRAKPMessage4 extends AbstractIpmiPayload {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.putChar((char) 0);    // reserved
-        buffer.putInt(consoleSessionId);
+        toWireIntLE(buffer, consoleSessionId);
         buffer.put(integrityCheckValue);
     }
 
@@ -45,7 +46,17 @@ public class IpmiRAKPMessage4 extends AbstractIpmiPayload {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         assertWireBytesZero(buffer, 2);
-        consoleSessionId = buffer.getInt();
-        throw new UnsupportedOperationException("integrityCheckValue");
+        consoleSessionId = fromWireIntLE(buffer);
+        integrityCheckValue = readBytes(buffer, buffer.remaining());
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
+        appendValue(buf, depth, "StatusCode", statusCode);
+        appendValue(buf, depth, "ConsoleSessionId", "0x" + Integer.toHexString(consoleSessionId));
+        appendValue(buf, depth, "IntegrityCheckValue", toHexString(integrityCheckValue));
     }
 }

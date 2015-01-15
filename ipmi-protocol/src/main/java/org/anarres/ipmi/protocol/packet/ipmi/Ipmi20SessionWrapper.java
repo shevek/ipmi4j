@@ -219,6 +219,11 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
                 IpmiPayload payload = newPayload(unencryptedBuffer, payloadType);
                 payload.fromWire(context, unencryptedBuffer);
                 setIpmiPayload(payload);
+
+                if (unencryptedBuffer.hasRemaining()) {
+                    throw new IllegalStateException(unencryptedBuffer.remaining()
+                            + " bytes remaining in buffer after decoding " + payload);
+                }
             }
 
             SIGN:

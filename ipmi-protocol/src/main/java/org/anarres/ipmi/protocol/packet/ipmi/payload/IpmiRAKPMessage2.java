@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
@@ -39,10 +40,9 @@ public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.putChar((char) 0);    // reserved
-        buffer.putInt(consoleSessionId);
+        toWireIntLE(buffer, consoleSessionId);
         buffer.put(systemRandom);
-        buffer.putLong(systemGuid.getMostSignificantBits());
-        buffer.putLong(systemGuid.getLeastSignificantBits());
+        toWireUUIDLE(buffer, systemGuid);
         buffer.put(keyExchangeAuthenticationCode);
     }
 
@@ -51,12 +51,22 @@ public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         assertWireBytesZero(buffer, 2);
-        consoleSessionId = buffer.getInt();
+        consoleSessionId = fromWireIntLE(buffer);
         systemRandom = readBytes(buffer, 16);
-        long systemGuidMsb = buffer.getLong();
-        long systemGuidLsb = buffer.getLong();
-        systemGuid = new UUID(systemGuidMsb, systemGuidLsb);
-        // keyExchangeAuthenticationCode = buffer.
-        throw new UnsupportedOperationException("keyExchangeAuthenticationCode");
+        systemGuid = fromWireUUIDLE(buffer);
+        // IpmiSession session = context.getIpmiSession(consoleSessionId);
+        // session.getAuthenticationAlgorithm().getHashLength();
+        keyExchangeAuthenticationCode = readBytes(buffer, buffer.remaining());
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
+        appendValue(buf, depth, "ConsoleSessionId", "0x" + Integer.toHexString(consoleSessionId));
+        appendValue(buf, depth, "SystemRandom", toHexString(systemRandom));
+        appendValue(buf, depth, "SystemGUID", systemGuid);
+        appendValue(buf, depth, "KeyExchangeAuthenticationCode", toHexString(keyExchangeAuthenticationCode));
     }
 }

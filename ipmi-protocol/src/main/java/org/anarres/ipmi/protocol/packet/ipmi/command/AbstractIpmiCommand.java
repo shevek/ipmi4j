@@ -184,24 +184,6 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
                     + " actual=" + UnsignedBytes.toString(actual, 16));
     }
 
-    protected static void reverse(byte[] b) {
-        Collections.reverse(Arrays.asList(b));
-    }
-
-    /** [IPMI2] Section 20.8, table 20-10, page 252. */
-    public static void toWireUUIDLE(@Nonnull ByteBuffer buf, @Nonnull UUID uuid) {
-        toWireLongLE(buf, uuid.getLeastSignificantBits());
-        toWireLongLE(buf, uuid.getMostSignificantBits());
-    }
-
-    /** [IPMI2] Section 20.8, table 20-10, page 252. */
-    @Nonnull
-    public static UUID fromWireUUIDLE(@Nonnull ByteBuffer buf) {
-        long lsb = fromWireLongLE(buf);
-        long msb = fromWireLongLE(buf);
-        return new UUID(msb, lsb);
-    }
-
     public static void toWireOemIanaLE3(@Nonnull ByteBuffer buf, int data) {
         buf.put((byte) (data));
         buf.put((byte) (data >> 8));

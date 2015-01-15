@@ -34,8 +34,7 @@ public class RmcpPacket extends AbstractPacket {
     @Override
     public int getWireLength(IpmiContext context) {
         int length = getRawWireLength(context);
-        if (isPaddingRequired(length))
-            length++;
+        // if (isPaddingRequired(length)) length++;
         return length;
     }
 
@@ -43,8 +42,7 @@ public class RmcpPacket extends AbstractPacket {
     protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         toWireRaw(context, buffer);
         // TODO: Compute this based on buffer position rather than re-walking the packet.
-        if (isPaddingRequired(getRawWireLength(context)))
-            buffer.put((byte) 0);
+        // if (isPaddingRequired(getRawWireLength(context))) buffer.put((byte) 0);
     }
 
     @Override

@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -36,7 +37,7 @@ public class IpmiRAKPMessage3 extends AbstractIpmiPayload {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.putChar((char) 0);    // reserved
-        buffer.putInt(systemSessionId);
+        toWireIntLE(buffer, systemSessionId);
         buffer.put(keyExchangeAuthenticationCode);
     }
 
@@ -45,7 +46,17 @@ public class IpmiRAKPMessage3 extends AbstractIpmiPayload {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         assertWireBytesZero(buffer, 2);
-        systemSessionId = buffer.getInt();
-        throw new UnsupportedOperationException("keyExchangeAuthenticationCode");
+        systemSessionId = fromWireIntLE(buffer);
+        keyExchangeAuthenticationCode = readBytes(buffer, buffer.remaining());
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
+        appendValue(buf, depth, "StatusCode", statusCode);
+        appendValue(buf, depth, "SystemSessionId", "0x" + Integer.toHexString(systemSessionId));
+        appendValue(buf, depth, "KeyExchangeAuthenticationCode", toHexString(keyExchangeAuthenticationCode));
     }
 }

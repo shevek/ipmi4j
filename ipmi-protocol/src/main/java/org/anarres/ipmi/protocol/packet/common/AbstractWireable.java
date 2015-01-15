@@ -10,16 +10,21 @@ import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author shevek
  */
 public abstract class AbstractWireable implements Wireable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractWireable.class);
 
     protected abstract void toWireUnchecked(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
 
@@ -47,6 +52,7 @@ public abstract class AbstractWireable implements Wireable {
         int actualLength = buffer.position() - start;
         if (actualLength != expectedLength)
             throw new IllegalStateException("Object should deserialize from " + expectedLength + " bytes, but consumed " + actualLength + ": " + this.getClass() + ": " + this);
+        // LOG.debug("Decoded " + this.getClass().getSimpleName() + " from " + actualLength + " bytes.");
     }
 
     /** Reads an array of bytes from the wire and returns them. */
@@ -103,6 +109,20 @@ public abstract class AbstractWireable implements Wireable {
         return value;
     }
 
+    /** [IPMI2] Section 20.8, table 20-10, page 252. */
+    public static void toWireUUIDLE(@Nonnull ByteBuffer buf, @Nonnull UUID uuid) {
+        toWireLongLE(buf, uuid.getLeastSignificantBits());
+        toWireLongLE(buf, uuid.getMostSignificantBits());
+    }
+
+    /** [IPMI2] Section 20.8, table 20-10, page 252. */
+    @Nonnull
+    public static UUID fromWireUUIDLE(@Nonnull ByteBuffer buf) {
+        long lsb = fromWireLongLE(buf);
+        long msb = fromWireLongLE(buf);
+        return new UUID(msb, lsb);
+    }
+
     public static long fromWireLongLE(@Nonnull ByteBuffer buffer) {
         byte b0 = buffer.get();
         byte b1 = buffer.get();
@@ -157,6 +177,18 @@ public abstract class AbstractWireable implements Wireable {
         for (int i = 0; i < depth; i++)
             buf.append("  ");
         return buf;
+    }
+
+    @Nonnull
+    protected String toHexString(@CheckForNull byte[] data) {
+        if (data == null)
+            return "<null>";
+        StringBuilder buf = new StringBuilder();
+        buf.append("(").append(data.length).append(" bytes) ");
+        for (byte b : data)
+            buf.append(UnsignedBytes.toString(b, 16)).append(' ');
+        buf.setLength(buf.length() - 1);
+        return buf.toString();
     }
 
     @Nonnull
