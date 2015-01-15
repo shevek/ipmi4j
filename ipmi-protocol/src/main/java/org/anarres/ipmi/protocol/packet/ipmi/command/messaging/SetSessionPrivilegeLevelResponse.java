@@ -5,33 +5,38 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.RequestedMaximumPrivilegeLevel;
 
 /**
- * [IPMI2] Section 22.19, table 22-24, page 297.
  *
  * @author shevek
  */
-public class CloseSessionResponse extends AbstractIpmiSessionResponse {
+public class SetSessionPrivilegeLevelResponse extends AbstractIpmiSessionResponse {
+
+    public RequestedMaximumPrivilegeLevel privilegeLevel;
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.CloseSession;
+        return IpmiCommandName.SetSessionPrivilegeLevel;
     }
 
     @Override
-    public int getDataWireLength() {
-        return 1;
+    protected int getDataWireLength() {
+        return 2;
     }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
         toWireCompletionCode(buffer);
+        buffer.put(privilegeLevel.getCode());
     }
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
         fromWireCompletionCode(buffer);
+        privilegeLevel = Code.fromBuffer(RequestedMaximumPrivilegeLevel.class, buffer);
     }
 }

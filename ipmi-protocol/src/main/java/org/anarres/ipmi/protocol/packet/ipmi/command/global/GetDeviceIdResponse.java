@@ -36,7 +36,6 @@ public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
             return bits;
         }
     }
-    public IpmiCompletionCode completionCode;
     public byte deviceId;
     public boolean deviceProvidesDeviceSDRs;
     public int deviceRevision;
@@ -61,7 +60,7 @@ public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        buffer.put(completionCode.getCode());   // 1
+        toWireCompletionCode(buffer);   // 1
         buffer.put(deviceId);   // 2
         buffer.put(setBit((byte) (deviceRevision & 0xF), 7, deviceProvidesDeviceSDRs)); // 3
         buffer.put(setBit((byte) (deviceFirmwareRevisionMajor & 0x7F), 7, deviceAvailable));    // 4
@@ -76,7 +75,7 @@ public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        completionCode = Code.fromBuffer(IpmiCompletionCode.class, buffer); // 1
+        fromWireCompletionCode(buffer); // 1
         deviceId = buffer.get();    // 2
         byte b = buffer.get();  // 3
         deviceProvidesDeviceSDRs = getBit(b, 7);

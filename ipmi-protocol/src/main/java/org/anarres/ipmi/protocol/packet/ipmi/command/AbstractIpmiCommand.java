@@ -117,12 +117,8 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         int seq = getSequenceNumber() & SEQUENCE_NUMBER_MASK;
         buffer.put((byte) (seq << 2 | getSourceLun().getValue()));
         buffer.put(getCommandName().getCode());
-        toWireCompletionCode(buffer);
         toWireData(buffer);
         toWireChecksum(buffer, chk2Start);
-    }
-
-    protected void toWireCompletionCode(@Nonnull ByteBuffer buffer) {
     }
 
     protected abstract void toWireData(@Nonnull ByteBuffer buffer);
@@ -152,13 +148,9 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         sourceLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, buffer.get());
         buffer.limit(buffer.limit() - 1);   // Represent an accurate data length to the packet data decoder.
-        fromWireCompletionCode(buffer);
         fromWireData(buffer);
         buffer.limit(buffer.limit() + 1);   // And let us get the checksum out.
         fromWireChecksum(buffer, chk2Start, "IPMI data checksum");
-    }
-
-    protected void fromWireCompletionCode(@Nonnull ByteBuffer buffer) {
     }
 
     protected abstract void fromWireData(@Nonnull ByteBuffer buffer);

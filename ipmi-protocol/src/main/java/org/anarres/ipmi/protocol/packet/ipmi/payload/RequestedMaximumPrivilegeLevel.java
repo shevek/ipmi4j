@@ -8,15 +8,19 @@ import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 
 /**
  * [IPMI2] Section 13.20 page 150: {@link IpmiRAKPMessage1}.
- * [IPMI2] Section 13.17 page 147: {@link IpmiOpenSessionRequest}.
+ * [IPMI2] Section 13.17 page 147: {@link IpmiOpenSessionRequest}: MAXIMUM_ALLOWED_BY_CIPHER.
+ * [IPMI2] Section 22.18, table 22-23, page 297: {@link SetSessionPrivilegeLevelRequest}: UNCHANGED.
+ *
+ * @see IpmiChannelPrivilegeLevel
  */
+// TODO: -> IpmiPrivilegeLevel
 public enum RequestedMaximumPrivilegeLevel implements Bits.Wrapper, Code.Wrapper {
 
-    /** IpmiOpenSessionRequest only. [IPMI2] Section 13.17 page 147. */
-    MAXIMUM_ALLOWED_BY_CIPHER(0),
+    UNSPECIFIED(0),
     CALLBACK(1),
     USER(2),
     OPERATOR(3),

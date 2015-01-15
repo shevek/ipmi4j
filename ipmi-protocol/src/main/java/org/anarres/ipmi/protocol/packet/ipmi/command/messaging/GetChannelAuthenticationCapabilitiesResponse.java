@@ -69,12 +69,12 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNo
 
     @Override
     protected int getDataWireLength() {
-        return 8;
+        return 9;
     }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        // buffer.put(completionCode.getCode());   // 1
+        fromWireCompletionCode(buffer); // 1
         buffer.put(channelNumber.getCode());    // 2
         byte b = 0;
         if (extendedCapabilities != null)
@@ -90,7 +90,7 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNo
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        // completionCode = Code.fromBuffer(IpmiCompletionCode.class, buffer); // 1
+        toWireCompletionCode(buffer);   // 1
         channelNumber = Code.fromBuffer(IpmiChannelNumber.class, buffer);   // 2
         byte b = buffer.get();  // 3
         boolean hasExtendedCapabilities = (b & (1 << 7)) != 0;

@@ -4,8 +4,6 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
-import java.nio.ByteBuffer;
-
 /**
  *
  * @author shevek

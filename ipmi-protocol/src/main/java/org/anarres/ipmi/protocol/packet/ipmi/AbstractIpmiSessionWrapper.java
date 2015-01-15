@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -53,7 +54,8 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
                 return new IpmiRAKPMessage4();
             case IPMI:
                 int position = buffer.position();
-                byte networkFunctionByte = buffer.get(position + 1);
+                int networkFunctionByte = UnsignedBytes.toInt(buffer.get(position + 1));
+                LOG.info("NetworkFunctionByte is 0x" + Integer.toHexString(networkFunctionByte));
                 IpmiNetworkFunction networkFunction = Code.fromInt(IpmiNetworkFunction.class, (networkFunctionByte >>> 2) & ~1);
                 byte commandNameByte = buffer.get(position + 5);
                 IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, commandNameByte);

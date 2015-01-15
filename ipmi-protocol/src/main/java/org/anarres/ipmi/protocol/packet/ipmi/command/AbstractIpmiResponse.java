@@ -23,17 +23,10 @@ public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implement
         this.ipmiCompletionCode = ipmiCompletionCode;
     }
 
-    @Override
-    public int getWireLength(IpmiContext context) {
-        return super.getWireLength(context) + 1;    // Completion code.
-    }
-
-    @Override
     protected void toWireCompletionCode(ByteBuffer buffer) {
         buffer.put(getIpmiCompletionCode());
     }
 
-    @Override
     protected void fromWireCompletionCode(ByteBuffer buffer) {
         setIpmiCompletionCode(buffer.get());
     }
