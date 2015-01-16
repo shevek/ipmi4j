@@ -18,14 +18,23 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public enum IpmiNetworkFunction implements Code.Wrapper {
 
+    /** Chassis Device Requests and Responses. */
     Chassis(0x00),
+    /** Bridge Requests and Responses. */
     Bridge(0x02),
+    /** Sensor and Event Requests and Responses. */
     Sensor(0x04),
+    /** Application Requests and Responses. */
     App(0x06),
+    /** Firmware Transfer Requests and Responses. */
     Firmware(0x08),
+    /** Non-volatile Storage Requests and Responses. */
     Storage(0x0A),
+    /** Media-specific Configuration & Control. */
     Transport(0x0C),
+    /** Non-IPMI Group Requests and Responses. */
     GroupExtension(0x2C),
+    /** OEM/Non- IPMI Group Requests and Response. */
     OEM_Group(0x2E),
     ControllerSpecific0(0x30),
     ControllerSpecific1(0x32),

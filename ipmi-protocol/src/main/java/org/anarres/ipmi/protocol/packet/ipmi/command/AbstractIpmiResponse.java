@@ -4,8 +4,11 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
 
 /**
  *
@@ -15,6 +18,11 @@ public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implement
 
     private byte ipmiCompletionCode;
 
+    // TODO: Refactor generally into getDataWireLength().
+    protected boolean isIpmiCompletionCodeSuccess() {
+        return ipmiCompletionCode == 0;
+    }
+
     public byte getIpmiCompletionCode() {
         return ipmiCompletionCode;
     }
@@ -23,11 +31,29 @@ public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implement
         this.ipmiCompletionCode = ipmiCompletionCode;
     }
 
-    protected void toWireCompletionCode(ByteBuffer buffer) {
-        buffer.put(getIpmiCompletionCode());
+    /** Returns true if the completion code is not a success. */
+    protected boolean toWireCompletionCode(@Nonnull ByteBuffer buffer) {
+        byte code = getIpmiCompletionCode();
+        buffer.put(code);
+        return code != 0;
     }
 
-    protected void fromWireCompletionCode(ByteBuffer buffer) {
-        setIpmiCompletionCode(buffer.get());
+    /** Returns true if the completion code is not a success. */
+    protected boolean fromWireCompletionCode(@Nonnull ByteBuffer buffer) {
+        byte code = buffer.get();
+        setIpmiCompletionCode(code);
+        return code != 0;
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        byte code = getIpmiCompletionCode();
+        try {
+            IpmiCompletionCode data = Code.fromByte(IpmiCompletionCode.class, code);
+            appendValue(buf, depth, "IpmiCompletionCode", data);
+        } catch (IllegalArgumentException e) {
+            appendValue(buf, depth, "IpmiCompletionCode", "0x" + UnsignedBytes.toString(code, 16));
+        }
     }
 }

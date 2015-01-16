@@ -135,15 +135,15 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     @Override
     protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
         int chk1Start = buffer.position();
-        byte tmp;
+        int tmp;
         targetAddress = buffer.get();
-        tmp = buffer.get();
+        tmp = UnsignedBytes.toInt(buffer.get());
         IpmiNetworkFunction networkFunction = Code.fromInt(IpmiNetworkFunction.class, (tmp >>> 2) & ~1);
         targetLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         fromWireChecksum(buffer, chk1Start, "IPMI header checksum");
         int chk2Start = buffer.position();
         sourceAddress = buffer.get();
-        tmp = buffer.get();
+        tmp = UnsignedBytes.toInt(buffer.get());
         sequenceNumber = (tmp >>> 2) & SEQUENCE_NUMBER_MASK;
         sourceLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, buffer.get());
@@ -234,6 +234,8 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, "IpmiHeader");
+        depth++;
         appendValue(buf, depth, "IpmiPayloadType", getPayloadType());
         appendValue(buf, depth, "IpmiCommand", getCommandName());
         appendValue(buf, depth, "SourceAddress", "0x" + UnsignedBytes.toString(getSourceAddress(), 16));

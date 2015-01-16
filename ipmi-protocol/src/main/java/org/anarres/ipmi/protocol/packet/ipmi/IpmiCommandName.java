@@ -10,16 +10,24 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersResponse;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
 
 /**
@@ -78,7 +86,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     GetAuthCode("Get AuthCode", IpmiNetworkFunction.App, 0x3F, Operator),
     SetChannelAccess("Set Channel Access", IpmiNetworkFunction.App, 0x40, Administrator),
     GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41, User),
-    GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42, User),
+    GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42, User, GetChannelInfoRequest.class, GetChannelInfoResponse.class),
     SetUserAccessCommand("Set User Access Command", IpmiNetworkFunction.App, 0x43, Administrator),
     GetUserAccessCommand("Get User Access Command", IpmiNetworkFunction.App, 0x44, Operator),
     SetUserName("Set User Name", IpmiNetworkFunction.App, 0x45, Administrator),
@@ -104,7 +112,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     // FirmwareFirewallConfiguration("Firmware Firewall Configuration (see IPM Device Commands, above)", IpmiNetworkFunction.App, 0x60h-64),
     // Chassis Device Commands
     GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00, User),
-    GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01, User),
+    GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01, User, GetChassisStatusRequest.class, GetChassisStatusResponse.class),
     ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02, Operator),
     ChassisReset("Chassis Reset", IpmiNetworkFunction.Chassis, 0x03, Operator),
     ChassisIdentify("Chassis Identify", IpmiNetworkFunction.Chassis, 0x04, Operator),
@@ -202,7 +210,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     SetSerialRoutingMux("Set Serial Routing Mux", IpmiNetworkFunction.Transport, 0x1C, Administrator),
     SOLActivating("SOL Activating", IpmiNetworkFunction.Transport, 0x20), // Weird.
     SetSOLConfigurationParameters("Set SOL Configuration Parameters", IpmiNetworkFunction.Transport, 0x21, Administrator),
-    GetSOLConfigurationParameters("Get SOL Configuration Parameters", IpmiNetworkFunction.Transport, 0x22, User),
+    GetSOLConfigurationParameters("Get SOL Configuration Parameters", IpmiNetworkFunction.Transport, 0x22, User, GetSOLConfigurationParametersRequest.class, GetSOLConfigurationParametersResponse.class),
     // Command Forwarding Commands
     ForwardedCommand("Forwarded Command", IpmiNetworkFunction.Transport, 0x30), // Weird
     SetForwardedCommands("Set Forwarded Commands", IpmiNetworkFunction.Transport, 0x31, Administrator),
@@ -237,6 +245,13 @@ public enum IpmiCommandName implements Code.Wrapper {
     SendICMBEventMessage("SendICMBEventMessage", IpmiNetworkFunction.Bridge, 0x33, Operator),
     GetEventDestination("GetEventDestination (optional)", IpmiNetworkFunction.Bridge, 0x34, User),
     GetEventReceptionState("GetEventReceptionState (optional)", IpmiNetworkFunction.Bridge, 0x35, User),
+    // OEM commands for PICMG
+    /** [IPMI2] Section 5.1, table 5-1, page 41, "Group Extension" */
+    PICMGExtension("PICMG Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x00, Unprotected),
+    DMTFExtension("DMTF Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x01, Unprotected),
+    SSIForumExtension("SSI Forum Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x02, Unprotected),
+    VITAStandardsExtension("VITA Standards Organization Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x03, Unprotected),
+    DCMIExtension("DCMI Specifications Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0xDC, Unprotected),
     // OEM Commands for Bridge NetFn
     // OEMCommands("OEM Commands", IpmiNetworkFunction.Bridge, 0xC0h-FE),
     // Other Bridge Commands
@@ -306,9 +321,9 @@ public enum IpmiCommandName implements Code.Wrapper {
     }
 
     @Nonnull
-    private <T> T newInstance(@CheckForNull Class<T> type) {
+    private IpmiCommand newInstance(@CheckForNull Class<? extends IpmiCommand> type) {
         if (type == null)
-            throw new UnsupportedOperationException("Unsupported IPMI command " + this);
+            return new UnknownIpmiCommand(this);
         try {
             return type.newInstance();
         } catch (Exception e) {
@@ -317,12 +332,12 @@ public enum IpmiCommandName implements Code.Wrapper {
     }
 
     @Nonnull
-    public IpmiRequest newRequestMessage() {
+    public IpmiCommand newRequestMessage() {
         return newInstance(requestType);
     }
 
     @Nonnull
-    public IpmiResponse newResponseMessage() {
+    public IpmiCommand newResponseMessage() {
         return newInstance(responseType);
     }
 }

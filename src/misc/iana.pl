@@ -13,6 +13,7 @@ my %include = map { $_ => 1 } (
 	674,	# Dell
 	4542,	# Alerting Specifications Forum
 	4769,	# IBM
+	7154,	# Required by section 22.24
 	20301,	# IBM eServer X
 );
 

@@ -180,7 +180,7 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
-    protected String toHexString(@CheckForNull byte[] data) {
+    protected String toHexString(@CheckForNull byte... data) {
         if (data == null)
             return "<null>";
         StringBuilder buf = new StringBuilder();
@@ -205,13 +205,16 @@ public abstract class AbstractWireable implements Wireable {
         return buf;
     }
 
+    // protected static StringBuilder appendCode(@Nonnull StringBuilder buf, int depth, String name, Class<?> type, byte code) { }
     @Nonnull
     protected static StringBuilder appendChild(@Nonnull StringBuilder buf, int depth, @Nonnull String name, @CheckForNull Wireable value) {
-        appendHeader(buf, depth, name);
-        if (value == null)
+        if (value == null) {
+            appendHeader(buf, depth, name);
             indent(buf, depth).append("null\n");
-        else
+        } else {
+            appendValue(buf, depth, name, value.getClass().getSimpleName());
             value.toStringBuilder(buf, depth + 1);
+        }
         return buf;
     }
 

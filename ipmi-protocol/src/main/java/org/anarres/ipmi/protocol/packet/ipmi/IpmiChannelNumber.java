@@ -29,6 +29,7 @@ public enum IpmiChannelNumber implements Code.Wrapper {
     CA(0xA),
     CB(0xB),
     CURRENT(0xE),
+    /** The system interface? */
     CF(0xF);
     private final byte code;
 

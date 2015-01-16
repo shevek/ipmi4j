@@ -136,18 +136,8 @@ public class Bits {
 
     /** Convenience constructor. */
     @Nonnull
-    @Deprecated
-    public static Bits forBitValues(@Nonnegative int byteIndex, @Nonnull Map<Integer, Boolean> bitValues) {
-        Preconditions.checkArgument(!bitValues.isEmpty(), "No bit values.");
-        int byteMask = 0;
-        int byteValue = 0;
-        for (Map.Entry<Integer, Boolean> e : bitValues.entrySet()) {
-            int b = 1 << e.getKey();
-            byteMask |= b;
-            if (e.getValue())
-                byteValue |= b;
-        }
-        return new Bits(byteIndex, byteMask, byteValue);
+    public static Bits forBitIndex(@Nonnegative int bitIndex) {
+        return forBitIndex(0, bitIndex);
     }
 
     /**

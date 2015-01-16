@@ -55,7 +55,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
             case IPMI:
                 int position = buffer.position();
                 int networkFunctionByte = UnsignedBytes.toInt(buffer.get(position + 1));
-                LOG.info("NetworkFunctionByte is 0x" + Integer.toHexString(networkFunctionByte));
+                // LOG.info("NetworkFunctionByte is 0x" + Integer.toHexString(networkFunctionByte));
                 IpmiNetworkFunction networkFunction = Code.fromInt(IpmiNetworkFunction.class, (networkFunctionByte >>> 2) & ~1);
                 byte commandNameByte = buffer.get(position + 5);
                 IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, commandNameByte);

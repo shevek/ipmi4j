@@ -51,6 +51,6 @@ public enum IpmiChannelProtocol implements Code.Wrapper {
 
     @Override
     public String toString() {
-        return name() + "(0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getName() + " :" + getDescription() + ")";
+        return name() + "(0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getName() + ": " + getDescription() + ")";
     }
 }
