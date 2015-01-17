@@ -21,6 +21,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoResponse;
@@ -85,7 +87,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x3E),
     GetAuthCode("Get AuthCode", IpmiNetworkFunction.App, 0x3F, Operator),
     SetChannelAccess("Set Channel Access", IpmiNetworkFunction.App, 0x40, Administrator),
-    GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41, User),
+    GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41, User, GetChannelAccessRequest.class, GetChannelAccessResponse.class),
     GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42, User, GetChannelInfoRequest.class, GetChannelInfoResponse.class),
     SetUserAccessCommand("Set User Access Command", IpmiNetworkFunction.App, 0x43, Administrator),
     GetUserAccessCommand("Get User Access Command", IpmiNetworkFunction.App, 0x44, Operator),
