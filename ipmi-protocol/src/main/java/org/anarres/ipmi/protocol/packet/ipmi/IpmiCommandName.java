@@ -40,6 +40,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoReq
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersResponse;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
@@ -161,7 +163,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     SetSensorHysteresis("Set Sensor Hysteresis", IpmiNetworkFunction.Sensor, 0x24, Operator),
     GetSensorHysteresis("Get Sensor Hysteresis", IpmiNetworkFunction.Sensor, 0x25, User),
     SetSensorThreshold("Set Sensor Threshold", IpmiNetworkFunction.Sensor, 0x26, Operator),
-    GetSensorThreshold("Get Sensor Threshold", IpmiNetworkFunction.Sensor, 0x27, User),
+    GetSensorThreshold("Get Sensor Threshold", IpmiNetworkFunction.Sensor, 0x27, User, GetSensorThresholdRequest.class, GetSensorThresholdResponse.class),
     SetSensorEventEnable("Set Sensor Event Enable", IpmiNetworkFunction.Sensor, 0x28, Operator),
     GetSensorEventEnable("Get Sensor Event Enable", IpmiNetworkFunction.Sensor, 0x29, User),
     ReArmSensorEvents("Re-arm Sensor Events", IpmiNetworkFunction.Sensor, 0x2A, Operator),
