@@ -7,14 +7,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
 /**
  * [IPMI2] Section 22.19, table 22-24, page 297.
  *
  * @author shevek
  */
-public class CloseSessionRequest extends AbstractIpmiSessionRequest {
+public class CloseSessionRequest extends AbstractIpmiRequest {
 
     public int sessionId;
     public byte sessionHandle;

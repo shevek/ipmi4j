@@ -11,14 +11,14 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
  * [IPMI2] Section 28.2, table 28-3, page 389.
  *
  * @author shevek
  */
-public class GetChassisStatusResponse extends AbstractIpmiSessionResponse {
+public class GetChassisStatusResponse extends AbstractIpmiResponse {
 
     public enum CurrentPowerState implements Bits.Wrapper {
 
@@ -107,7 +107,8 @@ public class GetChassisStatusResponse extends AbstractIpmiSessionResponse {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        toWireCompletionCode(buffer);
+        if (toWireCompletionCode(buffer))
+            return;
         buffer.put(Bits.toByte(currentPowerState));
         buffer.put(Bits.toByte(lastPowerEvent));
         buffer.put(Bits.toByte(miscChassisState));
@@ -115,7 +116,8 @@ public class GetChassisStatusResponse extends AbstractIpmiSessionResponse {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        fromWireCompletionCode(buffer);
+        if (fromWireCompletionCode(buffer))
+            return;
         currentPowerState = Bits.fromBuffer(CurrentPowerState.class, buffer, 1);
         lastPowerEvent = Bits.fromBuffer(LastPowerEvent.class, buffer, 1);
         miscChassisState = Bits.fromBuffer(MiscChassisState.class, buffer, 1);

@@ -13,13 +13,13 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelMedium;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelProtocol;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
  *
  * @author shevek
  */
-public class GetChannelInfoResponse extends AbstractIpmiSessionResponse {
+public class GetChannelInfoResponse extends AbstractIpmiResponse {
 
     public enum ChannelSessionSupport implements Code.Wrapper {
 

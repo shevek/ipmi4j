@@ -9,13 +9,13 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
 /**
  *
  * @author shevek
  */
-public class GetChannelAccessRequest extends AbstractIpmiSessionRequest {
+public class GetChannelAccessRequest extends AbstractIpmiRequest {
 
     public enum RequestedSetting implements Code.Wrapper {
 

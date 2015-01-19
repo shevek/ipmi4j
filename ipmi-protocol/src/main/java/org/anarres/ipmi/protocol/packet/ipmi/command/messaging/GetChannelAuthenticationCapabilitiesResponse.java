@@ -12,14 +12,14 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
  * [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNonSessionResponse {
+public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiResponse {
 
     public static enum LoginStatus implements Bits.Wrapper {
 
@@ -74,7 +74,8 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNo
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        fromWireCompletionCode(buffer); // 1
+        if (toWireCompletionCode(buffer)) // 1
+            return;
         buffer.put(channelNumber.getCode());    // 2
         byte b = 0;
         if (extendedCapabilities != null)
@@ -90,7 +91,8 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiNo
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        toWireCompletionCode(buffer);   // 1
+        if (fromWireCompletionCode(buffer))   // 1
+            return;
         channelNumber = Code.fromBuffer(IpmiChannelNumber.class, buffer);   // 2
         byte b = buffer.get();  // 3
         boolean hasExtendedCapabilities = (b & (1 << 7)) != 0;

@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
@@ -32,6 +33,7 @@ public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implement
     }
 
     /** Returns true if the completion code is not a success. */
+    @CheckReturnValue
     protected boolean toWireCompletionCode(@Nonnull ByteBuffer buffer) {
         byte code = getIpmiCompletionCode();
         buffer.put(code);
@@ -39,6 +41,7 @@ public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implement
     }
 
     /** Returns true if the completion code is not a success. */
+    @CheckReturnValue
     protected boolean fromWireCompletionCode(@Nonnull ByteBuffer buffer) {
         byte code = buffer.get();
         setIpmiCompletionCode(code);

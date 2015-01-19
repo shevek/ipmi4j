@@ -2,20 +2,20 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.command.sol;
+package org.anarres.ipmi.protocol.packet.ipmi.command.lan;
 
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiConfigurationParametersRequest;
 
 /**
- * [IPMI2] Section 26.3, table 26-4, page 376.
+ * [IPMI2] Section 23.2, table 23-3, page 316.
  *
  * @author shevek
  */
-public class GetSOLConfigurationParametersRequest extends AbstractIpmiConfigurationParametersRequest {
+public class GetLANConfigurationParametersRequest extends AbstractIpmiConfigurationParametersRequest {
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.GetSOLConfigurationParameters;
+        return IpmiCommandName.GetLANConfigurationParameters;
     }
 }

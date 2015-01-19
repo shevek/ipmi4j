@@ -8,14 +8,14 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.RequestedMaximumPrivilegeLevel;
 
 /**
  *
  * @author shevek
  */
-public class GetChannelAccessResponse extends AbstractIpmiSessionResponse {
+public class GetChannelAccessResponse extends AbstractIpmiResponse {
 
     public enum AccessMode implements Code.Wrapper {
 
@@ -54,9 +54,9 @@ public class GetChannelAccessResponse extends AbstractIpmiSessionResponse {
         if (toWireCompletionCode(buffer))
             return;
         byte tmp = accessMode.getCode();
-        setBit(tmp, 5, alertingDisabled);
-        setBit(tmp, 4, perMessageAuthenticationDisabled);
-        setBit(tmp, 3, userLevelAuthenticationDisabled);
+        tmp = setBit(tmp, 5, alertingDisabled);
+        tmp = setBit(tmp, 4, perMessageAuthenticationDisabled);
+        tmp = setBit(tmp, 3, userLevelAuthenticationDisabled);
         buffer.put(tmp);
         buffer.put(channelPrivilegeLevel.getCode());
     }

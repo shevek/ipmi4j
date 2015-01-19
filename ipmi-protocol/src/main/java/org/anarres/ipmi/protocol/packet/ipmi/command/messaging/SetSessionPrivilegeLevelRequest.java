@@ -7,14 +7,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.RequestedMaximumPrivilegeLevel;
 
 /**
  *
  * @author shevek
  */
-public class SetSessionPrivilegeLevelRequest extends AbstractIpmiSessionRequest {
+public class SetSessionPrivilegeLevelRequest extends AbstractIpmiRequest {
 
     public RequestedMaximumPrivilegeLevel privilegeLevel;
 

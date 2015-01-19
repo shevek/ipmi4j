@@ -9,14 +9,14 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
 /**
  * [IPMI2] Section 22.13, table 22-15, page 283.
  *
  * @author shevek
  */
-public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiNonSessionRequest {
+public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiRequest {
 
     public boolean extendedCapabilities;
     public IpmiChannelNumber channelNumber = IpmiChannelNumber.CURRENT;

@@ -6,14 +6,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
  * [IPMI2] Section 22.19, table 22-24, page 297.
  *
  * @author shevek
  */
-public class CloseSessionResponse extends AbstractIpmiSessionResponse {
+public class CloseSessionResponse extends AbstractIpmiResponse {
 
     @Override
     public IpmiCommandName getCommandName() {
@@ -27,11 +27,13 @@ public class CloseSessionResponse extends AbstractIpmiSessionResponse {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        toWireCompletionCode(buffer);
+        if (toWireCompletionCode(buffer))
+            return;
     }
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        fromWireCompletionCode(buffer);
+        if (fromWireCompletionCode(buffer))
+            return;
     }
 }

@@ -19,15 +19,21 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusReq
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersResponse;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
@@ -106,7 +112,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x51),
     MasterWriteRead("Master Write-Read", IpmiNetworkFunction.App, 0x52, Operator),
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x53),
-    GetChannelCipherSuites("Get Channel Cipher Suites", IpmiNetworkFunction.App, 0x54, Unprotected),
+    GetChannelCipherSuites("Get Channel Cipher Suites", IpmiNetworkFunction.App, 0x54, Unprotected, GetChannelCipherSuitesRequest.class, GetChannelCipherSuitesResponse.class),
     SuspendResumePayloadEncryption("Suspend/Resume Payload Encryption", IpmiNetworkFunction.App, 0x55, User),
     SetChannelSecurityKeys("Set Channel Security Keys", IpmiNetworkFunction.App, 0x56, Administrator),
     GetSystemInterfaceCapabilities("Get System Interface Capabilities", IpmiNetworkFunction.App, 0x57, User),
@@ -163,7 +169,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     ReadFRUData("Read FRU Data", IpmiNetworkFunction.Storage, 0x11, User),
     WriteFRUData("Write FRU Data", IpmiNetworkFunction.Storage, 0x12, Operator),
     // SDR Device Commands
-    GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User),
+    GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User, GetSDRRepositoryInfoRequest.class, GetSDRRepositoryInfoResponse.class),
     GetSDRRepositoryAllocationInfo("Get SDR Repository Allocation Info", IpmiNetworkFunction.Storage, 0x21, User),
     ReserveSDRRepository("Reserve SDR Repository", IpmiNetworkFunction.Storage, 0x22, User),
     GetSDR("Get SDR", IpmiNetworkFunction.Storage, 0x23, User),
@@ -193,7 +199,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     SetSELTimeUTCOffset("Set SEL Time UTC Offset", IpmiNetworkFunction.Storage, 0x5D, Operator),
     // LAN Device Commands
     SetLANConfigurationParameters("Set LAN Configuration Parameters", IpmiNetworkFunction.Transport, 0x01, Administrator),
-    GetLANConfigurationParameters("Get LAN Configuration Parameters", IpmiNetworkFunction.Transport, 0x02, Operator),
+    GetLANConfigurationParameters("Get LAN Configuration Parameters", IpmiNetworkFunction.Transport, 0x02, Operator, GetLANConfigurationParametersRequest.class, GetLANConfigurationParametersResponse.class),
     SuspendBMCARPs("Suspend BMC ARPs", IpmiNetworkFunction.Transport, 0x03, Administrator),
     GetIP_UDP_RMCPStatistics("Get IP/UDP/RMCP Statistics", IpmiNetworkFunction.Transport, 0x04, User),
     // Serial/Modem Device Commands

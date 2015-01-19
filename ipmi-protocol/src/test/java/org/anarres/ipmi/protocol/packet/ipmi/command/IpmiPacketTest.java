@@ -15,8 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.Pcaps;
-import org.pcap4j.packet.EthernetPacket;
-import org.pcap4j.packet.IpV4Packet;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UdpPacket;
 import org.pcap4j.packet.namednumber.UdpPort;

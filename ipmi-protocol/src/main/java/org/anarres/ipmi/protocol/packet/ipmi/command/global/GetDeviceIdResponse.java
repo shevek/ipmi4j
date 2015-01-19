@@ -11,16 +11,14 @@ import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
  *
  * @author shevek
  */
-public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
+public class GetDeviceIdResponse extends AbstractIpmiResponse {
 
     public static enum DeviceSupport implements Bits.Wrapper {
 
@@ -60,7 +58,8 @@ public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
-        toWireCompletionCode(buffer);   // 1
+        if (toWireCompletionCode(buffer))   // 1
+            return;
         buffer.put(deviceId);   // 2
         buffer.put(setBit((byte) (deviceRevision & 0xF), 7, deviceProvidesDeviceSDRs)); // 3
         buffer.put(setBit((byte) (deviceFirmwareRevisionMajor & 0x7F), 7, deviceAvailable));    // 4
@@ -75,7 +74,8 @@ public class GetDeviceIdResponse extends AbstractIpmiNonSessionResponse {
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
-        fromWireCompletionCode(buffer); // 1
+        if (fromWireCompletionCode(buffer)) // 1
+            return;
         deviceId = buffer.get();    // 2
         byte b = buffer.get();  // 3
         deviceProvidesDeviceSDRs = getBit(b, 7);

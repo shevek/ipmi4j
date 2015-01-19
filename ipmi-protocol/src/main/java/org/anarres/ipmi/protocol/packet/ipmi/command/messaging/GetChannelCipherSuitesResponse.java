@@ -6,39 +6,43 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.RequestedMaximumPrivilegeLevel;
 
 /**
+ * [IPMI2] Section 22.15, table 22-17, page 290.
  *
  * @author shevek
  */
-public class SetSessionPrivilegeLevelResponse extends AbstractIpmiResponse {
+public class GetChannelCipherSuitesResponse extends AbstractIpmiResponse {
 
-    public RequestedMaximumPrivilegeLevel privilegeLevel;
+    private IpmiChannelNumber channelNumber;
+    private byte[] dataBytes;
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.SetSessionPrivilegeLevel;
+        return IpmiCommandName.GetChannelCipherSuites;
     }
 
     @Override
     protected int getDataWireLength() {
-        return 2;
+        return 2 + dataBytes.length;
     }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
         if (toWireCompletionCode(buffer))
             return;
-        buffer.put(privilegeLevel.getCode());
+        buffer.put(channelNumber.getCode());
+        buffer.put(dataBytes);
     }
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
         if (fromWireCompletionCode(buffer))
             return;
-        privilegeLevel = Code.fromBuffer(RequestedMaximumPrivilegeLevel.class, buffer);
+        channelNumber = Code.fromBuffer(IpmiChannelNumber.class, buffer);
+        dataBytes = readBytes(buffer, buffer.remaining());
     }
 }

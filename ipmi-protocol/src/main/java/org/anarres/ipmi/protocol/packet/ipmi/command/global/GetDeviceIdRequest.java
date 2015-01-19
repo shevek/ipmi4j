@@ -6,13 +6,13 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.global;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiNonSessionRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
 /**
  *
  * @author shevek
  */
-public class GetDeviceIdRequest extends AbstractIpmiNonSessionRequest {
+public class GetDeviceIdRequest extends AbstractIpmiRequest {
 
     @Override
     public IpmiCommandName getCommandName() {
