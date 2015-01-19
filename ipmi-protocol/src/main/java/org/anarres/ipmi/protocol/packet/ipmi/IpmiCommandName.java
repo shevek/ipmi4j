@@ -17,6 +17,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersRequest;
@@ -34,6 +36,10 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivile
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersResponse;
 import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;
@@ -165,7 +171,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     GetSensorType("Get Sensor Type", IpmiNetworkFunction.Sensor, 0x2F, User),
     SetSensorReadingAndEventStatus("Set Sensor Reading And Event Status", IpmiNetworkFunction.Sensor, 0x30, Operator),
     // FRU Device Commands
-    GetFRUInventoryAreaInfo("Get FRU Inventory Area Info", IpmiNetworkFunction.Storage, 0x10, User),
+    GetFRUInventoryAreaInfo("Get FRU Inventory Area Info", IpmiNetworkFunction.Storage, 0x10, User, GetFRUInventoryAreaInfoRequest.class, GetFRUInventoryAreaInfoResponse.class),
     ReadFRUData("Read FRU Data", IpmiNetworkFunction.Storage, 0x11, User),
     WriteFRUData("Write FRU Data", IpmiNetworkFunction.Storage, 0x12, Operator),
     // SDR Device Commands
@@ -183,8 +189,8 @@ public enum IpmiCommandName implements Code.Wrapper {
     ExitSDRRepositoryUpdateMode("Exit SDR Repository Update Mode", IpmiNetworkFunction.Storage, 0x2B, Operator),
     RunInitializationAgent("Run Initialization Agent", IpmiNetworkFunction.Storage, 0x2C, Operator),
     // SEL Device Commands
-    GetSELInfo("Get SEL Info", IpmiNetworkFunction.Storage, 0x40, User),
-    GetSELAllocationInfo("Get SEL Allocation Info", IpmiNetworkFunction.Storage, 0x41, User),
+    GetSELInfo("Get SEL Info", IpmiNetworkFunction.Storage, 0x40, User, GetSELInfoRequest.class, GetSELInfoResponse.class),
+    GetSELAllocationInfo("Get SEL Allocation Info", IpmiNetworkFunction.Storage, 0x41, User, GetSELAllocationInfoRequest.class, GetSELAllocationInfoResponse.class),
     ReserveSEL("Reserve SEL", IpmiNetworkFunction.Storage, 0x42, User),
     GetSELEntry("Get SEL Entry", IpmiNetworkFunction.Storage, 0x43, User),
     AddSELEntry("Add SEL Entry", IpmiNetworkFunction.Storage, 0x44, Operator),

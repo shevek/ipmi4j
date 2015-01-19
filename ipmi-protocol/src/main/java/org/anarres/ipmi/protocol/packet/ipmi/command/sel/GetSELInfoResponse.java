@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
+package org.anarres.ipmi.protocol.packet.ipmi.command.sel;
 
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
@@ -11,28 +11,23 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
-import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;
 
 /**
- * [IPMI2] Section 33.9, table 33-3, page 441.
+ * [IPMI2] Section 31.2, table 31-2, page 423.
  *
- * @see GetSELInfoResponse
+ * @see GetSDRRepositoryInfoResponse
  * @author shevek
  */
-public class GetSDRRepositoryInfoResponse extends AbstractIpmiResponse {
+public class GetSELInfoResponse extends AbstractIpmiResponse {
 
     public static enum SupportedOperation implements Bits.Wrapper {
 
         OverflowFlag(Bits.forBitIndex(0, 7)),
-        // TODO -> two bits?
-        RepositoryUpdateModalityUnspecified(new Bits(0, 0b11 << 5, 0b00 << 5)),
-        RepositoryUpdateModalityNonModal(new Bits(0, 0b11 << 5, 0b01 << 5)),
-        RepositoryUpdateModalityModal(new Bits(0, 0b11 << 5, 0b10 << 5)),
-        RepositoryUpdateModalityBoth(new Bits(0, 0b11 << 5, 0b11 << 5)),
-        DeleteSDRCommandSupported(Bits.forBitIndex(0, 3)),
-        PartialAddSDRCommandSupported(Bits.forBitIndex(0, 2)),
-        ReserveSDRRepositoryCommandSupported(Bits.forBitIndex(0, 1)),
-        GetSDRRepositoryAllocationInformationCommandSupported(Bits.forBitIndex(0, 0));
+        DeleteSELCommandSupported(Bits.forBitIndex(0, 3)),
+        PartialAddSELEntryCommandSupported(Bits.forBitIndex(0, 2)),
+        ReserveSELCommandSupported(Bits.forBitIndex(0, 1)),
+        GetSELAllocationInformationCommandSupported(Bits.forBitIndex(0, 0));
         private final Bits bits;
 
         /* pp */ SupportedOperation(@Nonnull Bits bits) {
@@ -52,7 +47,7 @@ public class GetSDRRepositoryInfoResponse extends AbstractIpmiResponse {
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.GetSDRRepositoryInfo;
+        return IpmiCommandName.GetSELInfo;
     }
 
     @Override

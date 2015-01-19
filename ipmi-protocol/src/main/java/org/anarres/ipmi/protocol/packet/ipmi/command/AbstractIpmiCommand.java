@@ -167,13 +167,13 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         buffer.put(toChecksum(buffer, start));
     }
 
-    public static void fromWireChecksum(@Nonnull ByteBuffer buffer, @Nonnegative int start, @Nonnull String description) {
+    public void fromWireChecksum(@Nonnull ByteBuffer buffer, @Nonnegative int start, @Nonnull String description) {
         byte expect = toChecksum(buffer, start);
         byte actual = buffer.get();
         if (expect != actual)
             throw new IllegalArgumentException("Checksum failure: " + description
                     + ": expected=" + UnsignedBytes.toString(expect, 16)
-                    + " actual=" + UnsignedBytes.toString(actual, 16));
+                    + " actual=" + UnsignedBytes.toString(actual, 16) + "; command=" + getClass().getSimpleName() + "; data=" + this);
     }
 
     public static void toWireOemIanaLE3(@Nonnull ByteBuffer buf, int data) {
