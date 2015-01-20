@@ -98,14 +98,14 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
     public void toStringBuilder(StringBuilder buf, int depth) {
         super.toStringBuilder(buf, depth);
         appendValue(buf, depth, "DeviceId", "0x" + UnsignedBytes.toString(deviceId, 16));
-        appendValue(buf, depth, "DeviceProvidesDeviceSDRs", deviceProvidesDeviceSDRs);
-        appendValue(buf, depth, "DeviceRevision", "0x" + Integer.toHexString(deviceRevision));
         appendValue(buf, depth, "DeviceAvailable", deviceAvailable);
-        appendValue(buf, depth, "DeviceFirmwareRevision", deviceFirmwareRevisionMajor + "." + deviceFirmwareRevisionMinor);
-        appendValue(buf, depth, "DeviceIpmiRevision", deviceIpmiRevision);
-        appendValue(buf, depth, "DeviceSupport", deviceSupport);
         appendValue(buf, depth, "ManufacturerIanaEnterpriseNumber", toStringOemIana(oemEnterpriseNumber));
         appendValue(buf, depth, "ProductId", productId);
+        appendValue(buf, depth, "DeviceRevision", "0x" + Integer.toHexString(deviceRevision));
+        appendValue(buf, depth, "DeviceFirmwareRevision", deviceFirmwareRevisionMajor + "." + deviceFirmwareRevisionMinor);
         appendValue(buf, depth, "AuxiliaryFirmwareRevisionInformation", auxiliaryFirmwareRevisionInformation);
+        appendValue(buf, depth, "DeviceIpmiRevision", deviceIpmiRevision);
+        appendValue(buf, depth, "DeviceSupport", deviceSupport);
+        appendValue(buf, depth, "DeviceProvidesDeviceSDRs", deviceProvidesDeviceSDRs);
     }
 }

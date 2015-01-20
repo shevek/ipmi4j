@@ -56,8 +56,8 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
         // Page 134
         IpmiPayload payload = getIpmiPayload();
         int payloadLength = payload.getWireLength(context);
-        LOG.info("payload=" + payload);
-        LOG.info("payloadLength=" + payloadLength);
+        // LOG.info("payload=" + payload);
+        // LOG.info("payloadLength=" + payloadLength);
         buffer.put(UnsignedBytes.checkedCast(payloadLength));
 
         payload.toWire(context, buffer);

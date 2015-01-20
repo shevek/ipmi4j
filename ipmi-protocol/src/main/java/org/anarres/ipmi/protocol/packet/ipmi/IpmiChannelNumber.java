@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi;
 
+import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -40,5 +41,10 @@ public enum IpmiChannelNumber implements Code.Wrapper {
     @Override
     public byte getCode() {
         return code;
+    }
+
+    @Override
+    public String toString() {
+        return name() + "(" + UnsignedBytes.toString(getCode(), 16) + ")";
     }
 }

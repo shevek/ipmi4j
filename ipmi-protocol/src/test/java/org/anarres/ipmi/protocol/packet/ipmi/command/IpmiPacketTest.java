@@ -48,10 +48,11 @@ public class IpmiPacketTest {
         try {
             for (;;) {
                 Packet packet = handle.getNextPacketEx();
-                LOG.info("Read:\n" + packet);
+                // LOG.info("Read:\n" + packet);
                 UdpPacket udpPacket = packet.get(UdpPacket.class);
 
                 byte[] data = udpPacket.getPayload().getRawData();
+                LOG.info("Data: " + AbstractWireable.toHexString(data));
 
                 RmcpPacket rmcp = new RmcpPacket();
                 rmcp.fromWire(context, ByteBuffer.wrap(data));
