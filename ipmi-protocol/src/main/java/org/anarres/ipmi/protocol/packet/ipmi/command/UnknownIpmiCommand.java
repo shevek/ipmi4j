@@ -12,7 +12,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
  *
  * @author shevek
  */
-public class UnknownIpmiCommand extends AbstractIpmiCommand {
+public abstract class UnknownIpmiCommand extends AbstractIpmiCommand {
 
     private final IpmiCommandName commandName;
     private byte[] data;

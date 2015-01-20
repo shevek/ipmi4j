@@ -15,6 +15,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthent
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoRequest;
@@ -38,6 +40,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivile
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoRequest;
@@ -183,7 +187,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     // SDR Device Commands
     GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User, GetSDRRepositoryInfoRequest.class, GetSDRRepositoryInfoResponse.class),
     GetSDRRepositoryAllocationInfo("Get SDR Repository Allocation Info", IpmiNetworkFunction.Storage, 0x21, User),
-    ReserveSDRRepository("Reserve SDR Repository", IpmiNetworkFunction.Storage, 0x22, User),
+    ReserveSDRRepository("Reserve SDR Repository", IpmiNetworkFunction.Storage, 0x22, User, ReserveSDRRepositoryRequest.class, ReserveSDRRepositoryResponse.class),
     GetSDR("Get SDR", IpmiNetworkFunction.Storage, 0x23, User),
     AddSDR("Add SDR", IpmiNetworkFunction.Storage, 0x24, Operator),
     PartialAddSDR("Partial Add SDR", IpmiNetworkFunction.Storage, 0x25, Operator),
@@ -341,9 +345,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     }
 
     @Nonnull
-    private IpmiCommand newInstance(@CheckForNull Class<? extends IpmiCommand> type) {
-        if (type == null)
-            return new UnknownIpmiCommand(this);
+    private <T extends IpmiCommand> T newInstance(@Nonnull Class<T> type) {
         try {
             return type.newInstance();
         } catch (Exception e) {
@@ -353,11 +355,15 @@ public enum IpmiCommandName implements Code.Wrapper {
 
     @Nonnull
     public IpmiCommand newRequestMessage() {
+        if (requestType == null)
+            return new UnknownIpmiRequest(this);
         return newInstance(requestType);
     }
 
     @Nonnull
     public IpmiCommand newResponseMessage() {
+        if (requestType == null)
+            return new UnknownIpmiResponse(this);
         return newInstance(responseType);
     }
 }

@@ -66,8 +66,8 @@ public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
         assertWireByte(buffer, (byte) 0, "reserved byte");
         consoleSessionId = fromWireIntLE(buffer);
         systemSessionId = fromWireIntLE(buffer);
-        LOG.info("Console id is " + Integer.toHexString(consoleSessionId));
-        LOG.info("System id is " + Integer.toHexString(systemSessionId));
+        // LOG.info("Console id is " + Integer.toHexString(consoleSessionId));
+        // LOG.info("System id is " + Integer.toHexString(systemSessionId));
         authenticationAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiAuthenticationAlgorithm.class);
         integrityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiIntegrityAlgorithm.class);
         confidentialityAlgorithm = IpmiAlgorithmUtils.fromWireUnchecked(buffer, IpmiConfidentialityAlgorithm.class);

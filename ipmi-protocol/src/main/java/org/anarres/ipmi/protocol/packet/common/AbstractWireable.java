@@ -180,7 +180,7 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
-    protected String toHexString(@CheckForNull byte... data) {
+    public static String toHexString(@CheckForNull byte... data) {
         if (data == null)
             return "<null>";
         StringBuilder buf = new StringBuilder();

@@ -92,6 +92,11 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
     }
 
     @Override
+    public <T extends RmcpData> T getData(Class<T> type) {
+        return type.cast(getData());
+    }
+
+    @Override
     public Packet withData(@Nonnull RmcpData data) {
         withMessageClass(data.getMessageClass());
         this.data = data;

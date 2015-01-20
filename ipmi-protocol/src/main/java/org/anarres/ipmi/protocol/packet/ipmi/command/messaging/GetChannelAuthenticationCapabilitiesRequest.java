@@ -36,8 +36,7 @@ public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiReq
     protected void toWireData(ByteBuffer buffer) {
         byte b = channelNumber.getCode();
         // If we fail with extendedCapabilities, we might have to try again without.
-        if (extendedCapabilities)
-            b |= 1 << 7;
+        b = setBit(b, 7, extendedCapabilities);
         buffer.put(b);
         buffer.put(channelPrivilegeLevel.getCode());
     }
@@ -46,6 +45,15 @@ public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiReq
     protected void fromWireData(ByteBuffer buffer) {
         byte b = buffer.get();
         channelNumber = Code.fromByte(IpmiChannelNumber.class, (byte) (b & 0xF));
+        extendedCapabilities = getBit(b, 7);
         channelPrivilegeLevel = Code.fromByte(IpmiChannelPrivilegeLevel.class, buffer.get());
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "ChannelNumber", channelNumber);
+        appendValue(buf, depth, "ExtendedCapabilities", extendedCapabilities);
+        appendValue(buf, depth, "ChannelPrivilegeLevel", channelPrivilegeLevel);
     }
 }

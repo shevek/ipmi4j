@@ -22,6 +22,8 @@ public interface Packet extends Wireable {
     // @CheckForNull
     public RmcpData getData();
 
+    public <T extends RmcpData> T getData(@Nonnull Class<T> type);
+
     /**
      * Sets the RMCP payload of this packet.
      */

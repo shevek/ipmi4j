@@ -170,7 +170,7 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
         int tmp = channelSessionSupport.getCode() << 6 | channelSessionCount & 0x3F;
         buffer.put((byte) tmp);
 
-        oemIanaEnterpriseNumber = fromWireOemIanaLE3(buffer);
+        toWireOemIanaLE3(buffer, oemIanaEnterpriseNumber);
 
         if (IpmiChannelNumber.CF.equals(channelNumber)) {
             buffer.put(smsInterruptType.getCode());

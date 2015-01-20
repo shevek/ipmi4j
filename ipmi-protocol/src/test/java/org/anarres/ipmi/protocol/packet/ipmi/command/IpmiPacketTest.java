@@ -6,7 +6,11 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 import java.io.EOFException;
 import java.io.File;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
@@ -20,6 +24,7 @@ import org.pcap4j.packet.UdpPacket;
 import org.pcap4j.packet.namednumber.UdpPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -53,6 +58,19 @@ public class IpmiPacketTest {
 
                 LOG.info("Read:\n" + rmcp);
 
+                byte[] out = new byte[data.length];
+                try {
+                    rmcp.toWire(context, ByteBuffer.wrap(out));
+                    LOG.info("Read:  " + AbstractWireable.toHexString(data));
+                    LOG.info("Wrote: " + AbstractWireable.toHexString(out));
+                    IpmiSessionWrapper wrapper = rmcp.getData(IpmiSessionWrapper.class);
+                    if (wrapper.getIpmiPayload() instanceof IpmiOpenSessionResponse)
+                        continue;
+                    assertArrayEquals(data, out);
+                } catch (BufferOverflowException e) {
+                    LOG.warn("Overflow after " + AbstractWireable.toHexString(out));
+                    throw e;
+                }
             }
         } catch (EOFException e) {
         }

@@ -167,7 +167,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             }
 
             SIGN:
-            {
+            if (!IpmiIntegrityAlgorithm.NONE.equals(integrityAlgorithm)) {
                 // Integrity padding.
                 byte[] pad = IntegrityPad.PAD(encryptedLength);
                 buffer.put(pad);
@@ -227,8 +227,9 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
             }
 
             SIGN:
-            if (session != null) {
+            if (!IpmiIntegrityAlgorithm.NONE.equals(integrityAlgorithm)) {
                 int integrityPadLength = IntegrityPad.PAD(payloadLength).length;
+                // LOG.info("IntegrityPad length is " + integrityPadLength);
                 byte[] integrityPad = AbstractWireable.readBytes(buffer, integrityPadLength);
                 // TODO: Assert integrityPad all 0xFF.
 
