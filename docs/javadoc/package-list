@@ -7,8 +7,13 @@ org.anarres.ipmi.protocol.packet.common
 org.anarres.ipmi.protocol.packet.ipmi
 org.anarres.ipmi.protocol.packet.ipmi.command
 org.anarres.ipmi.protocol.packet.ipmi.command.chassis
+org.anarres.ipmi.protocol.packet.ipmi.command.fru
 org.anarres.ipmi.protocol.packet.ipmi.command.global
+org.anarres.ipmi.protocol.packet.ipmi.command.lan
 org.anarres.ipmi.protocol.packet.ipmi.command.messaging
+org.anarres.ipmi.protocol.packet.ipmi.command.sdr
+org.anarres.ipmi.protocol.packet.ipmi.command.sel
+org.anarres.ipmi.protocol.packet.ipmi.command.sensor
 org.anarres.ipmi.protocol.packet.ipmi.command.sol
 org.anarres.ipmi.protocol.packet.ipmi.payload
 org.anarres.ipmi.protocol.packet.ipmi.security
