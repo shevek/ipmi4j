@@ -42,8 +42,8 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
     public int deviceFirmwareRevisionMinor;
     public int deviceIpmiRevision;
     public Set<DeviceSupport> deviceSupport = EnumSet.noneOf(DeviceSupport.class);
-    public int manufacturerIanaEnterpriseNumber;
-    public int productId;
+    public int oemEnterpriseNumber;
+    public char productId;
     public Integer auxiliaryFirmwareRevisionInformation;
 
     @Override
@@ -66,8 +66,8 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
         buffer.put(toWireBcdLE(UnsignedBytes.checkedCast(deviceFirmwareRevisionMinor)));   // 5
         buffer.put(toWireBcdLE(UnsignedBytes.checkedCast(deviceIpmiRevision)));    // 6
         buffer.put(Bits.toByte(deviceSupport)); // 7
-        toWireOemIanaLE3(buffer, manufacturerIanaEnterpriseNumber); // 8:10
-        toWireCharLE(buffer, Chars.checkedCast(productId));
+        toWireOemIanaLE3(buffer, oemEnterpriseNumber); // 8:10
+        toWireCharLE(buffer, productId);
         if (auxiliaryFirmwareRevisionInformation != null)
             buffer.putInt(auxiliaryFirmwareRevisionInformation);
     }
@@ -86,11 +86,26 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
         deviceFirmwareRevisionMinor = fromWireBcdLE(buffer.get());  // 5
         deviceIpmiRevision = fromWireBcdLE(buffer.get());   // 6
         deviceSupport = Bits.fromBuffer(DeviceSupport.class, buffer, 1);    // 7
-        manufacturerIanaEnterpriseNumber = fromWireOemIanaLE3(buffer);  // 8:10
+        oemEnterpriseNumber = fromWireOemIanaLE3(buffer);  // 8:10
         productId = fromWireCharLE(buffer); // 11:12
         if (buffer.remaining() >= 4)
             auxiliaryFirmwareRevisionInformation = buffer.getInt();
         else
             auxiliaryFirmwareRevisionInformation = null;
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "DeviceId", "0x" + UnsignedBytes.toString(deviceId, 16));
+        appendValue(buf, depth, "DeviceProvidesDeviceSDRs", deviceProvidesDeviceSDRs);
+        appendValue(buf, depth, "DeviceRevision", "0x" + Integer.toHexString(deviceRevision));
+        appendValue(buf, depth, "DeviceAvailable", deviceAvailable);
+        appendValue(buf, depth, "DeviceFirmwareRevision", deviceFirmwareRevisionMajor + "." + deviceFirmwareRevisionMinor);
+        appendValue(buf, depth, "DeviceIpmiRevision", deviceIpmiRevision);
+        appendValue(buf, depth, "DeviceSupport", deviceSupport);
+        appendValue(buf, depth, "ManufacturerIanaEnterpriseNumber", toStringOemIana(oemEnterpriseNumber));
+        appendValue(buf, depth, "ProductId", productId);
+        appendValue(buf, depth, "AuxiliaryFirmwareRevisionInformation", auxiliaryFirmwareRevisionInformation);
     }
 }

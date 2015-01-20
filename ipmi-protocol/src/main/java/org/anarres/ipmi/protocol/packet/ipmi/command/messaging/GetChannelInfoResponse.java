@@ -143,7 +143,7 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
     private IpmiChannelProtocol channelProtocol;
     private ChannelSessionSupport channelSessionSupport;
     private int channelSessionCount;
-    private int oemIanaEnterpriseNumber = IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber();
+    private int oemEnterpriseNumber = IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber();
     private ChannelInterruptType smsInterruptType;
     private ChannelInterruptType eventMessageBufferInterruptType;
     private byte oem0;
@@ -170,12 +170,12 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
         int tmp = channelSessionSupport.getCode() << 6 | channelSessionCount & 0x3F;
         buffer.put((byte) tmp);
 
-        toWireOemIanaLE3(buffer, oemIanaEnterpriseNumber);
+        toWireOemIanaLE3(buffer, oemEnterpriseNumber);
 
         if (IpmiChannelNumber.CF.equals(channelNumber)) {
             buffer.put(smsInterruptType.getCode());
             buffer.put(eventMessageBufferInterruptType.getCode());
-        } else if (oemIanaEnterpriseNumber != IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber()) {
+        } else if (oemEnterpriseNumber != IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber()) {
             buffer.put(oem0);
             buffer.put(oem1);
         } else {
@@ -195,11 +195,11 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
         channelSessionSupport = Code.fromInt(ChannelSessionSupport.class, tmp >> 6);
         channelSessionCount = tmp & 0x3F;
 
-        oemIanaEnterpriseNumber = fromWireOemIanaLE3(buffer);
+        oemEnterpriseNumber = fromWireOemIanaLE3(buffer);
         if (IpmiChannelNumber.CF.equals(channelNumber)) {
             smsInterruptType = Code.fromBuffer(ChannelInterruptType.class, buffer);
             eventMessageBufferInterruptType = Code.fromBuffer(ChannelInterruptType.class, buffer);
-        } else if (oemIanaEnterpriseNumber != IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber()) {
+        } else if (oemEnterpriseNumber != IanaEnterpriseNumber.Intelligent_Platform_Management_Interface_forum.getNumber()) {
             oem0 = buffer.get();
             oem1 = buffer.get();
         } else {
@@ -215,7 +215,7 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
         appendValue(buf, depth, "ChannelProtocol", channelProtocol);
         appendValue(buf, depth, "ChannelSessionSupport", channelSessionSupport);
         appendValue(buf, depth, "ChannelSessionCount", channelSessionCount);
-        appendValue(buf, depth, "IanaEnterpriseNumber", oemIanaEnterpriseNumber);
+        appendValue(buf, depth, "OemEnterpriseNumber", toStringOemIana(oemEnterpriseNumber));
         appendValue(buf, depth, "SmsInterruptType", smsInterruptType);
         appendValue(buf, depth, "EventMessageBufferInterruptType", eventMessageBufferInterruptType);
         appendValue(buf, depth, "OEM Data", toHexString(oem0, oem1));

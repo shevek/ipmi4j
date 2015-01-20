@@ -17,6 +17,8 @@ public enum IanaEnterpriseNumber {
     Alerting_Specifications_Forum(4542, "Alerting Specifications Forum"),
     /** IBM Corporation. Victor Sample <vsample&us.ibm.com> */
     IBM_Corporation(4769, "IBM Corporation"),
+    /** INVENTEC CORPORATION. JH CHYAN <chyan.jh&inventec.com> */
+    INVENTEC_CORPORATION(6569, "INVENTEC CORPORATION"),
     /** Intelligent Platform Management Interface forum. Thomas M. Slaight <tom.slaight&intel.com> */
     Intelligent_Platform_Management_Interface_forum(7154, "Intelligent Platform Management Interface forum"),
     /** IBM eServer X. Lynn Fore <sls&us.ibm.com> */

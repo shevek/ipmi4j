@@ -45,4 +45,11 @@ public class GetChannelCipherSuitesResponse extends AbstractIpmiResponse {
         channelNumber = Code.fromBuffer(IpmiChannelNumber.class, buffer);
         dataBytes = readBytes(buffer, buffer.remaining());
     }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "ChannelNumber", channelNumber);
+        appendValue(buf, depth, "DataBytes", toHexString(dataBytes));
+    }
 }

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.AbstractIpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -190,6 +191,18 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         byte b1 = buf.get();
         byte b2 = buf.get();
         return Ints.fromBytes((byte) 0, b2, b1, b0);
+    }
+
+    @Nonnull
+    public static String toStringOemIana(int code) {
+        IanaEnterpriseNumber value = null;
+        for (IanaEnterpriseNumber n : IanaEnterpriseNumber.values()) {
+            if (code == n.getNumber()) {
+                value = n;
+                break;
+            }
+        }
+        return "0x" + Integer.toHexString(code) + " (" + code + "): " + value;
     }
 
     /**

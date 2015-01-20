@@ -61,6 +61,7 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiRe
     public Set<IpmiSessionAuthenticationType> authenticationTypes;
     public Set<LoginStatus> loginStatus;
     public Set<ExtendedCapabilities> extendedCapabilities;
+    public int oemEnterpriseNumber;
 
     @Override
     public IpmiCommandName getCommandName() {
@@ -86,7 +87,8 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiRe
         buffer.put(b);  // 3
         buffer.put(Bits.toByte(loginStatus));   // 4
         buffer.put(extendedCapabilities == null ? (byte) 0 : Bits.toByte(extendedCapabilities)); // 5
-        buffer.putInt(0);   // 6:9 OEM data
+        toWireOemIanaLE3(buffer, oemEnterpriseNumber);  // 6:8
+        buffer.put((byte) 0);   // 9 OEM data
     }
 
     @Override
@@ -106,7 +108,17 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiRe
         else
             extendedCapabilities = null;
         // Decode channelPrivilegeLevel.
-        fromWireOemIanaLE3(buffer); // 6:8
+        oemEnterpriseNumber = fromWireOemIanaLE3(buffer); // 6:8
         buffer.get();   // 9
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "ChannelNumber", channelNumber);
+        appendValue(buf, depth, "AuthenticationTypes", authenticationTypes);
+        appendValue(buf, depth, "LoginStatus", loginStatus);
+        appendValue(buf, depth, "ExtendedCapabilities", extendedCapabilities);
+        appendValue(buf, depth, "OemEnterpriseNumber", toStringOemIana(oemEnterpriseNumber));
     }
 }

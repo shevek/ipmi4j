@@ -39,6 +39,7 @@ public class GetSensorReadingResponse extends AbstractIpmiResponse {
     }
     public byte sensorValue;
     public Set<SensorState> sensorState = EnumSet.noneOf(SensorState.class);
+    /** For a continuous sensor, should have the top two bits of the low byte set to 1. */
     public char sensorFlags;
 
     @Override
