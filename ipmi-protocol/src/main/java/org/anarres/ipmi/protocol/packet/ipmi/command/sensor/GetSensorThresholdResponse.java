@@ -5,7 +5,8 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sensor;
 
 import java.nio.ByteBuffer;
-import javax.annotation.CheckForNull;
+import java.util.EnumMap;
+import java.util.Map;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
@@ -17,18 +18,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 public class GetSensorThresholdResponse extends AbstractIpmiResponse {
 
     // TODO: -> EnumMap<SensorThreshold, Byte>?
-    @CheckForNull
-    public Byte lowerNonCritical;
-    @CheckForNull
-    public Byte lowerCritical;
-    @CheckForNull
-    public Byte lowerNonRecoverable;
-    @CheckForNull
-    public Byte upperNonCritical;
-    @CheckForNull
-    public Byte upperCritical;
-    @CheckForNull
-    public Byte upperNonRecoverable;
+    Map<SensorThreshold, Byte> thresholds = new EnumMap<>(SensorThreshold.class);
 
     @Override
     public IpmiCommandName getCommandName() {
@@ -36,7 +26,7 @@ public class GetSensorThresholdResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 8;
     }
 
@@ -45,19 +35,11 @@ public class GetSensorThresholdResponse extends AbstractIpmiResponse {
         if (toWireCompletionCode(buffer))
             return;
         byte tmp = 0;
-        tmp = setBit(tmp, 5, upperNonRecoverable != null);
-        tmp = setBit(tmp, 4, upperCritical != null);
-        tmp = setBit(tmp, 3, upperNonCritical != null);
-        tmp = setBit(tmp, 2, lowerNonRecoverable != null);
-        tmp = setBit(tmp, 1, lowerCritical != null);
-        tmp = setBit(tmp, 0, lowerNonCritical != null);
+        for (SensorThreshold t : SensorThreshold.values())
+            tmp = setBit(tmp, t.getCode(), thresholds.get(t) != null);
         buffer.put(tmp);
-        SensorThreshold.toBuffer(buffer, lowerNonCritical);
-        SensorThreshold.toBuffer(buffer, lowerCritical);
-        SensorThreshold.toBuffer(buffer, lowerNonRecoverable);
-        SensorThreshold.toBuffer(buffer, upperNonCritical);
-        SensorThreshold.toBuffer(buffer, upperCritical);
-        SensorThreshold.toBuffer(buffer, upperNonRecoverable);
+        for (SensorThreshold t : SensorThreshold.values())
+            SensorThreshold.toBuffer(buffer, thresholds.get(t));
     }
 
     @Override
@@ -65,22 +47,14 @@ public class GetSensorThresholdResponse extends AbstractIpmiResponse {
         if (fromWireCompletionCode(buffer))
             return;
         byte tmp = buffer.get();
-        lowerNonCritical = SensorThreshold.fromBuffer(buffer, tmp, 0);
-        lowerCritical = SensorThreshold.fromBuffer(buffer, tmp, 1);
-        lowerNonRecoverable = SensorThreshold.fromBuffer(buffer, tmp, 2);
-        upperNonCritical = SensorThreshold.fromBuffer(buffer, tmp, 3);
-        upperCritical = SensorThreshold.fromBuffer(buffer, tmp, 4);
-        upperNonRecoverable = SensorThreshold.fromBuffer(buffer, tmp, 5);
+        for (SensorThreshold t : SensorThreshold.values())
+            thresholds.put(t, SensorThreshold.fromBuffer(buffer, tmp, t.getCode()));
     }
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
         super.toStringBuilder(buf, depth);
-        appendValue(buf, depth, "LowerNonCritical", SensorThreshold.toString(lowerNonCritical));
-        appendValue(buf, depth, "LowerCritical", SensorThreshold.toString(lowerCritical));
-        appendValue(buf, depth, "LowerNonRecoverable", SensorThreshold.toString(lowerNonRecoverable));
-        appendValue(buf, depth, "UpperNonCritical", SensorThreshold.toString(upperNonCritical));
-        appendValue(buf, depth, "UpperCritical", SensorThreshold.toString(upperCritical));
-        appendValue(buf, depth, "UpperNonRecoverable", SensorThreshold.toString(upperNonRecoverable));
+        for (SensorThreshold t : SensorThreshold.values())
+            appendValue(buf, depth, t.name(), SensorThreshold.toString(thresholds.get(t)));
     }
 }

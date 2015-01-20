@@ -68,7 +68,7 @@ public class GetChannelAuthenticationCapabilitiesResponse extends AbstractIpmiRe
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 9;
     }
 

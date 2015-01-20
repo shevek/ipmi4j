@@ -26,7 +26,7 @@ public class GetChannelCipherSuitesResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 2 + dataBytes.length;
     }
 

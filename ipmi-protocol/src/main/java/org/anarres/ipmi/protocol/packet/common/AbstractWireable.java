@@ -185,8 +185,12 @@ public abstract class AbstractWireable implements Wireable {
             return "<null>";
         StringBuilder buf = new StringBuilder();
         buf.append("(").append(data.length).append(" bytes) ");
-        for (byte b : data)
-            buf.append(UnsignedBytes.toString(b, 16)).append(' ');
+        for (byte b : data) {
+            String s = UnsignedBytes.toString(b, 16);
+            if (s.length() < 2)
+                buf.append('0');
+            buf.append(s).append(' ');
+        }
         buf.setLength(buf.length() - 1);
         return buf.toString();
     }

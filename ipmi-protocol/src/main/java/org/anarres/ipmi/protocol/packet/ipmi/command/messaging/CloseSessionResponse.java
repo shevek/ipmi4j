@@ -21,7 +21,7 @@ public class CloseSessionResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public int getDataWireLength() {
+    public int getResponseDataWireLength() {
         return 1;
     }
 

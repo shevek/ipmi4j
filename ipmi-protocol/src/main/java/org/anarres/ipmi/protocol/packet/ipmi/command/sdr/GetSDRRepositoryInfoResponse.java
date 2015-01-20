@@ -56,7 +56,7 @@ public class GetSDRRepositoryInfoResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 15;
     }
 

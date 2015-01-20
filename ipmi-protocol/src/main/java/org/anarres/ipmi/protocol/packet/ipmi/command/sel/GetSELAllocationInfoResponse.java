@@ -29,7 +29,7 @@ public class GetSELAllocationInfoResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 10;
     }
 

@@ -9,52 +9,46 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
- * [IPMI2] Section 34.1, table 34-2, page 449.
+ * [IPMI2] Section 34.2, table 34-3, page 450.
  *
  * @author shevek
  */
-public class GetFRUInventoryAreaInfoResponse extends AbstractIpmiResponse {
+public class ReadFRUDataResponse extends AbstractIpmiResponse {
 
-    public enum AccessMode {
-
-        Bytes, Words;
-    }
-    public char fruInventoryAreaSizeInBytes;
-    public AccessMode accessMode = AccessMode.Bytes;
+    /** Unsigned. */
+    public byte fruInventoryLength;
+    private byte[] fruData;
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.GetFRUInventoryAreaInfo;
+        return IpmiCommandName.ReadFRUData;
     }
 
     @Override
     protected int getResponseDataWireLength() {
-        return 4;
+        return 2 + fruData.length;
     }
 
     @Override
     protected void toWireData(ByteBuffer buffer) {
         if (toWireCompletionCode(buffer))
             return;
-        toWireCharLE(buffer, fruInventoryAreaSizeInBytes);
-        byte tmp = 0;
-        tmp = setBit(tmp, 7, accessMode == AccessMode.Words);
-        buffer.put(tmp);
+        buffer.put(fruInventoryLength);
+        buffer.put(fruData);
     }
 
     @Override
     protected void fromWireData(ByteBuffer buffer) {
         if (fromWireCompletionCode(buffer))
             return;
-        fruInventoryAreaSizeInBytes = fromWireCharLE(buffer);
-        byte tmp = buffer.get();
-        accessMode = getBit(tmp, 7) ? AccessMode.Words : AccessMode.Bytes;
+        fruInventoryLength = buffer.get();
+        fruData = readBytes(buffer, buffer.remaining());
     }
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
         super.toStringBuilder(buf, depth);
-        appendValue(buf, depth, "FruInventoryAreaSizeInBytes", (int) fruInventoryAreaSizeInBytes);
-        appendValue(buf, depth, "AccessMode", accessMode);
+        appendValue(buf, depth, "FruInventoryLength", "0x" + Integer.toHexString(fruInventoryLength));
+        appendValue(buf, depth, "FruInventoryData", toHexString(fruData));
     }
 }

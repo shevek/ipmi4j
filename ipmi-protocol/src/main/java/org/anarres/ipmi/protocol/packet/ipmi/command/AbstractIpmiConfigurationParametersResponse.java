@@ -18,8 +18,8 @@ public abstract class AbstractIpmiConfigurationParametersResponse extends Abstra
     private byte[] parameterData;
 
     @Override
-    protected int getDataWireLength() {
-        return isIpmiCompletionCodeSuccess() ? 2 + parameterData.length : 1;
+    protected int getResponseDataWireLength() {
+        return 2 + parameterData.length;
     }
 
     @Override

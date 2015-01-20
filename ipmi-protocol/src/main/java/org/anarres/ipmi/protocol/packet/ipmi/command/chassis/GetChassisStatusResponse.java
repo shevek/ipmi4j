@@ -101,7 +101,7 @@ public class GetChassisStatusResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return 4;
     }
 

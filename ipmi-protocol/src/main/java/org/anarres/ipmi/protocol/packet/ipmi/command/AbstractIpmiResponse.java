@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
@@ -18,6 +19,14 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
 public abstract class AbstractIpmiResponse extends AbstractIpmiCommand implements IpmiResponse {
 
     private byte ipmiCompletionCode;
+
+    @Override
+    protected final int getDataWireLength() {
+        return isIpmiCompletionCodeSuccess() ? getResponseDataWireLength() : 1;
+    }
+
+    @Nonnegative
+    protected abstract int getResponseDataWireLength();
 
     // TODO: Refactor generally into getDataWireLength().
     protected boolean isIpmiCompletionCodeSuccess() {

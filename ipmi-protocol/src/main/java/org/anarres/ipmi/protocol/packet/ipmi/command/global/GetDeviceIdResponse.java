@@ -52,7 +52,7 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
+    protected int getResponseDataWireLength() {
         return auxiliaryFirmwareRevisionInformation == null ? 12 : 16;
     }
 

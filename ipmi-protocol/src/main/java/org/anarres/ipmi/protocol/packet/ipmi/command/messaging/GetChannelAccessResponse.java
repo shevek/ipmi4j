@@ -45,8 +45,8 @@ public class GetChannelAccessResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    protected int getDataWireLength() {
-        return isIpmiCompletionCodeSuccess() ? 3 : 1;
+    protected int getResponseDataWireLength() {
+        return 3;
     }
 
     @Override

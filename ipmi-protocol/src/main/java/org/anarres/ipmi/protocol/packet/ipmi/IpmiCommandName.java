@@ -19,6 +19,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusReq
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.fru.ReadFRUDataRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.fru.ReadFRUDataResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersRequest;
@@ -40,6 +42,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoReq
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorReadingRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorReadingResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;
@@ -168,13 +172,13 @@ public enum IpmiCommandName implements Code.Wrapper {
     GetSensorEventEnable("Get Sensor Event Enable", IpmiNetworkFunction.Sensor, 0x29, User),
     ReArmSensorEvents("Re-arm Sensor Events", IpmiNetworkFunction.Sensor, 0x2A, Operator),
     GetSensorEventStatus("Get Sensor Event Status", IpmiNetworkFunction.Sensor, 0x2B, User),
-    GetSensorReading("Get Sensor Reading", IpmiNetworkFunction.Sensor, 0x2D, User),
+    GetSensorReading("Get Sensor Reading", IpmiNetworkFunction.Sensor, 0x2D, User, GetSensorReadingRequest.class, GetSensorReadingResponse.class),
     SetSensorType("Set Sensor Type", IpmiNetworkFunction.Sensor, 0x2E, Operator),
     GetSensorType("Get Sensor Type", IpmiNetworkFunction.Sensor, 0x2F, User),
     SetSensorReadingAndEventStatus("Set Sensor Reading And Event Status", IpmiNetworkFunction.Sensor, 0x30, Operator),
     // FRU Device Commands
     GetFRUInventoryAreaInfo("Get FRU Inventory Area Info", IpmiNetworkFunction.Storage, 0x10, User, GetFRUInventoryAreaInfoRequest.class, GetFRUInventoryAreaInfoResponse.class),
-    ReadFRUData("Read FRU Data", IpmiNetworkFunction.Storage, 0x11, User),
+    ReadFRUData("Read FRU Data", IpmiNetworkFunction.Storage, 0x11, User, ReadFRUDataRequest.class, ReadFRUDataResponse.class),
     WriteFRUData("Write FRU Data", IpmiNetworkFunction.Storage, 0x12, Operator),
     // SDR Device Commands
     GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User, GetSDRRepositoryInfoRequest.class, GetSDRRepositoryInfoResponse.class),

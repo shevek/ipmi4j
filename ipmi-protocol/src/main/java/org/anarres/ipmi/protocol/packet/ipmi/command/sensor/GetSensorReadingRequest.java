@@ -7,14 +7,14 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sensor;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 
 /**
- * [IPMI2] Section 35.9, table 35-9, page 459.
+ * [IPMI2] Section 35.14, table 35-15, page 470.
  *
  * @author shevek
  */
-public class GetSensorThresholdRequest extends AbstractIpmiGetSensorRequest {
+public class GetSensorReadingRequest extends AbstractIpmiGetSensorRequest {
 
     @Override
     public IpmiCommandName getCommandName() {
-        return IpmiCommandName.GetSensorThreshold;
+        return IpmiCommandName.GetSensorReading;
     }
 }
