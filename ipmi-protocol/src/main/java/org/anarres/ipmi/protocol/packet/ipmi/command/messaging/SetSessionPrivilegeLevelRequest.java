@@ -37,4 +37,10 @@ public class SetSessionPrivilegeLevelRequest extends AbstractIpmiRequest {
     protected void fromWireData(ByteBuffer buffer) {
         privilegeLevel = Code.fromBuffer(RequestedMaximumPrivilegeLevel.class, buffer);
     }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "PrivilegeLevel", privilegeLevel);
+    }
 }

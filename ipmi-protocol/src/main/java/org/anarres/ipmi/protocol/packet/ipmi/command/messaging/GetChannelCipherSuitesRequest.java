@@ -55,4 +55,13 @@ public class GetChannelCipherSuitesRequest extends AbstractIpmiRequest {
         listIndex = tmp & 0x3F;
         listType = getBit(tmp, 7) ? ListType.ByCipherSuite : ListType.Supported;
     }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "ChannelNumber", channelNumber);
+        appendValue(buf, depth, "PayloadType", payloadType);
+        appendValue(buf, depth, "ListIndex", listIndex);
+        appendValue(buf, depth, "ListType", listType);
+    }
 }

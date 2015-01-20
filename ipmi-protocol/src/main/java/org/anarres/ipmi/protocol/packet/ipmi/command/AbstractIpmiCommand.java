@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.AbstractIpmiSessionWrapper;
@@ -246,6 +247,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void toStringBuilder(StringBuilder buf, int depth) {
         appendHeader(buf, depth, "IpmiHeader");
         depth++;

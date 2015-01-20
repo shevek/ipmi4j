@@ -4,32 +4,18 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.chassis;
 
-import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleRequest;
 
 /**
  * [IPMI2] Section 28.2, table 28-3, page 389.
  *
  * @author shevek
  */
-public class GetChassisStatusRequest extends AbstractIpmiRequest {
+public class GetChassisStatusRequest extends AbstractIpmiSimpleRequest {
 
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetChassisStatus;
-    }
-
-    @Override
-    protected int getDataWireLength() {
-        return 0;
-    }
-
-    @Override
-    protected void toWireData(ByteBuffer buffer) {
-    }
-
-    @Override
-    protected void fromWireData(ByteBuffer buffer) {
     }
 }

@@ -41,4 +41,10 @@ public class SetSessionPrivilegeLevelResponse extends AbstractIpmiResponse {
             return;
         privilegeLevel = Code.fromBuffer(RequestedMaximumPrivilegeLevel.class, buffer);
     }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "PrivilegeLevel", privilegeLevel);
+    }
 }
