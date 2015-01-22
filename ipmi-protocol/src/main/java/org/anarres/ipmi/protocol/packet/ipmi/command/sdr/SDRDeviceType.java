@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -146,6 +147,20 @@ public enum SDRDeviceType implements Code.Wrapper {
         }
     }
 
+    public static class UnknownSubType implements SDRDeviceSubtype {
+
+        private final byte code;
+
+        public UnknownSubType(byte code) {
+            this.code = code;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+    }
+
     public static enum HecetaSubType implements SDRDeviceSubtype {
 
         Heceta1(0x00, "Heceta 1 e.g. LM78"),
@@ -238,13 +253,15 @@ public enum SDRDeviceType implements Code.Wrapper {
     private final byte code;
     @Nonnull
     private final String description;
-    @Nonnull
+    @CheckForNull
     private final Class<? extends SDRDeviceSubtype> subtype;
-    /* pp */ SDRDeviceType(@Nonnegative int code, @Nonnull String description, @Nonnull Class<? extends SDRDeviceSubtype> subtype) {
+
+    /* pp */ SDRDeviceType(@Nonnegative int code, @Nonnull String description, @CheckForNull Class<? extends SDRDeviceSubtype> subtype) {
         this.code = UnsignedBytes.checkedCast(code);
         this.description = description;
         this.subtype = subtype;
     }
+
     /* pp */ SDRDeviceType(@Nonnegative int code, @Nonnull String description) {
         this(code, description, null);
     }
@@ -262,7 +279,11 @@ public enum SDRDeviceType implements Code.Wrapper {
     @Nonnull
     public SDRDeviceSubtype getSubtype(byte code) {
         // SDRDeviceSubtype doesn't capture that it's an enum.
-        return (SDRDeviceSubtype) Code.fromByte((Class) subtype, code);
+        if (subtype != null)
+            for (SDRDeviceSubtype value : subtype.getEnumConstants())
+                if (value.getCode() == code)
+                    return value;
+        return new UnknownSubType(code);
     }
 
     @Override
