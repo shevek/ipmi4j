@@ -104,7 +104,7 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
         appendValue(buf, depth, "DeviceRevision", "0x" + Integer.toHexString(deviceRevision));
         appendValue(buf, depth, "DeviceFirmwareRevision", deviceFirmwareRevisionMajor + "." + deviceFirmwareRevisionMinor);
         appendValue(buf, depth, "AuxiliaryFirmwareRevisionInformation", auxiliaryFirmwareRevisionInformation);
-        appendValue(buf, depth, "DeviceIpmiRevision", deviceIpmiRevision);
+        appendValue(buf, depth, "DeviceIpmiRevision", deviceIpmiRevision);  // divide by 10? 20 = 2.0, 15 = 1.5
         appendValue(buf, depth, "DeviceSupport", deviceSupport);
         appendValue(buf, depth, "DeviceProvidesDeviceSDRs", deviceProvidesDeviceSDRs);
     }

@@ -40,6 +40,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivile
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoRequest;
@@ -188,7 +190,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User, GetSDRRepositoryInfoRequest.class, GetSDRRepositoryInfoResponse.class),
     GetSDRRepositoryAllocationInfo("Get SDR Repository Allocation Info", IpmiNetworkFunction.Storage, 0x21, User),
     ReserveSDRRepository("Reserve SDR Repository", IpmiNetworkFunction.Storage, 0x22, User, ReserveSDRRepositoryRequest.class, ReserveSDRRepositoryResponse.class),
-    GetSDR("Get SDR", IpmiNetworkFunction.Storage, 0x23, User),
+    GetSDR("Get SDR", IpmiNetworkFunction.Storage, 0x23, User, GetSDRRequest.class, GetSDRResponse.class),
     AddSDR("Add SDR", IpmiNetworkFunction.Storage, 0x24, Operator),
     PartialAddSDR("Partial Add SDR", IpmiNetworkFunction.Storage, 0x25, Operator),
     DeleteSDR("Delete SDR", IpmiNetworkFunction.Storage, 0x26, Operator),
