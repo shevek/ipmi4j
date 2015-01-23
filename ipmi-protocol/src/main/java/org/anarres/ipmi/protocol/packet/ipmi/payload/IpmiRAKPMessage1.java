@@ -99,7 +99,7 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
         depth++;
         appendValue(buf, depth, "MessageTag", "0x" + UnsignedBytes.toString(messageTag, 16));
         appendValue(buf, depth, "SystemSessionId", "0x" + Integer.toHexString(systemSessionId));
-        appendValue(buf, depth, "ConsoleRandom", consoleRandom);
+        appendValue(buf, depth, "ConsoleRandom", toHexString(consoleRandom));
         appendValue(buf, depth, "RequestedMaximumPrivilegeLevel", requestedMaximumPrivilegeLevel);
         appendValue(buf, depth, "PrivilegeLookupMode", privilegeLookupMode);
         appendValue(buf, depth, "Username", username);
