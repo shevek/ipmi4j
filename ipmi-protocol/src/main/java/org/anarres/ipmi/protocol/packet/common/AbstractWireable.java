@@ -196,6 +196,22 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
+    public static String toBinaryString(@CheckForNull byte... data) {
+        if (data == null)
+            return "<null>";
+        StringBuilder buf = new StringBuilder();
+        buf.append("(").append(data.length).append(" bytes) ");
+        for (byte b : data) {
+            String s = Integer.toBinaryString(b & 0xFF);
+            for (int i = s.length(); i < 8; i++)
+                buf.append('0');
+            buf.append(s).append(' ');
+        }
+        buf.setLength(buf.length() - 1);
+        return buf.toString();
+    }
+
+    @Nonnull
     protected static StringBuilder appendHeader(@Nonnull StringBuilder buf, int depth, String name) {
         indent(buf, depth);
         buf.append(name).append(":").append('\n');
