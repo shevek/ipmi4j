@@ -5,8 +5,12 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.base.Charsets;
+import com.google.common.math.IntMath;
 import com.google.common.primitives.UnsignedBytes;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -20,14 +24,82 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 public class SDRFieldCodec {
 
     /**
+     * Nobody seems to know what unicode encoding is required, so based
+     * on the date of publication, we will assume UTF16.
+     * None of the other client libraries even seem to do the decoding anyway.
+     * Given that this is a hardware spec, one rather suspects it will be UCS2.
+     */
+    public static final Charset UNICODE_CHARSET = StandardCharsets.UTF_16;
+
+    /**
      * [IPMI2] Section 43.15, page 555.
      */
     public static enum CodecType implements Code.Wrapper {
 
-        Unicode(0b00),
-        BCDPlus(0b01),
-        Ascii6(0b10),
-        Ascii8(0b11);
+        Unicode(0b00) {
+            @Override
+            public int getEncodedLength(String in) {
+                return UNICODE_CHARSET.encode(in).remaining();
+            }
+
+            @Override
+            public void encode(ByteBuffer out, String in) {
+                encodeUnicode(out, in);
+            }
+
+            @Override
+            public String decode(ByteBuffer in, int length) {
+                return decodeUnicode(in, length);
+            }
+        },
+        BCDPlus(0b01) {
+            @Override
+            public int getEncodedLength(String in) {
+                return IntMath.divide(in.length(), 2, RoundingMode.CEILING);
+            }
+
+            @Override
+            public void encode(ByteBuffer out, String in) {
+                encodeBcdPlus(out, in);
+            }
+
+            @Override
+            public String decode(ByteBuffer in, int length) {
+                return decodeBcdPlus(in, length);
+            }
+        },
+        Ascii6(0b10) {
+            @Override
+            public int getEncodedLength(String in) {
+                return IntMath.divide(in.length() * 3, 4, RoundingMode.CEILING);
+            }
+
+            @Override
+            public void encode(ByteBuffer out, String in) {
+                encodeAscii6(out, in);
+            }
+
+            @Override
+            public String decode(ByteBuffer in, int length) {
+                return decodeAscii6(in, length);
+            }
+        },
+        Ascii8(0b11) {
+            @Override
+            public int getEncodedLength(String in) {
+                return in.length();
+            }
+
+            @Override
+            public void encode(ByteBuffer out, String in) {
+                encodeAscii(out, in);
+            }
+
+            @Override
+            public String decode(ByteBuffer in, int length) {
+                return decodeAscii(in, length);
+            }
+        };
         private final byte code;
 
         private CodecType(@Nonnegative int code) {
@@ -38,6 +110,14 @@ public class SDRFieldCodec {
         public byte getCode() {
             return code;
         }
+
+        @Nonnegative
+        public abstract int getEncodedLength(@Nonnull String in);
+
+        public abstract void encode(@Nonnull ByteBuffer out, @Nonnull String in);
+
+        @Nonnull
+        public abstract String decode(@Nonnull ByteBuffer in, @Nonnegative int length);
     }
 
     @Nonnull
@@ -156,37 +236,32 @@ public class SDRFieldCodec {
     }
 
     @Nonnull
-    public static String decodeAscii(@Nonnull ByteBuffer in, @Nonnegative int length) {
+    private static String decodeCharset(@Nonnull ByteBuffer in, @Nonnegative int length, @Nonnull Charset charset) {
         int limit = in.limit();
         try {
             in.limit(in.position() + length);
-            return Charsets.ISO_8859_1.decode(in).toString();
+            return charset.decode(in).toString();
         } finally {
             in.limit(limit);
         }
+    }
+
+    @Nonnull
+    public static String decodeAscii(@Nonnull ByteBuffer in, @Nonnegative int length) {
+        return decodeCharset(in, length, Charsets.ISO_8859_1);
     }
 
     public static void encodeAscii(@Nonnull ByteBuffer out, @Nonnull String in) {
         out.put(Charsets.ISO_8859_1.encode(in));
     }
 
-    /**
-     * Nobody seems to know what unicode encoding is required, so we will assume UTF8.
-     * None of the other client libraries even seem to do the decoding anyway.
-     */
     @Nonnull
     public static String decodeUnicode(@Nonnull ByteBuffer in, @Nonnegative int length) {
-        int limit = in.limit();
-        try {
-            in.limit(in.position() + length);
-            return Charsets.UTF_8.decode(in).toString();
-        } finally {
-            in.limit(limit);
-        }
+        return decodeCharset(in, length, UNICODE_CHARSET);
     }
 
     public static void encodeUnicode(@Nonnull ByteBuffer out, @Nonnull String in) {
-        out.put(Charsets.UTF_8.encode(in));
+        out.put(UNICODE_CHARSET.encode(in));
     }
 
     @Nonnull
@@ -194,18 +269,7 @@ public class SDRFieldCodec {
         byte tmp = in.get();
         int length = tmp & 0x1F;
         CodecType type = Code.fromInt(CodecType.class, (tmp >> 6) & 0x3);
-        switch (type) {
-            case Unicode:
-                return decodeUnicode(in, length);
-            case BCDPlus:
-                return decodeBcdPlus(in, length);
-            case Ascii6:
-                return decodeAscii6(in, length);
-            case Ascii8:
-                return decodeAscii(in, length);
-            default:
-                throw new IllegalArgumentException("Unknown CodecType " + type);
-        }
+        return type.decode(in, length);
     }
 
     @Nonnull
@@ -213,21 +277,6 @@ public class SDRFieldCodec {
         int length = in.length();
         int tmp = (length & 0x1F) | (type.getCode() << 6);
         out.put((byte) tmp);
-        switch (type) {
-            case Unicode:
-                encodeUnicode(out, in);
-                break;
-            case BCDPlus:
-                encodeBcdPlus(out, in);
-                break;
-            case Ascii6:
-                encodeAscii6(out, in);
-                break;
-            case Ascii8:
-                encodeAscii(out, in);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown CodecType " + type);
-        }
+        type.encode(out, in);
     }
 }

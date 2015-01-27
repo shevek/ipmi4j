@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -130,16 +129,18 @@ public class Bits {
 
     /** Convenience constructor. */
     @Nonnull
-    public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
-        return new Bits(byteIndex, 1 << bitIndex, 1 << bitIndex);
+    public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex, boolean bitValue) {
+        return new Bits(byteIndex, 1 << bitIndex, bitValue ? 1 << bitIndex : 0);
     }
 
     /** Convenience constructor. */
     @Nonnull
-    public static Bits forBitIndex(@Nonnegative int bitIndex) {
-        return forBitIndex(0, bitIndex);
+    public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
+        return forBitIndex(byteIndex, bitIndex, true);
     }
 
+    /** Convenience constructor. */
+    // @Nonnull public static Bits forBitIndex(@Nonnegative int bitIndex) { return forBitIndex(0, bitIndex); }
     /**
      * Convenience constructor.
      * 

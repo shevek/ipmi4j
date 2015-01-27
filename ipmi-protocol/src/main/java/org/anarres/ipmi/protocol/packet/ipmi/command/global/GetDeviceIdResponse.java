@@ -22,7 +22,14 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
 
     public static enum DeviceSupport implements Bits.Wrapper {
 
-        Chassis(7), Bridge(6), IPMBEventGenerator(5), IPMBEventReceiver(4), FRUInventoryDevice(3), SELDevice(2), SDRRepositoryDevice(1), SensorDevice(0);
+        Chassis(7),
+        Bridge(6),
+        IPMBEventGenerator(5),
+        IPMBEventReceiver(4),
+        FRUInventoryDevice(3),
+        SELDevice(2),
+        SDRRepositoryDevice(1),
+        SensorDevice(0);
         private final Bits bits;
 
         private DeviceSupport(@Nonnegative int index) {

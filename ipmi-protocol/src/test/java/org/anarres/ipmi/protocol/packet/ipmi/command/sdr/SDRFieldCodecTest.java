@@ -29,6 +29,7 @@ public class SDRFieldCodecTest {
         byte[] data = AbstractWireable.readBytes(buf, buf.remaining());
         LOG.debug("Hex:  " + AbstractWireable.toHexString(data));
         LOG.debug("Bin:  " + AbstractWireable.toBinaryString(data));
+        assertEquals(data.length, type.getEncodedLength(in) + 1);
         buf.position(0);
         String out = SDRFieldCodec.decode(buf);
         LOG.debug("Out:  " + out);
