@@ -20,6 +20,12 @@ public class Code {
         public byte getCode();
     }
 
+    public static interface DescriptiveWrapper extends Wrapper {
+
+        @Nonnull
+        public String getDescription();
+    }
+
     @Nonnull
     public static <T extends Enum<T> & Code.Wrapper> T fromByte(@Nonnull Class<T> type, byte code) {
         for (T value : type.getEnumConstants())
