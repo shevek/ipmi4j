@@ -35,7 +35,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIpmiSessionWrapper.class);
 
     /**
-     * @see AbstractIpmiCommand#fromWireUnchecked(ByteBuffer)
+     * @see AbstractIpmiCommand#fromWireUnchecked(IpmiContext, ByteBuffer)
      */
     @Nonnull
     protected static IpmiPayload newPayload(@Nonnull ByteBuffer buffer, @Nonnull IpmiPayloadType payloadType) {

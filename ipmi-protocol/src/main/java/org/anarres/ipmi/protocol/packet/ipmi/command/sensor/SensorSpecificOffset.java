@@ -159,7 +159,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
          The Event Data 3 field provides a more detailed definition of the error:
          7:4 = Reserved for future definition, set to 0000b
          3:0 = Error Type, one of */
-        public static enum ConfigurationErrorValue implements Code.Wrapper {
+        public static enum ConfigurationErrorData3 implements Code.Wrapper {
 
             /** Typically, the system OEM defines the vendor compatibility criteria that drives this status). */
             VendorMismatch(0x00, "Vendor mismatch."),
@@ -173,7 +173,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
             VoltageRatingMismatch(0x04, "Voltage rating mismatch.");
             private final byte code;
             private final String description;
-            /* pp */ private ConfigurationErrorValue(@Nonnegative int code, @Nonnull String description) {
+            /* pp */ private ConfigurationErrorData3(@Nonnegative int code, @Nonnull String description) {
                 this.code = UnsignedBytes.checkedCast(code);
                 this.description = description;
             }

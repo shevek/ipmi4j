@@ -9,6 +9,7 @@ import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelRequest;
 
 /**
  * [IPMI2] Section 13.20 page 150: {@link IpmiRAKPMessage1}.
