@@ -19,7 +19,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
     public static class Utils {
 
         @Nonnull
-        public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(T value) {
+        public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(@Nonnull T value) {
             return "0x" + UnsignedBytes.toString(value.getCode(), 16) + ": " + value.getDescription();
         }
     }
@@ -316,6 +316,130 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         private final byte code;
         private final String description;
         /* pp */ private DriveSlot(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+    }
+
+    public static enum SystemFirmwareProgress implements SensorSpecificOffset {
+
+        SystemFirmwareError(0x00, "System Firmware Error (POST Error).") {
+            // SystemFirmwareErrorData2
+        },
+        SystemFirmwareHang(0x01, "System Firmware Hang.") {
+            // SystemFirmwareProgressData2
+        },
+        SystemFirmwareProgress(0x02, "System Firmware Progress") {
+            // SystemFirmwareProgressData2
+        };
+
+        public static enum SystemFirmwareErrorData2 implements Code.DescriptiveWrapper {
+
+            Unspecified(0x00, "Unspecified."),
+            NoSystemMemoryInstalled(0x01, "No system memory is physically installed in the system."),
+            NoUsableSystemMemory(0x02, "No usable system memory, all installed memory has experienced an unrecoverable failure."),
+            UnrecoverableHardDiskDeviceFailure(0x03, "Unrecoverable hard-disk/ATAPI/IDE device failure."),
+            UnrecoverableSystemBoardFailure(0x04, "Unrecoverable system-board failure."),
+            UnrecoverableDisketteSubsystemFailure(0x05, "Unrecoverable diskette subsystem failure."),
+            UnrecoverableHardDiskControllerFailure(0x06, "Unrecoverable hard-disk controller failure."),
+            UnrecoverableKeyboardFailure(0x07, "Unrecoverable PS/2 or USB keyboard failure."),
+            RemovableBootMediaNotFound(0x08, "Removable boot media not found"),
+            UnrecoverableVideoControllerFailure(0x09, "Unrecoverable video controller failure"),
+            NoVideoDeviceDetected(0x0A, "No video device detected"),
+            FirmwareROMCorruptionDetected(0x0B, "Firmware (BIOS) ROM corruption detected"),
+            CPUVoltageMismatch(0x0C, "CPU voltage mismatch (processors that share same supply have mismatched voltage requirements)"),
+            CPUSpeedMatchingFailure(0x0D, "CPU speed matching failure");
+            private final byte code;
+            private final String description;
+            /* pp */ private SystemFirmwareErrorData2(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Utils.toString(this);
+            }
+        }
+
+        public static enum SystemFirmwareProgressData2 implements Code.DescriptiveWrapper {
+
+            Unspecified(0x00, "Unspecified."),
+            MemoryInitialization(0x01, "Memory initialization."),
+            HardDiskInitialization(0x02, "Hard-disk initialization"),
+            SecondaryProcessorInitialization(0x03, "Secondary processor(s) initialization"),
+            UserAuthentication(0x04, "User authentication"),
+            UserInitiatedSystemSetup(0x05, "User-initiated system setup"),
+            USBResourceConfiguration(0x06, "USB resource configuration"),
+            PCIResourceConfiguration(0x07, "PCI resource configuration"),
+            OptionROMInitialization(0x08, "Option ROM initialization"),
+            VideoInitialization(0x09, "Video initialization"),
+            CacheInitialization(0x0A, "Cache initialization"),
+            SMBusInitialization(0x0B, "SM Bus initialization"),
+            KeyboardControllerInitialization(0x0C, "Keyboard controller initialization"),
+            ManagementControllerInitialization(0x0D, "Embedded controller/management controller initialization"),
+            DockingStationAttachment(0x0E, "Docking station attachment"),
+            DockingStationEnablement(0x0F, "Enabling docking station"),
+            DockingStationEjection(0x10, "Docking station ejection"),
+            DockingStationDisablement(0x11, "Disabling docking station"),
+            OperatingSystemWakeUpVectorCall(0x12, "Calling operating system wake-up vector"),
+            OperatingSystemBootProcessStart(0x13, "Starting operating system boot process, e.g. calling Int 19h"),
+            BaseboardInitialization(0x14, "Baseboard or motherboard initialization"),
+            Reserved_15(0x15, "reserved"),
+            FloppyInitialization(0x16, "Floppy initialization"),
+            KeyboardTest(0x17, "Keyboard test"),
+            PointingDeviceTest(0x18, "Pointing device test"),
+            PrimaryProcessorInitialization(0x19, "Primary processor initialization");
+            private final byte code;
+            private final String description;
+            /* pp */ private SystemFirmwareProgressData2(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Utils.toString(this);
+            }
+        }
+        private final byte code;
+        private final String description;
+        /* pp */ private SystemFirmwareProgress(@Nonnegative int code, @Nonnull String description) {
             this.code = UnsignedBytes.checkedCast(code);
             this.description = description;
         }

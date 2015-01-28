@@ -35,7 +35,7 @@ public enum SensorType implements Code.Wrapper {
     Drive_Slot(0x0D, "Drive Slot (Bay)", SensorSpecificOffset.DriveSlot.class),
     POST_Memory_Resize(0x0E, "POST Memory Resize"),
     /** (formerly POST Error) */
-    System_Firmware_Progress(0x0F, "System Firmware Progress"),
+    System_Firmware_Progress(0x0F, "System Firmware Progress", SensorSpecificOffset.SystemFirmwareProgress.class),
     Event_Logging_Disabled(0x10, "Event Logging Disabled"),
     Watchdog_1(0x11, "Watchdog 1"),
     System_Event(0x12, "System Event"),

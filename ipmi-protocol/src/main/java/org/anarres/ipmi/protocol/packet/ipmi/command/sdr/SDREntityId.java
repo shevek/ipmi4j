@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.primitives.UnsignedBytes;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
@@ -12,7 +13,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum SDREntityId implements Code.Wrapper {
+public enum SDREntityId implements Code.DescriptiveWrapper {
 
     Unspecified(0x00, "Unspecified"),
     Other(0x01, "Other"),
@@ -224,7 +225,7 @@ public enum SDREntityId implements Code.Wrapper {
 // D0h-FF, "OEM System Integrator defined. These IDs are system specific and can be assigned by the system integrator, or OEM.
     private final byte code;
     private final String description;
-    /* pp */ SDREntityId(int code, String description) {
+    /* pp */ SDREntityId(@Nonnegative int code, @Nonnull String description) {
         this.code = UnsignedBytes.checkedCast(code);
         this.description = description;
     }
@@ -234,7 +235,7 @@ public enum SDREntityId implements Code.Wrapper {
         return code;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }
