@@ -37,8 +37,8 @@ public enum SensorType implements Code.DescriptiveWrapper {
     /** (formerly POST Error) */
     System_Firmware_Progress(0x0F, "System Firmware Progress", SensorSpecificOffset.SystemFirmwareProgress.class),
     Event_Logging_Disabled(0x10, "Event Logging Disabled", SensorSpecificOffset.EventLoggingDisabled.class),
-    Watchdog_1(0x11, "Watchdog 1"),
-    System_Event(0x12, "System Event"),
+    Watchdog_1(0x11, "Watchdog 1", SensorSpecificOffset.Watchdog1.class),
+    System_Event(0x12, "System Event", SensorSpecificOffset.SystemEvent.class),
     Critical_Interrupt(0x13, "Critical Interrupt"),
     Button_or_Switch(0x14, "Button / Switch"),
     Module_or_Board(0x15, "Module / Board"),

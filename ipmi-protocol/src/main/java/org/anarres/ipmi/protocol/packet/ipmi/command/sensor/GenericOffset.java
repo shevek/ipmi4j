@@ -16,6 +16,9 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public interface GenericOffset extends Code.DescriptiveWrapper {
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum Threshold implements GenericOffset {
 
         LowerNonCriticalGoingLow(0x00, "Lower Non-critical - going low"),
@@ -53,6 +56,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum Usage implements GenericOffset {
 
         TransitionToIdle(0x00, "Transition to Idle"),
@@ -81,6 +87,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum Assertion implements GenericOffset {
 
         StateDeasserted(0x00, "State Deasserted"),
@@ -108,6 +117,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum PredictiveFailure implements GenericOffset {
 
         PredictiveFailureDeasserted(0x00, "Predictive Failure Deasserted"),
@@ -135,6 +147,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum Limit implements GenericOffset {
 
         LimitNotExceeded(0x00, "Limit Not Exceeded"),
@@ -162,6 +177,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 506.
+     */
     public static enum Performance implements GenericOffset {
 
         PerformanceMet(0x00, "Performance Met"),
@@ -189,6 +207,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum Severity implements GenericOffset {
 
         TransitionToOK(0x00, "Transition to OK"),
@@ -223,6 +244,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum Presence implements GenericOffset {
 
         DeviceAbsent(0x00, "Device Removed / Device Absent"),
@@ -250,6 +274,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum Enablement implements GenericOffset {
 
         DeviceDisabled(0x00, "Device Disabled"),
@@ -277,6 +304,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum Availability implements GenericOffset {
 
         TransitionToRunning(0x00, "Transition to Running"),
@@ -311,6 +341,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum Redundancy implements GenericOffset {
 
         /** Indicates that full redundancy has been regained. (formerly 'Redundancy Regained') */
@@ -352,6 +385,9 @@ public interface GenericOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.1, table 42-2, page 507.
+     */
     public static enum PowerState implements GenericOffset {
 
         D0PowerState(0x00, "D0 Power State"),

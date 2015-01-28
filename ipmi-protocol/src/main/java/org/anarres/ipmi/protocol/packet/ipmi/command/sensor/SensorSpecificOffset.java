@@ -7,7 +7,9 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sensor;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 
 /**
  * [IPMI2] Section 42.2, table 42-3, pages 508-521.
@@ -335,6 +337,9 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 511.
+     */
     public static enum SystemFirmwareProgress implements SensorSpecificOffset {
 
         SystemFirmwareError(0x00, "System Firmware Error (POST Error).") {
@@ -465,12 +470,267 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 512.
+     */
     public static enum EventLoggingDisabled implements SensorSpecificOffset {
 
-        ;
+        CorrectableMemoryErrorLoggingDisabled(0x00, "Correctable Memory Error Logging Disabled") {
+            /** [7:0] - Memory module/device (e.g. DIMM/SIMM/RIMM) identification, relative to the entity that the sensor is associated with (if SDR provided for this sensor). */
+            public Object decodeEventData2(byte value) {
+                return UnsignedBytes.toInt(value);
+            }
+        },
+        EventTypeLoggingDisabled(0x01, "Event 'Type' Logging Disabled") {
+            public Object decodeEventData2(byte value) {
+                return Code.fromByte(GenericEventType.class, value);
+            }
+
+            public Object decodeEventData3(byte value) {
+                boolean allEventsOfType = AbstractIpmiCommand.getBit(value, 5);
+                boolean assertion = AbstractIpmiCommand.getBit(value, 4);
+                int eventOffset = value & 0xF;
+                return null;
+            }
+        },
+        LogAreaReset(0x02, "Log Area Reset/Cleared"),
+        AllEventLoggingDisabled(0x03, "All Event Logging Disabled"),
+        SELFull(0x04, "SEL Full"),
+        SELAlmostFull(0x05, "SEL Almost Full") {
+            /** Contains hex value from 0 to 100 decimal (00h to 64h) representing the % of which the SEL is filled at the time the event was generated: 00h is 0% full (SEL is empty), 64h is 100% full, etc. */
+            public Object decodeEventData3(byte value) {
+                return UnsignedBytes.checkedCast(value);
+            }
+        },
+        CorrectableMachineCheckErrorLoggingDisabled(0x06, "Correctable Machine Check Error Logging Disabled") {
+            /** Instance ID number of the (processor) Entity that the sensor is associated with (if SDR provided for this sensor), or a vendor selected logical processor number if no SDR. */
+            public Object decodeEventData2(byte value) {
+                return UnsignedBytes.toInt(value);
+            }
+
+            /** If Event Data 2 is provided then Event Data 3 may be optionally used to indicate whether Event Data 2 is being used to hold an Entity Instance number or a vendor-specific processor number. If Event Data 2 is provided by Event Data 3 is not, then Event Data 2 is assumed to hold an Entity Instance number. */
+            public Object decodeEventData3(byte value) {
+                return AbstractIpmiCommand.getBit(value, 7);
+            }
+        };
         private final byte code;
         private final String description;
         /* pp */ private EventLoggingDisabled(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 512.
+     */
+    public static enum Watchdog1 implements SensorSpecificOffset {
+
+        BIOSWatchdogReset(0x00, "BIOS Watchdog Reset"),
+        OSWatchdogReset(0x01, "OS Watchdog Reset"),
+        OSWatchdogShutDown(0x02, "OS Watchdog Shut Down"),
+        OSWatchdogPowerDown(0x03, "OS Watchdog Power Down"),
+        OSWatchdogPowerCycle(0x04, "OS Watchdog Power Cycle"),
+        OSWatchdogNMI(0x05, "OS Watchdog NMI / Diagnostic Interrupt"),
+        OSWatchdogExpired(0x06, "OS Watchdog Expired, status only"),
+        OSWatchdogPreTimeoutInterrupt(0x07, "OS Watchdog pre-timeout Interrupt, non-NMI");
+        private final byte code;
+        private final String description;
+        /* pp */ private Watchdog1(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 513.
+     */
+    public static enum SystemEvent implements SensorSpecificOffset {
+
+        SystemReconfigured(0x00, "System Reconfigured"),
+        OEMSystemBootEvent(0x01, "OEM System Boot Event"),
+        /** This event would typically require system-specific diagnostics to determine FRU / failure type. */
+        UndeterminedSystemHardwareFailure(0x02, "Undetermined system hardware failure"),
+        /** See GetAuxiliaryLogStatusCommandRequest etc. */
+        EntryAddedToAuxiliaryLog(0x03, "Entry added to Auxiliary Log") {
+            // Event Data 2: [7:4] LogEntryAction, [3:0] LogType
+            public Object decodeEventData2(byte value) {
+                Code.fromInt(LogEntryAction.class, (value >> 4) & 0xF);
+                Code.fromInt(LogType.class, value & 0xF);
+                return null;
+            }
+        },
+        PEFAction(0x04, "PEF Action") {
+            // Event Data 2: Action
+            public Object decodeEventData2(byte value) {
+                return Bits.fromByte(Action.class, value);
+            }
+        },
+        TimestampClockSynchronization(0x05, "Timestamp Clock Synchronization") {
+            /*
+             This event can be used to record when changes are made to the
+             timestamp clock(s) so that relative time differences between SEL
+             entries can be determined.
+             */
+            public Object decodeEventData2(byte value) {
+                boolean first = AbstractIpmiCommand.getBit(value, 7);
+                return Code.fromInt(TimestampClockType.class, value & 0xF);
+            }
+        };
+
+        public static enum LogEntryAction implements Code.DescriptiveWrapper {
+            // [7:4] - Log Type
+
+            EntryAdded(0x00, "entry added"),
+            EntryAddedNonIPMI(0x01, "entry added because event did not be map to standard IPMI event"),
+            EntryAddedWithSEL(0x02, "entry added along with one or more corresponding SEL entries"),
+            LogCleared(0x03, "log cleared"),
+            LogDisabled(0x04, "log disabled"),
+            LogEnabled(0x05, "log enabled");
+            private final byte code;
+            private final String description;
+            /* pp */ private LogEntryAction(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Code.Utils.toString(this);
+            }
+        }
+
+        public static enum LogType implements Code.DescriptiveWrapper {
+            // [3:0] - Log Type
+
+            MCA(0x00, "MCA Log"),
+            OEM1(0x01, "OEM 1"),
+            OEM2(0x02, "OEM 2");
+            private final byte code;
+            private final String description;
+            /* pp */ private LogType(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Code.Utils.toString(this);
+            }
+        }
+
+        public static enum Action implements Bits.DescriptiveWrapper {
+
+            DiagnosticInterrupt(5, "Diagnostic Interrupt (NMI)"),
+            OEMAction(4, "OEM Action"),
+            PowerCycle(3, "Power Cycle"),
+            Reset(2, "Reset"),
+            PowerOff(1, "Power Off"),
+            Alert(0, "Alert");
+            private final Bits bits;
+            private final String description;
+            /* pp */ private Action(@Nonnegative int bit, @Nonnull String description) {
+                this.bits = Bits.forBitIndex(0, bit);
+                this.description = description;
+            }
+
+            @Override
+            public Bits getBits() {
+                return bits;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Bits.Utils.toString(this);
+            }
+        }
+
+        public static enum TimestampClockType implements Code.DescriptiveWrapper {
+            // [3:0] - Timestamp Clock Type
+
+            /** Also used when both SEL and SDR Timestamp clocks are linked together. */
+            SEL(0x00, "SEL Timestamp Clock updated."),
+            SDR(0x01, "SDR Timestamp Clock updated.");
+            private final byte code;
+            private final String description;
+            /* pp */ private TimestampClockType(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Code.Utils.toString(this);
+            }
+        }
+        private final byte code;
+        private final String description;
+        /* pp */ private SystemEvent(@Nonnegative int code, @Nonnull String description) {
             this.code = UnsignedBytes.checkedCast(code);
             this.description = description;
         }

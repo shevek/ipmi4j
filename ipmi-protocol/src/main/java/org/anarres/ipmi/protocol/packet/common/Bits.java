@@ -36,6 +36,20 @@ public class Bits {
         public Bits getBits();
     }
 
+    public static interface DescriptiveWrapper extends Wrapper {
+
+        @Nonnull
+        public String getDescription();
+    }
+
+    public static class Utils {
+
+        @Nonnull
+        public static <T extends Enum<T> & Bits.DescriptiveWrapper> String toString(@Nonnull T value) {
+            return value.getBits() + ": " + value.getDescription();
+        }
+    }
+
     public static byte validate(int byteMask, int byteValue) {
         // LOG.info("Validate mask=" + byteMask + ", value=" + byteValue);
         Preconditions.checkArgument(byteMask != 0, "Illegal byte mask 0");
