@@ -13,7 +13,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum IpmiChannelProtocol implements Code.Wrapper {
+public enum IpmiChannelProtocol implements Code.DescriptiveWrapper {
 
     Reserved_00(0x00, "n/a", "reserved"),
     IPMB_1_0(0x01, "IPMB-1.0", "Used for IPMB, serial/modem Basic Mode, and LAN"),
@@ -44,7 +44,7 @@ public enum IpmiChannelProtocol implements Code.Wrapper {
         return name;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }

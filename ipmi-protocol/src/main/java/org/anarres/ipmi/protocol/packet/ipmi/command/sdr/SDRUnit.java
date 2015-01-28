@@ -5,14 +5,13 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.primitives.UnsignedBytes;
-import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  *
  * @author shevek
  */
-public enum SDRUnit implements Code.Wrapper {
+public enum SDRUnit implements Code.DescriptiveWrapper {
 
     Unspecified(0, "unspecified"),
     Degrees_C(1, "degrees C"),
@@ -119,7 +118,7 @@ public enum SDRUnit implements Code.Wrapper {
         return code;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }

@@ -15,7 +15,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum SensorType implements Code.Wrapper {
+public enum SensorType implements Code.DescriptiveWrapper {
 
     Reserved(0x00, "Reserved"),
     Temperature(0x01, "Temperature"),
@@ -36,7 +36,7 @@ public enum SensorType implements Code.Wrapper {
     POST_Memory_Resize(0x0E, "POST Memory Resize"),
     /** (formerly POST Error) */
     System_Firmware_Progress(0x0F, "System Firmware Progress", SensorSpecificOffset.SystemFirmwareProgress.class),
-    Event_Logging_Disabled(0x10, "Event Logging Disabled"),
+    Event_Logging_Disabled(0x10, "Event Logging Disabled", SensorSpecificOffset.EventLoggingDisabled.class),
     Watchdog_1(0x11, "Watchdog 1"),
     System_Event(0x12, "System Event"),
     Critical_Interrupt(0x13, "Critical Interrupt"),
@@ -146,7 +146,7 @@ public enum SensorType implements Code.Wrapper {
         return code;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }

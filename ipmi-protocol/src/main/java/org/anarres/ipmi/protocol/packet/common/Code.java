@@ -26,6 +26,14 @@ public class Code {
         public String getDescription();
     }
 
+    public static class Utils {
+
+        @Nonnull
+        public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(@Nonnull T value) {
+            return "0x" + UnsignedBytes.toString(value.getCode(), 16) + ": " + value.getDescription();
+        }
+    }
+
     @Nonnull
     public static <T extends Enum<T> & Code.Wrapper> T fromByte(@Nonnull Class<T> type, byte code) {
         for (T value : type.getEnumConstants())

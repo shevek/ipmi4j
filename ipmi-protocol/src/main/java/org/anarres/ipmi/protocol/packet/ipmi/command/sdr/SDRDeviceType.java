@@ -15,7 +15,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum SDRDeviceType implements Code.Wrapper {
+public enum SDRDeviceType implements Code.DescriptiveWrapper {
 
     Reserved_00(0x00, "reserved.", UnspecifiedSubType.class),
     Reserved_01(0x01, "reserved.", UnspecifiedSubType.class),
@@ -136,7 +136,7 @@ public enum SDRDeviceType implements Code.Wrapper {
             return code;
         }
 
-        @Nonnull
+        @Override
         public String getDescription() {
             return description;
         }
@@ -158,6 +158,11 @@ public enum SDRDeviceType implements Code.Wrapper {
         @Override
         public byte getCode() {
             return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return "(unknown)";
         }
     }
 
@@ -181,7 +186,7 @@ public enum SDRDeviceType implements Code.Wrapper {
             return code;
         }
 
-        @Nonnull
+        @Override
         public String getDescription() {
             return description;
         }
@@ -210,7 +215,7 @@ public enum SDRDeviceType implements Code.Wrapper {
             return code;
         }
 
-        @Nonnull
+        @Override
         public String getDescription() {
             return description;
         }
@@ -240,7 +245,7 @@ public enum SDRDeviceType implements Code.Wrapper {
             return code;
         }
 
-        @Nonnull
+        @Override
         public String getDescription() {
             return description;
         }

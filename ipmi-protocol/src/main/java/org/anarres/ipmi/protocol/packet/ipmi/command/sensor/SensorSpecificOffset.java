@@ -10,19 +10,11 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
- * [IPMI2] Section 42.2, table 42-3, page 508-521.
+ * [IPMI2] Section 42.2, table 42-3, pages 508-521.
  *
  * @author shevek
  */
 public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
-
-    public static class Utils {
-
-        @Nonnull
-        public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(@Nonnull T value) {
-            return "0x" + UnsignedBytes.toString(value.getCode(), 16) + ": " + value.getDescription();
-        }
-    }
 
     /**
      * [IPMI2] Section 42.2, table 42-3, page 508.
@@ -57,7 +49,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -91,7 +83,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -134,7 +126,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -151,6 +143,9 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         Power_Supply_Input_Out_of_Range_but_Present(0x05, "Power Supply input out-of-range, but present."),
         Configuration_Error(0x06, "Configuration error.") {
             // ConfigurationErrorValue
+            public Object decodeEventData3(byte value) {
+                return Code.fromByte(ConfigurationErrorData3.class, value);
+            }
         },
         /** Power supply is in a standby state where its main outputs have been automatically deactivated because the load is being supplied by one or more other power supplies. */
         Power_Supply_Inactive(0x07, "Power Supply Inactive (in standby state).");
@@ -159,7 +154,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
          The Event Data 3 field provides a more detailed definition of the error:
          7:4 = Reserved for future definition, set to 0000b
          3:0 = Error Type, one of */
-        public static enum ConfigurationErrorData3 implements Code.Wrapper {
+        public static enum ConfigurationErrorData3 implements Code.DescriptiveWrapper {
 
             /** Typically, the system OEM defines the vendor compatibility criteria that drives this status). */
             VendorMismatch(0x00, "Vendor mismatch."),
@@ -183,14 +178,14 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
                 return code;
             }
 
-            @Nonnull
+            @Override
             public String getDescription() {
                 return description;
             }
 
             @Override
             public String toString() {
-                return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();
+                return Code.Utils.toString(this);
             }
         }
         private final byte code;
@@ -212,7 +207,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -250,7 +245,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -271,7 +266,11 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         /** Indicates a memory configuration error for the entity associated with the sensor. This can include when a given implementation of the entity is not supported by the system (e.g., when the particular size of the memory module is unsupported) or that the entity is part of an unsupported memory configuration (e.g.  the configuration is not supported because the memory module doesn't match other memory modules). */
         ConfigurationError(0x07, "Configuration error."),
         /** Indicates entity associated with the sensor represents a 'spare' unit of memory.  The Event Data 3 field can be used to provide an event extension code, with the following definition: [7:0] - Memory module/device (e.g. DIMM/SIMM/RIMM) identification, relative to the entity that the sensor is associated with (if SDR provided for this sensor). */
-        Spare(0x08, "Spare."),
+        Spare(0x08, "Spare.") {
+            public Object decodeEventData2(byte value) {
+                return UnsignedBytes.toInt(value);
+            }
+        },
         /** Memory throttling triggered by a hardware-based mechanism operating independent from system software, such as automatic thermal throttling or throttling to limit power consumption. */
         MemoryAutomaticallyThrottled(0x09, "Memory Automatically Throttled."),
         /** Memory device has entered a critical overtemperature state, exceeding specified operating conditions. Memory devices in this state may produce errors or become inaccessible. */
@@ -295,7 +294,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
@@ -332,20 +331,26 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
         }
     }
 
     public static enum SystemFirmwareProgress implements SensorSpecificOffset {
 
         SystemFirmwareError(0x00, "System Firmware Error (POST Error).") {
-            // SystemFirmwareErrorData2
+            public Object decodeEventData2(byte value) {
+                return Code.fromByte(SystemFirmwareErrorData2.class, value);
+            }
         },
         SystemFirmwareHang(0x01, "System Firmware Hang.") {
-            // SystemFirmwareProgressData2
+            public Object decodeEventData2(byte value) {
+                return Code.fromByte(SystemFirmwareProgressData2.class, value);
+            }
         },
         SystemFirmwareProgress(0x02, "System Firmware Progress") {
-            // SystemFirmwareProgressData2
+            public Object decodeEventData2(byte value) {
+                return Code.fromByte(SystemFirmwareProgressData2.class, value);
+            }
         };
 
         public static enum SystemFirmwareErrorData2 implements Code.DescriptiveWrapper {
@@ -383,7 +388,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
             @Override
             public String toString() {
-                return Utils.toString(this);
+                return Code.Utils.toString(this);
             }
         }
 
@@ -434,7 +439,7 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
             @Override
             public String toString() {
-                return Utils.toString(this);
+                return Code.Utils.toString(this);
             }
         }
         private final byte code;
@@ -456,7 +461,33 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
 
         @Override
         public String toString() {
-            return Utils.toString(this);
+            return Code.Utils.toString(this);
+        }
+    }
+
+    public static enum EventLoggingDisabled implements SensorSpecificOffset {
+
+        ;
+        private final byte code;
+        private final String description;
+        /* pp */ private EventLoggingDisabled(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
         }
     }
 }

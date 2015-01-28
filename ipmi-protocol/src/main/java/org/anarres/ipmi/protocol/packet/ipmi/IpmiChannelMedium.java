@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
-import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -13,7 +12,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum IpmiChannelMedium implements Code.Wrapper {
+public enum IpmiChannelMedium implements Code.DescriptiveWrapper {
 
     IPMB(0x1, "IPMB (I2C)"),
     ICMB_v1_0(0x2, "ICMB v1.0"),
@@ -72,7 +71,7 @@ public enum IpmiChannelMedium implements Code.Wrapper {
         return code;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }

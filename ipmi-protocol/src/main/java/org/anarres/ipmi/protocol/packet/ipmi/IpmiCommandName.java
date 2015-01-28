@@ -14,7 +14,6 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
-import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;

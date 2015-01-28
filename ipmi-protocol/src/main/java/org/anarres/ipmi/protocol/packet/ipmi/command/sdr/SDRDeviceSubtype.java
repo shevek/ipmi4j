@@ -10,5 +10,5 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public interface SDRDeviceSubtype extends Code.Wrapper {
+public interface SDRDeviceSubtype extends Code.DescriptiveWrapper {
 }

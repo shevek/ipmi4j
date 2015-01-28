@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.primitives.UnsignedBytes;
-import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -13,7 +12,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *
  * @author shevek
  */
-public enum IpmiCompletionCode implements Code.Wrapper {
+public enum IpmiCompletionCode implements Code.DescriptiveWrapper {
 
     Normal(0x00, "Command Completed Normally."),
     NodeBusy(0xC0, "Node Busy. Command could not be processed because command processing resources are temporarily unavailable."),
@@ -51,11 +50,11 @@ public enum IpmiCompletionCode implements Code.Wrapper {
      * specific completion codes for commands specified in this document.
      */
     private final byte code;
-    private final String message;
+    private final String description;
 
-    private IpmiCompletionCode(int code, String message) {
+    private IpmiCompletionCode(int code, String description) {
         this.code = UnsignedBytes.checkedCast(code);
-        this.message = message;
+        this.description = description;
     }
 
     @Override
@@ -63,13 +62,13 @@ public enum IpmiCompletionCode implements Code.Wrapper {
         return code;
     }
 
-    @Nonnull
-    public String getMessage() {
-        return message;
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     @Override
     public String toString() {
-        return "(0x" + UnsignedBytes.toString(getCode(), 16) + ") " + getMessage();
+        return "(0x" + UnsignedBytes.toString(getCode(), 16) + ") " + getDescription();
     }
 }
