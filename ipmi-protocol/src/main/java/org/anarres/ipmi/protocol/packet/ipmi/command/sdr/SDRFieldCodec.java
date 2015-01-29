@@ -9,6 +9,7 @@ import com.google.common.math.IntMath;
 import com.google.common.primitives.UnsignedBytes;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -18,22 +19,41 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
  * [IPMI2] Section 43.15, pages 554-556.
+ * 
+ * <p>
+ * These codecs are somewhat under-documented. The issues are:
+ * <ol>
+ * <li>What is the "unicode" encoding?
+ *   Based on the date of publication and the fact that this is a hardware
+ *   spec, we will guess UCS2, which we will emulate using UTF-16LE.
+ *   Few of the other client libraries even seem to do the decoding anyway,
+ *   and some of those that do use UTF8, which seems unlikely in an
+ *   early '90s embedded controller.
+ * </li>
+ * <li>What is the endianness of the "unicode" encoding?
+ *   No idea. Since this is an Intel spec, let us guess little-endian, even though
+ *   UCS-2 was meant to be big-endian.
+ * </li>
+ * <li>Does 'length' refer to encoded or unencoded length?
+ *   If it's encoded, then we can't tell the difference between 3-char and 4-char Ascii6 sequences.
+ *   If it's unencoded, then it's very difficult to decode UTF16, although UCS2 should be easier.
+ * </li>
+ * <li>Does any BMC actually use anything but ASCII?
+ *   Please send me examples and/or packet dumps.
+ * </li>
+ * </ol>
+ * </p>
  *
  * @author shevek
  */
 public class SDRFieldCodec {
 
+    private SDRFieldCodec() {
+    }
     /**
      * The unicode character set used for SDR strings.
-     *
-     * Nobody seems to know what unicode encoding is required, but based
-     * on the date of publication and the fact that this is a hardware
-     * spec, we will guess UCS2, which we will emulate using UTF16.
-     * Few of the other client libraries even seem to do the decoding anyway,
-     * and some of those that do use UTF8, which seems unlikely in an
-     * early '90s embedded controller.
      */
-    public static final Charset UNICODE_CHARSET = StandardCharsets.UTF_16;
+    public static final Charset UNICODE_CHARSET = StandardCharsets.UTF_16LE;
 
     /**
      * [IPMI2] Section 43.15, page 555.
@@ -241,13 +261,13 @@ public class SDRFieldCodec {
 
     @Nonnull
     private static String decodeCharset(@Nonnull ByteBuffer in, @Nonnegative int length, @Nonnull Charset charset) {
-        int limit = in.limit();
-        try {
-            in.limit(in.position() + length);
-            return charset.decode(in).toString();
-        } finally {
-            in.limit(limit);
-        }
+        CharBuffer out = CharBuffer.allocate(length);
+        // TODO: It isn't clear to me whether this reads an extra byte from 'in' and stores it in the decoder.
+        // We could also assume UCS-2, in which case byte-length = char-length * 2.
+        // In that case, we can limit the ByteBuffer and avoid the potential decode over-read.
+        charset.newDecoder().decode(in, out, true);
+        out.flip();
+        return out.toString();
     }
 
     @Nonnull
@@ -268,6 +288,9 @@ public class SDRFieldCodec {
         out.put(UNICODE_CHARSET.encode(in));
     }
 
+    /**
+     * Decodes a type/length field.
+     */
     @Nonnull
     public static String decode(@Nonnull ByteBuffer in) {
         byte tmp = in.get();
@@ -276,6 +299,9 @@ public class SDRFieldCodec {
         return type.decode(in, length);
     }
 
+    /**
+     * Prepends an appropriate type/length field.
+     */
     @Nonnull
     public static void encode(@Nonnull ByteBuffer out, @Nonnull String in, @Nonnull CodecType type) {
         int length = in.length();
