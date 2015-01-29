@@ -9,7 +9,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseResponse;
 
 /**
  * [IPMI2] Section 42.2, table 42-3, pages 508-521.
@@ -731,6 +733,307 @@ public interface SensorSpecificOffset extends Code.DescriptiveWrapper {
         private final byte code;
         private final String description;
         /* pp */ private SystemEvent(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 514.
+     */
+    public static enum CriticalInterrupt implements SensorSpecificOffset {
+
+        FrontPanelNMI(0x00, "Front Panel NMI / Diagnostic Interrupt"),
+        BusTimeout(0x01, "Bus Timeout"),
+        IOChannelCheckNMI(0x02, "I/O channel check NMI"),
+        SoftwareNMI(0x03, "Software NMI"),
+        PCI_PERR(0x04, "PCI PERR"),
+        PCI_SERR(0x05, "PCI SERR"),
+        EISAFailSafeTimeout(0x06, "EISA Fail Safe Timeout"),
+        BusCorrectableError(0x07, "Bus Correctable Error"),
+        BusUncorrectableError(0x08, "Bus Uncorrectable Error"),
+        FatalNMI(0x09, "Fatal NMI (port 61h, bit 7)"),
+        BusFatalError(0x0A, "Bus Fatal Error"),
+        BusDegraded(0x0B, "Bus Degraded (bus operating in a degraded performance state)");
+        private final byte code;
+        private final String description;
+        /* pp */ private CriticalInterrupt(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 514.
+     */
+    public static enum Button implements SensorSpecificOffset {
+
+        PowerButtonPressed(0x00, "Power Button pressed"),
+        SleepButtonPressed(0x01, "Sleep Button pressed"),
+        ResetButtonPressed(0x02, "Reset Button pressed"),
+        /** Switch indicating FRU latch is in 'unlatched' position and FRU is mechanically removable. */
+        FRULatchOpen(0x03, "FRU latch open"),
+        /** e.g. removal/replacement, requested. */
+        FRUServiceRequestButton(0x04, "FRU service request button pressed");
+        private final byte code;
+        private final String description;
+        /* pp */ private Button(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 514.
+     */
+    public static enum Chipset implements SensorSpecificOffset {
+
+        SoftPowerControlFailure(0x00, "Soft Power Control Failure") {
+            /** intended/requested */
+            public Object decodeEventData2(byte value) {
+                return Code.fromByte(PowerState.class, value);
+            }
+
+            /** at time of failure */
+            public Object decodeEventData3(byte value) {
+                return Code.fromByte(PowerState.class, value);
+            }
+        },
+        ThermalTrip(0x01, "Thermal Trip");
+
+        public static enum PowerState implements Code.DescriptiveWrapper {
+
+            S0(0x00, "S0 / G0 'working'"),
+            S1(0x01, "S1 'sleeping with system h/w & processor context maintained'"),
+            S2(0x02, "S2 'sleeping, processor context lost'"),
+            S3(0x03, "S3 'sleeping, processor & h/w context lost, memory retained.'"),
+            S4(0x04, "S4 'non-volatile sleep / suspend-to disk'"),
+            S5(0x05, "S5 / G2 'soft-off'"),
+            S4S5(0x06, "S4 / S5 soft-off, particular S4 / S5 state cannot be determined"),
+            G3(0x07, "G3 / Mechanical Off"),
+            S1S2S3(0x08, "Sleeping in an S1, S2, or S3 states (used when particular S1, S2, S3 state cannot be determined)"),
+            G1(0x09, "G1 sleeping (S1-S4 state cannot be determined)"),
+            S5Override(0x0A, "S5 entered by override"),
+            LegacyOn(0x0B, "Legacy ON state"),
+            LegacyOff(0x0C, "Legacy OFF state"),
+            Unknown(0x0D, "Unknown/Reserved");
+            private final byte code;
+            private final String description;
+            /* pp */ private PowerState(@Nonnegative int code, @Nonnull String description) {
+                this.code = UnsignedBytes.checkedCast(code);
+                this.description = description;
+            }
+
+            @Override
+            public byte getCode() {
+                return code;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public String toString() {
+                return Code.Utils.toString(this);
+            }
+        }
+        private final byte code;
+        private final String description;
+        /* pp */ private Chipset(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 515.
+     */
+    public static enum Cable implements SensorSpecificOffset {
+
+        CableConnected(0x00, "Cable/Interconnect is connected"),
+        CableConfigurationError(0x01, "Configuration Error - Incorrect cable connected / Incorrect interconnection");
+        private final byte code;
+        private final String description;
+        /* pp */ private Cable(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 515.
+     */
+    public static enum SystemBootInitiation implements SensorSpecificOffset {
+
+        BIOSPowerUp(0x00, "Initiated by power up (this would typically be generated by BIOS/EFI)"),
+        BIOSHardReset(0x01, "Initiated by hard reset (this would typically be generated by BIOS/EFI)"),
+        BIOSWarmReset(0x02, "Initiated by warm reset (this would typically be generated by BIOS/EFI)"),
+        PXEBoot(0x03, "User requested PXE boot"),
+        BootToDiagnostic(0x04, "Automatic boot to diagnostic"),
+        OSHardReset(0x05, "OS / run-time software initiated hard reset"),
+        OSWarnReset(0x06, "OS / run-time software initiated warm reset"),
+        SystemRestart(0x07, "System Restart") {
+            public Object decodeEventData2(byte value) {
+                return Code.fromInt(GetSystemRestartCauseResponse.RestartCause.class, value & 0xF);
+            }
+
+            public Object decodeEventData3(byte value) {
+                // TODO: Doublecheck this.
+                return Code.fromByte(IpmiChannelNumber.class, value);
+            }
+        };
+        private final byte code;
+        private final String description;
+        /* pp */ private SystemBootInitiation(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 515.
+     */
+    public static enum BootError implements SensorSpecificOffset {
+
+        NoBootableMedia(0x00, "No bootable media"),
+        NonBootableDisketteLeftInDrive(0x01, "Non-bootable diskette left in drive"),
+        PXEServerNotFound(0x02, "PXE Server not found"),
+        InvalidBootSector(0x03, "Invalid boot sector"),
+        TimeoutWaitingForUserBootSelection(0x04, "Timeout waiting for user selection of boot source");
+        private final byte code;
+        private final String description;
+        /* pp */ private BootError(@Nonnegative int code, @Nonnull String description) {
+            this.code = UnsignedBytes.checkedCast(code);
+            this.description = description;
+        }
+
+        @Override
+        public byte getCode() {
+            return code;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return Code.Utils.toString(this);
+        }
+    }
+
+    /**
+     * [IPMI2] Section 42.2, table 42-3, page 515.
+     */
+    public static enum BootStatus implements SensorSpecificOffset {
+
+        BootCompletedA(0x00, "A: boot completed"),
+        BootCompletedC(0x01, "C: boot completed"),
+        BootCompletedPXE(0x02, "PXE boot completed"),
+        BootCompletedDiagnostic(0x03, "Diagnostic boot completed"),
+        BootCompletedCDROM(0x04, "CD-ROM boot completed"),
+        BootCompletedROM(0x05, "ROM boot completed"),
+        BootCompletedUnspecified(0x06, "Boot Completed - boot device not specified"),
+        BaseOSInstallationStarted(0x07, "Base OS/Hypervisor Installation started"),
+        BaseOSInstallationCompleted(0x08, "Base OS/Hypervisor Installation completed"),
+        BaseOSInstallationAborted(0x09, "Base OS/Hypervisor Installation aborted"),
+        BaseOSInstallationFailed(0x0A, "Base OS/Hypervisor Installation failed");
+        private final byte code;
+        private final String description;
+        /* pp */ private BootStatus(@Nonnegative int code, @Nonnull String description) {
             this.code = UnsignedBytes.checkedCast(code);
             this.description = description;
         }

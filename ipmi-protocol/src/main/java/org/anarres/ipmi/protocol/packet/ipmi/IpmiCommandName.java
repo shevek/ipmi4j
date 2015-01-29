@@ -18,6 +18,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.fru.ReadFRUDataRequest;
@@ -145,7 +147,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     SetChassisCapabilities("Set Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x05, Administrator),
     SetPowerRestorePolicy("Set Power Restore Policy", IpmiNetworkFunction.Chassis, 0x06, Operator),
     SetPowerCycleInterval("Set Power Cycle Interval", IpmiNetworkFunction.Chassis, 0x0B, Administrator),
-    GetSystemRestartCause("Get System Restart Cause", IpmiNetworkFunction.Chassis, 0x07, User),
+    GetSystemRestartCause("Get System Restart Cause", IpmiNetworkFunction.Chassis, 0x07, User, GetSystemRestartCauseRequest.class, GetSystemRestartCauseResponse.class),
     SetSystemBootOptions("Set System Boot Options", IpmiNetworkFunction.Chassis, 0x08, Operator),
     GetSystemBootOptions("Get System Boot Options", IpmiNetworkFunction.Chassis, 0x09, Operator),
     // unassigned("unassigned", IpmiNetworkFunction.Chassis, 0x0Ch-0E),
