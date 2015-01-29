@@ -24,10 +24,14 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 public class SDRFieldCodec {
 
     /**
-     * Nobody seems to know what unicode encoding is required, so based
-     * on the date of publication, we will assume UTF16.
-     * None of the other client libraries even seem to do the decoding anyway.
-     * Given that this is a hardware spec, one rather suspects it will be UCS2.
+     * The unicode character set used for SDR strings.
+     *
+     * Nobody seems to know what unicode encoding is required, but based
+     * on the date of publication and the fact that this is a hardware
+     * spec, we will guess UCS2, which we will emulate using UTF16.
+     * Few of the other client libraries even seem to do the decoding anyway,
+     * and some of those that do use UTF8, which seems unlikely in an
+     * early '90s embedded controller.
      */
     public static final Charset UNICODE_CHARSET = StandardCharsets.UTF_16;
 

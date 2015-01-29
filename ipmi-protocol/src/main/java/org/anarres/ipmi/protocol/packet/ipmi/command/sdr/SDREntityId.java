@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
+ * [IPMI2] Section 43.14, pages 553-554.
  *
  * @author shevek
  */
