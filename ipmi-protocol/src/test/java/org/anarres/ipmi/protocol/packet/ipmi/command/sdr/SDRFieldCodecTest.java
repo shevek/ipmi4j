@@ -23,7 +23,7 @@ public class SDRFieldCodecTest {
     private void test(@Nonnull String in, @Nonnull SDRFieldCodec.CodecType type) {
         LOG.debug("Type: " + type);
         LOG.debug("In:  " + in);
-        ByteBuffer buf = ByteBuffer.allocate(in.length() * 2);
+        ByteBuffer buf = ByteBuffer.allocate(in.length() * 4);
         SDRFieldCodec.encode(buf, in, type);
         buf.flip();
         byte[] data = AbstractWireable.readBytes(buf, buf.remaining());
