@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
 /**
+ * An abstract superclass for sensor request commands.
  *
  * @author shevek
  */

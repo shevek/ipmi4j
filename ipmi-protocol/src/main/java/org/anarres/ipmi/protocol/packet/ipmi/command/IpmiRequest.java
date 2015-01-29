@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 /**
+ * An IPMI request.
  *
  * @author shevek
  */

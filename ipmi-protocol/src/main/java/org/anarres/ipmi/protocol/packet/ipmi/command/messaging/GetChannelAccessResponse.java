@@ -12,6 +12,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.RequestedMaximumPrivilegeLevel;
 
 /**
+ * [IPMI2] Section 22.23, table 22-27, page 304.
  *
  * @author shevek
  */

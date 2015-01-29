@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
+ * [IPMI2] Section 43.17, table 43-15, page 557.
  *
  * @author shevek
  */

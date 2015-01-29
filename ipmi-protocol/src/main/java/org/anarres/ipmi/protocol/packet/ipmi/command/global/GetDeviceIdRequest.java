@@ -8,6 +8,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleRequest;
 
 /**
+ * [IPMI2] Section 20.1, table 20-2, page 244.
  *
  * @author shevek
  */

@@ -11,6 +11,7 @@ import javax.crypto.ShortBufferException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 
 /**
+ * [IPMI2] Section 13.28.5, page 159.
  *
  * @author shevek
  */

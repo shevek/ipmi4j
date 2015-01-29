@@ -12,6 +12,7 @@ import java.util.Arrays;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
+ * [IPMI2] Section 13.28.4, page 159.
  *
  * @author shevek
  */

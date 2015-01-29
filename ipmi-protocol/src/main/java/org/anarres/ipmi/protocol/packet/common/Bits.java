@@ -29,13 +29,14 @@ public class Bits {
 
     private static final Logger LOG = LoggerFactory.getLogger(Bits.class);
 
-    /** Implement this, probably in an enum. */
+    /** An interface for enums which wrap Bits. */
     public static interface Wrapper {
 
         @Nonnull
         public Bits getBits();
     }
 
+    /** An interface for enums which wrap Bits with a description. */
     public static interface DescriptiveWrapper extends Wrapper {
 
         @Nonnull
@@ -46,7 +47,7 @@ public class Bits {
 
         @Nonnull
         public static <T extends Enum<T> & Bits.DescriptiveWrapper> String toString(@Nonnull T value) {
-            return value.getBits() + ": " + value.getDescription();
+            return value.name() + "(" + value.getBits() + ": \"" + value.getDescription() + "\")";
         }
     }
 

@@ -1,4 +1,4 @@
 /**
- * IPMI commands - this is probably the package you want.
+ * IPMI command superclasses and support.
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;

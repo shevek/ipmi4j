@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 
 /**
+ * [IPMI2] Section 13.28.1b, page 158.
  *
  * @author shevek
  */

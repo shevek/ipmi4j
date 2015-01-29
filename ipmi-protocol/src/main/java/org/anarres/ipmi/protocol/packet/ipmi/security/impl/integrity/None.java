@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 
 /**
+ * [IPMI2] Section 13.28.4, page 158.
  *
  * @author shevek
  */

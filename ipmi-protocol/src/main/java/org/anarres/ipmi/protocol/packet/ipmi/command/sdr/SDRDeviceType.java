@@ -121,6 +121,12 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
     OEM_FE(0xFE, "OEM type 0xFE"),
     OEM_FF(0xFF, "OEM type 0xFF");
 
+    /**
+     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
+     * 
+     * Many {@link SDRDeviceType SDRDeviceTypes} have only one subtype, "Unknown"
+     * with a value of 0. This is a singleton enum supporting that subtype only.
+     */
     public static enum UnspecifiedSubType implements SDRDeviceSubtype {
 
         Unspecified(0x00, "Unspecified");
@@ -147,6 +153,7 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
         }
     }
 
+    /** An undocumented or unsupported SDRDeviceSubtype. */
     public static class UnknownSubType implements SDRDeviceSubtype {
 
         private final byte code;
@@ -166,6 +173,9 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
+     */
     public static enum HecetaSubType implements SDRDeviceSubtype {
 
         Heceta1(0x00, "Heceta 1 e.g. LM78"),
@@ -197,6 +207,9 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
+     */
     public static enum EEPROMSubType implements SDRDeviceSubtype {
 
         Unspecified(0x00, "unspecified"),
@@ -226,6 +239,9 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
         }
     }
 
+    /**
+     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
+     */
     public static enum FRUInventoryDeviceSubType implements SDRDeviceSubtype {
 
         IPMI_FRU_Inventory_Compat(0x00, "IPMI FRU Inventory"),
@@ -276,7 +292,7 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
         return code;
     }
 
-    @Nonnull
+    @Override
     public String getDescription() {
         return description;
     }

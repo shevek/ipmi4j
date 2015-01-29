@@ -12,6 +12,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 
 /**
+ * A sensor threshold, encapsulating a {@link SensorBoundary} and a {@link SensorCriticality}.
  *
  * @author shevek
  */

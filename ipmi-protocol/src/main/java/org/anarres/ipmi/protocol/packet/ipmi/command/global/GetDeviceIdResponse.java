@@ -4,7 +4,6 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.global;
 
-import com.google.common.primitives.Chars;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
@@ -15,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
+ * [IPMI2] Section 20.1, table 20-2, page 244.
  *
  * @author shevek
  */

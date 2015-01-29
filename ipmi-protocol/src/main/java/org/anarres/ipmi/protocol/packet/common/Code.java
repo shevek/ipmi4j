@@ -10,16 +10,19 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
+ * A symbolic name for a byte.
  *
  * @author shevek
  */
 public class Code {
 
+    /** An interface for enums which wrap Codes. */
     public static interface Wrapper {
 
         public byte getCode();
     }
 
+    /** An interface for enums which wrap Codes with a description. */
     public static interface DescriptiveWrapper extends Wrapper {
 
         @Nonnull
@@ -30,7 +33,7 @@ public class Code {
 
         @Nonnull
         public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(@Nonnull T value) {
-            return "0x" + UnsignedBytes.toString(value.getCode(), 16) + ": " + value.getDescription();
+            return value.name() + "(0x" + UnsignedBytes.toString(value.getCode(), 16) + ": \"" + value.getDescription() + "\")";
         }
     }
 

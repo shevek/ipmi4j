@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
+ * An object which may be written to and read from a {@link ByteBuffer}.
  *
  * @author shevek
  */

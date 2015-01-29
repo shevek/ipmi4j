@@ -16,6 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
 /**
+ * [IPMI2] Section 22.24, table 22-28, page 305.
  *
  * @author shevek
  */

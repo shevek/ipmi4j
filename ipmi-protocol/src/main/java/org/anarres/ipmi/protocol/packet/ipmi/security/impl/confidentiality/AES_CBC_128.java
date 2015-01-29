@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 
 /**
+ * [IPMI2] Section 13.29, page 160.
  *
  * @author shevek
  */
