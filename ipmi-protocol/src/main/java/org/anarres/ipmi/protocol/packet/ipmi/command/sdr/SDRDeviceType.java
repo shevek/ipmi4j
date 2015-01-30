@@ -17,44 +17,44 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  */
 public enum SDRDeviceType implements Code.DescriptiveWrapper {
 
-    Reserved_00(0x00, "reserved.", UnspecifiedSubType.class),
-    Reserved_01(0x01, "reserved.", UnspecifiedSubType.class),
-    DS1624_Temperature_Sensor(0x02, "DS1624 temperature sensor / EEPROM or equivalent", UnspecifiedSubType.class),
-    DS1621_Temperature_Sensor(0x03, "DS1621 temperature sensor or equivalent", UnspecifiedSubType.class),
-    LM75_Tempreature_Sensor(0x04, "LM75 Temperature Sensor or equivalent", UnspecifiedSubType.class),
-    Heceta(0x05, "Heceta ASIC or similar", HecetaSubType.class),
+    Reserved_00(0x00, "reserved.", SDRDeviceSubtype.Unspecified.class),
+    Reserved_01(0x01, "reserved.", SDRDeviceSubtype.Unspecified.class),
+    DS1624_Temperature_Sensor(0x02, "DS1624 temperature sensor / EEPROM or equivalent", SDRDeviceSubtype.Unspecified.class),
+    DS1621_Temperature_Sensor(0x03, "DS1621 temperature sensor or equivalent", SDRDeviceSubtype.Unspecified.class),
+    LM75_Tempreature_Sensor(0x04, "LM75 Temperature Sensor or equivalent", SDRDeviceSubtype.Unspecified.class),
+    Heceta(0x05, "Heceta ASIC or similar", SDRDeviceSubtype.Heceta.class),
     Reserved_06(0x06, "reserved"),
     Reserved_07(0x07, "reserved"),
-    EEPROM_24C01(0x08, "EEPROM, 24C01 or equivalent", EEPROMSubType.class),
-    EEPROM_24C02(0x09, "EEPROM, 24C02 or equivalent", EEPROMSubType.class),
-    EEPROM_24C04(0x0A, "EPROM, 24C04 or equivalent", EEPROMSubType.class),
-    EEPROM_24C08(0x0B, "EPROM, 24C08 or equivalent", EEPROMSubType.class),
-    EEPROM_24C16(0x0C, "EPROM, 24C16 or equivalent", EEPROMSubType.class),
-    EEPROM_24C17(0x0D, "EPROM, 24C17 or equivalent", EEPROMSubType.class),
-    EEPROM_24C32(0x0E, "EEPROM, 24C32 or equivalent", EEPROMSubType.class),
-    EEPROM_24C64(0x0F, "EEPROM, 24C64 or equivalent", EEPROMSubType.class),
+    EEPROM_24C01(0x08, "EEPROM, 24C01 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C02(0x09, "EEPROM, 24C02 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C04(0x0A, "EPROM, 24C04 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C08(0x0B, "EPROM, 24C08 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C16(0x0C, "EPROM, 24C16 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C17(0x0D, "EPROM, 24C17 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C32(0x0E, "EEPROM, 24C32 or equivalent", SDRDeviceSubtype.EEPROM.class),
+    EEPROM_24C64(0x0F, "EEPROM, 24C64 or equivalent", SDRDeviceSubtype.EEPROM.class),
     /** Accessed using Read/Write FRU commands at LUN other than 00b. */
-    FRU_Inventory_Device(0x10, "FRU Inventory Device behind management controller", FRUInventoryDeviceSubType.class),
+    FRU_Inventory_Device(0x10, "FRU Inventory Device behind management controller", SDRDeviceSubtype.FRUInventoryDevice.class),
     Reserved_11(0x11, "reserved"),
     Reserved_12(0x12, "reserved"),
     Reserved_13(0x13, "reserved"),
-    PCF_8570(0x14, "PCF 8570 256 byte RAM or equivalent", UnspecifiedSubType.class),
-    PCF_8573(0x15, "PCF 8573 clock/calendar or equivalent", UnspecifiedSubType.class),
-    PCF_8574A(0x16, "PCF 8574A â<80><98>i/o portâ<80><99> or equivalent", UnspecifiedSubType.class),
-    PCF_8583(0x17, "PCF 8583 clock/calendar or equivalent", UnspecifiedSubType.class),
-    PCF_8593(0x18, "PCF 8593 clock/calendar or equivalent", UnspecifiedSubType.class),
-    Clock_Calendar(0x19, "Clock calendar, type not specified", UnspecifiedSubType.class),
-    PCF_8591(0x1A, "PCF 8591 A/D, D/A Converter or equivalent", UnspecifiedSubType.class),
-    IO_Port(0x1B, "i/o port, specific device not specified", UnspecifiedSubType.class),
-    AD_Converter(0x1C, "A/D Converter, specific device not specified", UnspecifiedSubType.class),
-    DA_Converter(0x1D, "D/A Converter, specific device not specified", UnspecifiedSubType.class),
-    ADDA_Converter(0x1E, "A/D, D/A Converter, specific device not specified", UnspecifiedSubType.class),
-    LCD_Controller(0x1F, "LCD controller / Driver, specific device not specified", UnspecifiedSubType.class),
-    Core_Logic_Device(0x20, "Core Logic (Chip set) Device, specific device not specified", UnspecifiedSubType.class),
-    LMC6874_Battery_Controller(0x21, "LMC6874 Intelligent Battery controller, or equivalent", UnspecifiedSubType.class),
-    Intelligent_Battery_Controller(0x22, "Intelligent Battery controller, specific device not specified", UnspecifiedSubType.class),
-    Combo_Management_ASIC(0x23, "Combo Management ASIC, specific device not specified", UnspecifiedSubType.class),
-    Maxim_1617_Temperature_Sensor(0x24, "Maxim 1617 Temperature Sensor", UnspecifiedSubType.class),
+    PCF_8570(0x14, "PCF 8570 256 byte RAM or equivalent", SDRDeviceSubtype.Unspecified.class),
+    PCF_8573(0x15, "PCF 8573 clock/calendar or equivalent", SDRDeviceSubtype.Unspecified.class),
+    PCF_8574A(0x16, "PCF 8574A â<80><98>i/o portâ<80><99> or equivalent", SDRDeviceSubtype.Unspecified.class),
+    PCF_8583(0x17, "PCF 8583 clock/calendar or equivalent", SDRDeviceSubtype.Unspecified.class),
+    PCF_8593(0x18, "PCF 8593 clock/calendar or equivalent", SDRDeviceSubtype.Unspecified.class),
+    Clock_Calendar(0x19, "Clock calendar, type not specified", SDRDeviceSubtype.Unspecified.class),
+    PCF_8591(0x1A, "PCF 8591 A/D, D/A Converter or equivalent", SDRDeviceSubtype.Unspecified.class),
+    IO_Port(0x1B, "i/o port, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    AD_Converter(0x1C, "A/D Converter, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    DA_Converter(0x1D, "D/A Converter, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    ADDA_Converter(0x1E, "A/D, D/A Converter, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    LCD_Controller(0x1F, "LCD controller / Driver, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    Core_Logic_Device(0x20, "Core Logic (Chip set) Device, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    LMC6874_Battery_Controller(0x21, "LMC6874 Intelligent Battery controller, or equivalent", SDRDeviceSubtype.Unspecified.class),
+    Intelligent_Battery_Controller(0x22, "Intelligent Battery controller, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    Combo_Management_ASIC(0x23, "Combo Management ASIC, specific device not specified", SDRDeviceSubtype.Unspecified.class),
+    Maxim_1617_Temperature_Sensor(0x24, "Maxim 1617 Temperature Sensor", SDRDeviceSubtype.Unspecified.class),
     Other(0xBF, "Other / unspecified device"),
     OEM_C0(0xC0, "OEM type 0xC0"),
     OEM_C1(0xC1, "OEM type 0xC1"),
@@ -120,157 +120,6 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
     OEM_FD(0xFD, "OEM type 0xFD"),
     OEM_FE(0xFE, "OEM type 0xFE"),
     OEM_FF(0xFF, "OEM type 0xFF");
-
-    /**
-     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
-     * 
-     * Many {@link SDRDeviceType SDRDeviceTypes} have only one subtype, "Unknown"
-     * with a value of 0. This is a singleton enum supporting that subtype only.
-     */
-    public static enum UnspecifiedSubType implements SDRDeviceSubtype {
-
-        Unspecified(0x00, "Unspecified");
-        private final byte code;
-        private final String description;
-        /* pp */ UnspecifiedSubType(int code, String description) {
-            this.code = UnsignedBytes.checkedCast(code);
-            this.description = description;
-        }
-
-        @Override
-        public byte getCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String toString() {
-            return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();
-        }
-    }
-
-    /** An undocumented or unsupported SDRDeviceSubtype. */
-    public static class UnknownSubType implements SDRDeviceSubtype {
-
-        private final byte code;
-
-        public UnknownSubType(byte code) {
-            this.code = code;
-        }
-
-        @Override
-        public byte getCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return "(unknown)";
-        }
-    }
-
-    /**
-     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
-     */
-    public static enum HecetaSubType implements SDRDeviceSubtype {
-
-        Heceta1(0x00, "Heceta 1 e.g. LM78"),
-        Heceta2(0x01, "Heceta 2 e.g. LM79"),
-        LM80(0x02, "LM80"),
-        Heceta3(0x03, "Heceta 3 e.g. LM81/ ADM9240 / DS1780"),
-        Heceta4(0x04, "Heceta 4"),
-        Heceta5(0x05, "Heceta 5");
-        private final byte code;
-        private final String description;
-        /* pp */ HecetaSubType(int code, String description) {
-            this.code = UnsignedBytes.checkedCast(code);
-            this.description = description;
-        }
-
-        @Override
-        public byte getCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String toString() {
-            return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();
-        }
-    }
-
-    /**
-     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
-     */
-    public static enum EEPROMSubType implements SDRDeviceSubtype {
-
-        Unspecified(0x00, "unspecified"),
-        DIMM_Memory_ID(0x01, "DIMM Memory ID"),
-        IPMI_FRU_Inventory(0x02, "IPMI FRU Inventory"),
-        System_Processor_Cartridge_FRU(0x03, "System Processor Cartridge FRU / PIROM (processor information ROM)");
-        private final byte code;
-        private final String description;
-        /* pp */ EEPROMSubType(int code, String description) {
-            this.code = UnsignedBytes.checkedCast(code);
-            this.description = description;
-        }
-
-        @Override
-        public byte getCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String toString() {
-            return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();
-        }
-    }
-
-    /**
-     * [IPMI2] Section 43.13, table 43-12, page 552, rightmost column.
-     */
-    public static enum FRUInventoryDeviceSubType implements SDRDeviceSubtype {
-
-        IPMI_FRU_Inventory_Compat(0x00, "IPMI FRU Inventory"),
-        DIMM_Memory_ID(0x01, "DIMM Memory ID"),
-        IPMI_FRU_Inventory(0x02, "IPMI FRU Inventory"),
-        System_Processor_Cartridge_FRU(0x03, "System Processor Cartridge FRU / PIROM (processor information ROM)"),
-        Unspecified(0xFF, "unspecified");
-        private final byte code;
-        private final String description;
-        /* pp */ FRUInventoryDeviceSubType(int code, String description) {
-            this.code = UnsignedBytes.checkedCast(code);
-            this.description = description;
-        }
-
-        @Override
-        public byte getCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String toString() {
-            return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();
-        }
-    }
     private final byte code;
     @Nonnull
     private final String description;
@@ -304,7 +153,7 @@ public enum SDRDeviceType implements Code.DescriptiveWrapper {
             for (SDRDeviceSubtype value : subtype.getEnumConstants())
                 if (value.getCode() == code)
                     return value;
-        return new UnknownSubType(code);
+        return new SDRDeviceSubtype.Unknown(code);
     }
 
     @Override

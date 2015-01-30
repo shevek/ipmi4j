@@ -85,4 +85,11 @@ public class GetSystemRestartCauseResponse extends AbstractIpmiResponse {
         restartCause = Code.fromInt(RestartCause.class, tmp & 0xF);
         restartChannel = Code.fromBuffer(IpmiChannelNumber.class, buffer);
     }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        super.toStringBuilder(buf, depth);
+        appendValue(buf, depth, "RestartCause", restartCause);
+        appendValue(buf, depth, "RestartChannel", restartChannel);
+    }
 }

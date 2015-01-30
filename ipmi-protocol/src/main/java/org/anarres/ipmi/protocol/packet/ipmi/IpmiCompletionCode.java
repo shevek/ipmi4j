@@ -69,6 +69,6 @@ public enum IpmiCompletionCode implements Code.DescriptiveWrapper {
 
     @Override
     public String toString() {
-        return "(0x" + UnsignedBytes.toString(getCode(), 16) + ") " + getDescription();
+        return Code.Utils.toString(this);
     }
 }

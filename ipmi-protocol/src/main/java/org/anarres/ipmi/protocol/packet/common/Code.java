@@ -33,7 +33,7 @@ public class Code {
 
         @Nonnull
         public static <T extends Enum<T> & Code.DescriptiveWrapper> String toString(@Nonnull T value) {
-            return value.name() + "(0x" + UnsignedBytes.toString(value.getCode(), 16) + ": \"" + value.getDescription() + "\")";
+            return value.name() + "(0x" + UnsignedBytes.toString(value.getCode(), 16) + "): " + value.getDescription();
         }
     }
 

@@ -78,6 +78,6 @@ public enum IpmiChannelMedium implements Code.DescriptiveWrapper {
 
     @Override
     public String toString() {
-        return name() + "(0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription() + ")";
+        return Code.Utils.toString(this);
     }
 }

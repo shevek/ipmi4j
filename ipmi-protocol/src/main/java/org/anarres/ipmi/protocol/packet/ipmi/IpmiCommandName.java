@@ -351,7 +351,7 @@ public enum IpmiCommandName implements Code.Wrapper {
     private <T extends IpmiCommand> T newInstance(@Nonnull Class<T> type) {
         try {
             return type.newInstance();
-        } catch (Exception e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw Throwables.propagate(e);
         }
     }
