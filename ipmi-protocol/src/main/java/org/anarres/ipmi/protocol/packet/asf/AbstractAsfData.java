@@ -40,10 +40,6 @@ public abstract class AbstractAsfData extends AbstractWireable implements AsfRmc
         return RmcpMessageClass.ASF;
     }
 
-    // Page 22
-    @Nonnull
-    public abstract AsfRmcpMessageType getMessageType();
-
     public byte getMessageTag() {
         return messageTag;
     }

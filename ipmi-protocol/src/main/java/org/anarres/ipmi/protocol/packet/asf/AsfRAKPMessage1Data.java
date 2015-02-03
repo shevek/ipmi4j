@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
@@ -28,8 +29,8 @@ public class AsfRAKPMessage1Data extends AbstractAsfData {
     /** Section 3.2.4.13 page 42. */
     public static enum UserRole implements Bits.Wrapper, Code.Wrapper {
 
-        OPERATOR(Bits.forBinaryBE(0, 3, 4, 0b0000)),
-        ADMINISTRATOR(Bits.forBinaryBE(0, 3, 4, 0b0001));
+        OPERATOR(new Bits(0, 0b1111, 0b0000)),
+        ADMINISTRATOR(new Bits(0, 0b1111, 0b0001));
         private final Bits bits;
 
         private UserRole(@Nonnull Bits bits) {
@@ -99,6 +100,11 @@ public class AsfRAKPMessage1Data extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.RAKPMessage1;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfRAKPMessage1Data(this);
     }
 
     @Override

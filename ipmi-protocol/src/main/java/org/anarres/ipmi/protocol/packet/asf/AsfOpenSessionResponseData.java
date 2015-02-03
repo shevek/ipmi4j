@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -58,6 +59,11 @@ public class AsfOpenSessionResponseData extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.OpenSessionResponse;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfOpenSessionResponseData(this);
     }
 
     @Override

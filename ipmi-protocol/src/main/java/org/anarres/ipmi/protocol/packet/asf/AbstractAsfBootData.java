@@ -24,7 +24,7 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
  */
 public abstract class AbstractAsfBootData extends AbstractAsfData {
 
-    /** Section 3.2.4.1 page 33. */
+    /** [ASF2] Section 3.2.4.1, page 33. */
     public static class SpecialCommand {
 
         public static final byte NOP = 0x00;
@@ -40,7 +40,7 @@ public abstract class AbstractAsfBootData extends AbstractAsfData {
         public static final byte FORCE_BOOT_OPTICAL = 0x05;
     }
 
-    /** Section 3.2.4.1 page 34. */
+    /** [ASF2] Section 3.2.4.1, page 34. */
     public static enum BootOption implements Bits.Wrapper {
 
         LOCK_POWER_BUTTON(0, 1),
@@ -49,19 +49,19 @@ public abstract class AbstractAsfBootData extends AbstractAsfData {
         LOCK_SLEEP_BUTTON(0, 6),
         USER_PASSWORD_BYPASS(1, 3),
         FORCE_PROGRESS_EVENTS(1, 4),
-        FIRMWARE_VERBOSITY_DEFAULT(1, 6, 2, 0b00),
-        FIRMWARE_VERBOSITY_QUIET(1, 6, 2, 0b01),
-        FIRMWARE_VERBOSITY_VERBOSE(1, 6, 2, 0b10),
-        FIRMWARE_VERBOSITY_SCREEN_BLANK(1, 6, 2, 0b11),
+        FIRMWARE_VERBOSITY_DEFAULT(new Bits(1, 0b11 << 5, 0b00 << 5)),
+        FIRMWARE_VERBOSITY_QUIET(new Bits(1, 0b11 << 5, 0b01 << 5)),
+        FIRMWARE_VERBOSITY_VERBOSE(new Bits(1, 0b11 << 5, 0b10 << 5)),
+        FIRMWARE_VERBOSITY_SCREEN_BLANK(new Bits(1, 0b11 << 5, 0b11 << 5)),
         CONFIGURATION_DATA_RESET(1, 7);
         private final Bits bits;
 
-        private BootOption(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
-            this.bits = Bits.forBitIndex(byteIndex, bitIndex);
+        private BootOption(Bits bits) {
+            this.bits = bits;
         }
 
-        private BootOption(@Nonnegative int byteIndex, @Nonnegative int firstBitIndex, @Nonnegative int length, int value) {
-            this.bits = Bits.forBinaryBE(byteIndex, firstBitIndex, length, value);
+        private BootOption(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
+            this(Bits.forBitIndex(byteIndex, bitIndex));
         }
 
         @Override

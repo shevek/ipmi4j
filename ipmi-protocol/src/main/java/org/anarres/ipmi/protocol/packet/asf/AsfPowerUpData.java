@@ -4,6 +4,8 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+
 /**
  * PowerUp.
  * 
@@ -18,5 +20,10 @@ public class AsfPowerUpData extends AbstractAsfBootData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.PowerUp;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfPowerUpData(this);
     }
 }

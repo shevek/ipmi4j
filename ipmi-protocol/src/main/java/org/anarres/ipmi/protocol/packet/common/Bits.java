@@ -153,30 +153,6 @@ public class Bits {
     public static Bits forBitIndex(@Nonnegative int byteIndex, @Nonnegative int bitIndex) {
         return forBitIndex(byteIndex, bitIndex, true);
     }
-
-    /** Convenience constructor. */
-    // @Nonnull public static Bits forBitIndex(@Nonnegative int bitIndex) { return forBitIndex(0, bitIndex); }
-    /**
-     * Convenience constructor.
-     * 
-     * @param firstBitIndex The high bit index, e.g. bits 3:0 pass 3, not 0.
-     */
-    @Nonnull
-    public static Bits forBinaryBE(@Nonnegative int byteIndex, @Nonnegative int firstBitIndex, @Nonnegative int length, int value) {
-        // First bit 3, length 4 is valid.
-        Preconditions.checkArgument(firstBitIndex < 8, "First bit index too large.");
-        Preconditions.checkArgument(firstBitIndex - length >= -1, "Length does not fit.");
-        // TODO: Slow but I can't be bothered to work out the bit shifts right now.
-        // Future maintainer: If you do work out the bitshifts, note the masking in JLS section 15.19
-        int byteMask = 0;
-        for (int i = 0; i < length; i++) {
-            int b = 1 << firstBitIndex + i;
-            byteMask |= b;
-        }
-        if (firstBitIndex - length >= 0)
-            value = value << (firstBitIndex - length + 1);
-        return new Bits(byteIndex, byteMask, value);
-    }
     private final int byteIndex;
     private final int byteMask;
     private final int byteValue;

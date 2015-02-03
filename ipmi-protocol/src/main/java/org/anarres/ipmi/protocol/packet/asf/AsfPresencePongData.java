@@ -9,13 +9,14 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 
 /**
  * PresencePong.
  * 
- * [ASF2] Section 3.2.4.3 page 36.
- * [IPMI2] Section 13.2.4 page 129.
+ * [ASF2] Section 3.2.4.3, page 36.
+ * [IPMI2] Section 13.2.4, page 129.
  *
  * @author shevek
  */
@@ -24,7 +25,7 @@ public class AsfPresencePongData extends AbstractAsfData {
     public enum SupportedEntity implements Bits.Wrapper {
 
         IPMI_SUPPORTED(Bits.forBitIndex(0, 7)),
-        SUPPORT_ASF_V1(Bits.forBinaryBE(0, 3, 4, 0b0001));
+        SUPPORT_ASF_V1(new Bits(0, 0b1111, 0b0001));
         private final Bits bits;
 
         private SupportedEntity(@Nonnull Bits bits) {
@@ -58,6 +59,11 @@ public class AsfPresencePongData extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.PresencePong;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfPresencePongData(this);
     }
 
     public int getOemDefined() {

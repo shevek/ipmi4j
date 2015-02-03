@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 
 /**
  * OpenSessionRequest.
@@ -22,11 +23,6 @@ public class AsfOpenSessionRequestData extends AbstractAsfData {
     private final List<AsfRsspSessionAuthentication.AuthenticationAlgorithm> authenticationAlgorithms = new ArrayList<>();
     private final List<AsfRsspSessionAuthentication.IntegrityAlgorithm> integrityAlgorithms = new ArrayList<>();
 
-    @Override
-    public AsfRmcpMessageType getMessageType() {
-        return AsfRmcpMessageType.OpenSessionRequest;
-    }
-
     public int getConsoleSessionId() {
         return consoleSessionId;
     }
@@ -35,6 +31,16 @@ public class AsfOpenSessionRequestData extends AbstractAsfData {
     public AsfOpenSessionRequestData withConsoleSessionId(int consoleSessionId) {
         this.consoleSessionId = consoleSessionId;
         return this;
+    }
+
+    @Override
+    public AsfRmcpMessageType getMessageType() {
+        return AsfRmcpMessageType.OpenSessionRequest;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfOpenSessionRequestData(this);
     }
 
     @Override

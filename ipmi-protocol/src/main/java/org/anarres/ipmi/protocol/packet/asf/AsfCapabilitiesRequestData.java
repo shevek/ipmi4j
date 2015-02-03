@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 
 /**
  * CapabilitiesRequest.
@@ -20,6 +21,11 @@ public class AsfCapabilitiesRequestData extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.CapabilitiesRequest;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfCapabilitiesRequestData(this);
     }
 
     @Override

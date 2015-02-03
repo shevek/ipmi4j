@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 
 /**
  * PresencePing.
@@ -19,6 +20,11 @@ public class AsfPresencePingData extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.PresencePing;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfPresencePingData(this);
     }
 
     @Override

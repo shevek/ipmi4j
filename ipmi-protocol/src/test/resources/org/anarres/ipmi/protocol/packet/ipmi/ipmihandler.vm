@@ -63,5 +63,4 @@ public interface IpmiClientCommandHandler {
     public void handle${value.responseType.simpleName}(@Nonnull ${value.responseType.simpleName} response);
 #end
 #end
-
 }

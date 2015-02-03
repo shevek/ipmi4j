@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 
 /**
  * UnconditionalPowerDown.
@@ -20,6 +21,11 @@ public class AsfUnconditionalPowerDownData extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.UnconditionalPowerDown;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfUnconditionalPowerDownData(this);
     }
 
     @Override

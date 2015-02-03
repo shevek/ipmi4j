@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**
@@ -73,6 +74,11 @@ public class AsfRAKPMessage2Data extends AbstractAsfData {
     @Override
     public AsfRmcpMessageType getMessageType() {
         return AsfRmcpMessageType.RAKPMessage2;
+    }
+
+    @Override
+    public void apply(IpmiClientAsfMessageHandler handler) {
+        handler.handleAsfRAKPMessage2Data(this);
     }
 
     @Override
