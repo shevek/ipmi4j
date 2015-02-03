@@ -4,7 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.asf;
 
-import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
 
 /**
  * PowerCycleReset.

@@ -8,7 +8,8 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
@@ -20,6 +21,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage1;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage2;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage3;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage4;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
@@ -62,6 +64,8 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
                 IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, commandNameByte);
                 boolean isResponse = ((networkFunctionByte >>> 2) & 1) != 0;
                 return isResponse ? commandName.newResponseMessage() : commandName.newRequestMessage();
+            case SOL:
+                return new SOLMessage();
             default:
                 throw new UnsupportedOperationException("Unsupported payload type " + payloadType);
         }
@@ -117,7 +121,12 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     }
 
     @Override
-    public void apply(IpmiClientPayloadHandler handler) {
+    public void apply(IpmiClientRmcpMessageHandler handler) {
+        handler.handleIpmiRmcpData(this);
+    }
+
+    @Override
+    public void apply(IpmiClientIpmiPayloadHandler handler) {
         getIpmiPayload().apply(handler);
     }
 

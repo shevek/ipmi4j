@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.client;
+package org.anarres.ipmi.protocol.client.visitor;
 
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
@@ -20,9 +20,9 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
  *
  * @author shevek
  */
-public interface IpmiClientPayloadHandler {
+public interface IpmiClientIpmiPayloadHandler {
 
-    public static class Adapter implements IpmiClientPayloadHandler {
+    public static class Adapter implements IpmiClientIpmiPayloadHandler {
 
         public void handleDefault(@Nonnull IpmiPayload payload) {
         }
@@ -63,8 +63,8 @@ public interface IpmiClientPayloadHandler {
         }
 
         @Override
-        public void handleIPMI(IpmiCommand command) {
-            handleDefault(command);
+        public void handleCommand(IpmiCommand message) {
+            handleDefault(message);
         }
 
         @Override
@@ -96,7 +96,7 @@ public interface IpmiClientPayloadHandler {
 
     public void handleOemExplicit(@Nonnull OemExplicit message);
 
-    public void handleIPMI(@Nonnull IpmiCommand command);
+    public void handleCommand(@Nonnull IpmiCommand command);
 
     public void handleSOL(@Nonnull SOLMessage message);
     // /* Does not distinguish between {@link IpmiPayloadType#OEM0} through {@link IpmiPayloadType#OEM7}. */

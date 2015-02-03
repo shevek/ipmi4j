@@ -2,11 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.client;
+package org.anarres.ipmi.protocol.client.visitor;
 
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpData;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
+import org.anarres.ipmi.protocol.packet.rmcp.OEMRmcpMessage;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**
  *
@@ -14,28 +16,30 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
  */
 public interface IpmiClientRmcpMessageHandler {
 
-    public static class Default implements IpmiClientRmcpMessageHandler {
+    public static class Adapter implements IpmiClientRmcpMessageHandler {
 
-        private final IpmiClientAsfMessageHandler asfHandler;
-        private final IpmiClientPayloadHandler ipmiHandler;
-
-        public Default(@Nonnull IpmiClientAsfMessageHandler asfHandler, @Nonnull IpmiClientPayloadHandler ipmiHandler) {
-            this.asfHandler = asfHandler;
-            this.ipmiHandler = ipmiHandler;
+        public void handleDefault(@Nonnull RmcpData message) {
         }
 
         @Override
         public void handleAsfRmcpData(AsfRmcpData message) {
-            message.apply(asfHandler);
+            handleDefault(message);
         }
 
         @Override
         public void handleIpmiRmcpData(IpmiSessionWrapper message) {
-            message.apply(ipmiHandler);
+            handleDefault(message);
+        }
+
+        @Override
+        public void handleOemRmcpData(OEMRmcpMessage message) {
+            handleDefault(message);
         }
     }
 
     public void handleAsfRmcpData(@Nonnull AsfRmcpData message);
 
     public void handleIpmiRmcpData(@Nonnull IpmiSessionWrapper message);
+
+    public void handleOemRmcpData(@Nonnull OEMRmcpMessage message);
 }

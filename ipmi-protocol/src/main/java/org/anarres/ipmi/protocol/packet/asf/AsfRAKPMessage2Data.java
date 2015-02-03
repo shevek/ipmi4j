@@ -8,7 +8,7 @@ import com.google.common.base.Preconditions;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**

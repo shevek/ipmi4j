@@ -5,9 +5,10 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import java.nio.ByteBuffer;
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 33.12, table 33-6, page 444.
@@ -25,8 +26,8 @@ public class GetSDRResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetSDRResponse(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetSDRResponse(session, this);
     }
 
     @Override

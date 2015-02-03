@@ -7,7 +7,6 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 import com.google.common.primitives.UnsignedBytes;
 import javax.annotation.CheckForSigned;
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
 /**

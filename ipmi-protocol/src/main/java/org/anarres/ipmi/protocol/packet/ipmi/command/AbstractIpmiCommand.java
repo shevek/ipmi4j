@@ -12,7 +12,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
-import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.AbstractIpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -46,8 +46,8 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     }
 
     @Override
-    public void apply(IpmiClientPayloadHandler handler) {
-        handler.handleIPMI(this);
+    public void apply(IpmiClientIpmiPayloadHandler handler) {
+        handler.handleCommand(this);
     }
 
     public byte getTargetAddress() {

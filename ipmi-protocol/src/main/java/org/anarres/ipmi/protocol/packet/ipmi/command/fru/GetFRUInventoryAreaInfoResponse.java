@@ -5,9 +5,10 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.fru;
 
 import java.nio.ByteBuffer;
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 34.1, table 34-2, page 449.
@@ -29,8 +30,8 @@ public class GetFRUInventoryAreaInfoResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetFRUInventoryAreaInfoResponse(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetFRUInventoryAreaInfoResponse(session, this);
     }
 
     @Override

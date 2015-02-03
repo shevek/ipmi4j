@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 

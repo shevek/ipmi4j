@@ -8,11 +8,12 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 33.9, table 33-3, page 441.
@@ -57,8 +58,8 @@ public class GetSDRRepositoryInfoResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetSDRRepositoryInfoResponse(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetSDRRepositoryInfoResponse(session, this);
     }
 
     @Override

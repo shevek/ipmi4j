@@ -4,7 +4,6 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
-import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import com.google.common.primitives.UnsignedBytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -15,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;

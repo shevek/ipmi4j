@@ -8,9 +8,13 @@ import java.io.EOFException;
 import java.io.File;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
+import org.anarres.ipmi.protocol.packet.asf.AsfRmcpData;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
@@ -43,6 +47,19 @@ public class IpmiPacketTest {
 
     @Test
     public void testPackets() throws Exception {
+        IpmiClientIpmiPayloadHandler ipmiHandler = new IpmiClientIpmiPayloadHandler.Adapter() {
+            @Override
+            public void handleDefault(IpmiPayload payload) {
+                LOG.debug(String.valueOf(payload));
+            }
+        };
+        IpmiClientAsfMessageHandler asfHandler = new IpmiClientAsfMessageHandler.Adapter() {
+            @Override
+            public void handleDefault(AsfRmcpData message) {
+                LOG.debug(String.valueOf(message));
+            }
+        };
+
         File file = new File("../src/misc/ipmi-lanplus-enc0.tcpdump");
         PcapHandle handle = Pcaps.openOffline(file.getAbsolutePath());
         try {

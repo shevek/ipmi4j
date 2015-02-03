@@ -62,7 +62,7 @@ public class IpmiCommandNameTest {
     public void testIpmiCommandHandler() throws Exception {
         Context context = manager.createContext();
         context.put("values", IpmiCommandName.values());
-        process(context, "ipmihandler.vm", "IpmiClientCommandHandler.java");
+        process(context, "ipmihandler.vm", "IpmiClientIpmiCommandHandler.java");
     }
 
     @Test

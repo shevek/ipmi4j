@@ -4,9 +4,10 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 33.11, table 33-5, page 443.
@@ -21,7 +22,7 @@ public class ReserveSDRRepositoryRequest extends AbstractIpmiSimpleRequest {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleReserveSDRRepositoryRequest(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleReserveSDRRepositoryRequest(session, this);
     }
 }

@@ -6,9 +6,10 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 33.12, table 33-6, page 444.
@@ -30,8 +31,8 @@ public class GetSDRRequest extends AbstractIpmiRequest {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetSDRRequest(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetSDRRequest(session, this);
     }
 
     @Override

@@ -5,7 +5,7 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**

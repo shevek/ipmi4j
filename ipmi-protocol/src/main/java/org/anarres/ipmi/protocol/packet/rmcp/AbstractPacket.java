@@ -9,6 +9,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.packet.asf.AbstractAsfData;
 import org.anarres.ipmi.protocol.packet.asf.AsfRmcpMessageType;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
@@ -16,7 +17,6 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi20SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +103,11 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         return this;
     }
 
+    @Override
+    public void apply(IpmiClientRmcpMessageHandler handler) {
+        getData().apply(handler);
+    }
+
     @Nonnegative
     protected int getRawWireLength(@Nonnull IpmiContext context) {
         return RMCP_HEADER_LENGTH + getData().getWireLength(context);
@@ -159,6 +164,8 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
                     data = new Ipmi15SessionWrapper();
                 break;
             case OEM:
+                data = new OEMRmcpMessage();
+                break;
             default:
                 throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + getMessageClass());
         }

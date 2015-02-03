@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 
 /**

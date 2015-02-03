@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import com.google.common.base.Throwables;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import com.google.common.primitives.Chars;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
@@ -15,13 +14,14 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
+import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 import org.slf4j.Logger;

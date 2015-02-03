@@ -5,7 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
-import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
@@ -24,7 +24,7 @@ public class OemExplicit extends AbstractIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientPayloadHandler handler) {
+    public void apply(IpmiClientIpmiPayloadHandler handler) {
         handler.handleOemExplicit(this);
     }
 

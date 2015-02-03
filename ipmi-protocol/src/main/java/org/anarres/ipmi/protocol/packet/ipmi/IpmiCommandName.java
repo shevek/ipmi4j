@@ -11,7 +11,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
-import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;
@@ -36,6 +35,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionReque
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesResponse;

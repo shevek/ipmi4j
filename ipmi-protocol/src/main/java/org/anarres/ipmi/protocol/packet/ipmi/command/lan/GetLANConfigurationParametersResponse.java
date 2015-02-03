@@ -4,9 +4,10 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.lan;
 
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiConfigurationParametersResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  * [IPMI2] Section 23.2, table 23-3, page 316.
@@ -21,7 +22,7 @@ public class GetLANConfigurationParametersResponse extends AbstractIpmiConfigura
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetLANConfigurationParametersResponse(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetLANConfigurationParametersResponse(session, this);
     }
 }

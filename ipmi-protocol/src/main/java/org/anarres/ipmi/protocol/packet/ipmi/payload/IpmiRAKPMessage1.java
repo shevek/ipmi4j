@@ -8,7 +8,7 @@ import com.google.common.base.Charsets;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
@@ -54,7 +54,7 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientPayloadHandler handler) {
+    public void apply(IpmiClientIpmiPayloadHandler handler) {
         handler.handleRAKPMessage1(this);
     }
 

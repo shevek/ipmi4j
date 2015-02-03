@@ -7,12 +7,13 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.chassis;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
-import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IPMBAddress;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
 
 /**
  *
@@ -62,8 +63,8 @@ public class GetChassisCapabilitiesResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientCommandHandler handler) {
-        handler.handleGetChassisCapabilitiesResponse(this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+        handler.handleGetChassisCapabilitiesResponse(session, this);
     }
 
     @Override
