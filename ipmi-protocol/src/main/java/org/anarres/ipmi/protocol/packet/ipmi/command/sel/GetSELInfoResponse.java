@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
@@ -48,6 +49,11 @@ public class GetSELInfoResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSELInfo;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSELInfoResponse(this);
     }
 
     @Override

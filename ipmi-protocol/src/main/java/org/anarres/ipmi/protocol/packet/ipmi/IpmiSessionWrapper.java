@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi;
 
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
@@ -26,4 +27,6 @@ public interface IpmiSessionWrapper extends RmcpData {
     public IpmiPayload getIpmiPayload();
 
     public void setIpmiPayload(@Nonnull IpmiPayload ipmiPayload);
+
+    public void apply(@Nonnull IpmiClientPayloadHandler handler);
 }

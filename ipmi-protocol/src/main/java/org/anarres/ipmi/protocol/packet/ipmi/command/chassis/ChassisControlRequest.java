@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
@@ -85,6 +86,11 @@ public class ChassisControlRequest extends AbstractIpmiRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.ChassisControl;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleChassisControlRequest(this);
     }
 
     @Override

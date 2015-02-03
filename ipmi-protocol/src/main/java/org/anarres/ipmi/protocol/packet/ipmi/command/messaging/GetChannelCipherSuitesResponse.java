@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -23,6 +24,11 @@ public class GetChannelCipherSuitesResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetChannelCipherSuites;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetChannelCipherSuitesResponse(this);
     }
 
     @Override

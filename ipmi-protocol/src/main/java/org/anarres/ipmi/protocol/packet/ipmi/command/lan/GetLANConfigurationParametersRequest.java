@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.lan;
 
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiConfigurationParametersRequest;
 
@@ -17,5 +18,10 @@ public class GetLANConfigurationParametersRequest extends AbstractIpmiConfigurat
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetLANConfigurationParameters;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetLANConfigurationParametersRequest(this);
     }
 }

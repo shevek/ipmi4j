@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
@@ -26,6 +27,11 @@ public class GetSDRRequest extends AbstractIpmiRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSDR;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSDRRequest(this);
     }
 
     @Override

@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
@@ -22,6 +23,11 @@ public class CloseSessionRequest extends AbstractIpmiRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.CloseSession;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleCloseSessionRequest(this);
     }
 
     @Override

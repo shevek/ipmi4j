@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
@@ -56,6 +57,11 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetDeviceID;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetDeviceIdResponse(this);
     }
 
     @Override

@@ -10,22 +10,29 @@ import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.engine.AbstractIpmiClient;
+import org.anarres.ipmi.protocol.client.AbstractIpmiClient;
+import org.anarres.ipmi.protocol.client.IpmiClientConnectHandler;
+import org.anarres.ipmi.protocol.client.IpmiClientResponseHandler;
+import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 
 /**
  *
  * @author shevek
  */
-public class IpmiClient extends AbstractIpmiClient {
+public class IpmiClientImpl extends AbstractIpmiClient {
 
     private Channel channel;
     private IpmiPipelineInitializer.SharedHandlers sharedHandlers;
     private IpmiChannelType channelType = IpmiChannelType.NIO;
 
-    public IpmiClient(@Nonnull IpmiContext context) {
+    public IpmiClientImpl(@Nonnull IpmiContext context) {
         this.sharedHandlers = new IpmiPipelineInitializer.SharedHandlers(context);
     }
 
@@ -46,14 +53,34 @@ public class IpmiClient extends AbstractIpmiClient {
     public void start() throws IOException, InterruptedException {
         IpmiChannelType mode = getChannelType();
 
-        ThreadFactory factory = new DefaultThreadFactory("tftp-server");
+        ThreadFactory factory = new DefaultThreadFactory("ipmi-client");
         EventLoopGroup group = mode.newEventLoopGroup(factory);
 
         Bootstrap b = new Bootstrap();
         b.group(group);
         b.channel(mode.getChannelType());
-        b.handler(new IpmiPipelineInitializer(sharedHandlers, new IpmiServerHandler(sharedHandlers)));
+        b.handler(new IpmiPipelineInitializer(sharedHandlers, new IpmiClientHandler(this)));
         channel = b.bind(0).sync().channel();
+    }
+
+    @Override
+    public void connect(InetSocketAddress target, IpmiClientConnectHandler connectHandler) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void send(Packet packet) throws IOException {
+        Future<?> f = channel.writeAndFlush(packet, channel.voidPromise());
+    }
+
+    @Override
+    public void send(InetSocketAddress target, IpmiRequest request, IpmiClientResponseHandler responseHandler) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void send(IpmiSession session, IpmiRequest request, IpmiClientResponseHandler responseHandler) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

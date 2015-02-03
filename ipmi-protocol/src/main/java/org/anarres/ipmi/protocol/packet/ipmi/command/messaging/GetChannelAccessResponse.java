@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
@@ -43,6 +44,11 @@ public class GetChannelAccessResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetChannelAccess;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetChannelAccessResponse(this);
     }
 
     @Override

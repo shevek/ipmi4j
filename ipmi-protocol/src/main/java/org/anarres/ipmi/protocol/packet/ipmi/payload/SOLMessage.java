@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
 
 /**
@@ -17,6 +18,11 @@ public class SOLMessage extends AbstractIpmiPayload {
     @Override
     public IpmiPayloadType getPayloadType() {
         return IpmiPayloadType.SOL;
+    }
+
+    @Override
+    public void apply(IpmiClientPayloadHandler handler) {
+        handler.handleSOL(this);
     }
 
     @Override

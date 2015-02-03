@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;
@@ -115,8 +116,13 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
         this.ipmiPayload = ipmiPayload;
     }
 
+    @Override
+    public void apply(IpmiClientPayloadHandler handler) {
+        getIpmiPayload().apply(handler);
+    }
+
     @Nonnull
-    public IpmiIntegrityAlgorithm getIntegrityAlgorithm(@CheckForNull IpmiSession session) {
+    public static IpmiIntegrityAlgorithm getIntegrityAlgorithm(@CheckForNull IpmiSession session) {
         if (session == null)
             return IpmiIntegrityAlgorithm.NONE;
         return session.getIntegrityAlgorithm();

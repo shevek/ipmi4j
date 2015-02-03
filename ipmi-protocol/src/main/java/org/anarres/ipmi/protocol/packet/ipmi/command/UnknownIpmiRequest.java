@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 
 /**
@@ -15,5 +16,9 @@ public class UnknownIpmiRequest extends UnknownIpmiCommand implements IpmiReques
 
     public UnknownIpmiRequest(@Nonnull IpmiCommandName commandName) {
         super(commandName);
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
     }
 }

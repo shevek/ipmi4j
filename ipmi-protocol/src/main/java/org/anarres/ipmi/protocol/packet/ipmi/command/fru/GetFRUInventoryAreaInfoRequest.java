@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.fru;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 
@@ -21,6 +22,11 @@ public class GetFRUInventoryAreaInfoRequest extends AbstractIpmiRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetFRUInventoryAreaInfo;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetFRUInventoryAreaInfoRequest(this);
     }
 
     @Override

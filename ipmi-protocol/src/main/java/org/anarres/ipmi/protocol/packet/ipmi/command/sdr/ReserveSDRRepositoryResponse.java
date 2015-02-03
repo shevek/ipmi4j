@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
@@ -18,13 +19,18 @@ public class ReserveSDRRepositoryResponse extends AbstractIpmiResponse {
     public char reservationId;
 
     @Override
-    protected int getResponseDataWireLength() {
-        return 3;
+    public IpmiCommandName getCommandName() {
+        return IpmiCommandName.ReserveSDRRepository;
     }
 
     @Override
-    public IpmiCommandName getCommandName() {
-        return IpmiCommandName.ReserveSDRRepository;
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleReserveSDRRepositoryResponse(this);
+    }
+
+    @Override
+    protected int getResponseDataWireLength() {
+        return 3;
     }
 
     @Override

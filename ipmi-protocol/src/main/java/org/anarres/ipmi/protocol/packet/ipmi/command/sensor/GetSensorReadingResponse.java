@@ -10,6 +10,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
@@ -45,6 +46,11 @@ public class GetSensorReadingResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSensorReading;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSensorReadingResponse(this);
     }
 
     @Override

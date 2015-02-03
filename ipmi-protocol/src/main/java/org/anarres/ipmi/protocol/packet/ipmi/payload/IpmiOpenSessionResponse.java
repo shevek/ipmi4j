@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -37,6 +38,11 @@ public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
     @Override
     public IpmiPayloadType getPayloadType() {
         return IpmiPayloadType.RMCPOpenSessionResponse;
+    }
+
+    @Override
+    public void apply(IpmiClientPayloadHandler handler) {
+        handler.handleOpenSessionResponse(this);
     }
 
     @Override

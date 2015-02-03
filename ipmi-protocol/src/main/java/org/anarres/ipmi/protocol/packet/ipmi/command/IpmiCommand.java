@@ -4,6 +4,8 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 
 /**
@@ -12,4 +14,6 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
  * @author shevek
  */
 public interface IpmiCommand extends IpmiPayload {
+
+    public void apply(@Nonnull IpmiClientCommandHandler handler);
 }

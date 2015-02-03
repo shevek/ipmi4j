@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
@@ -25,6 +26,11 @@ public class IpmiRAKPMessage4 extends AbstractIpmiPayload {
     @Override
     public IpmiPayloadType getPayloadType() {
         return IpmiPayloadType.RAKPMessage4;
+    }
+
+    @Override
+    public void apply(IpmiClientPayloadHandler handler) {
+        handler.handleRAKPMessage4(this);
     }
 
     @Override

@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
@@ -22,6 +23,11 @@ public class SetSessionPrivilegeLevelRequest extends AbstractIpmiRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.SetSessionPrivilegeLevel;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleSetSessionPrivilegeLevelRequest(this);
     }
 
     @Override

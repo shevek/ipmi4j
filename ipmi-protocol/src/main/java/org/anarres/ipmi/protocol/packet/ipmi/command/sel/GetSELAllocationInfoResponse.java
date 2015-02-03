@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sel;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
@@ -26,6 +27,11 @@ public class GetSELAllocationInfoResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSELAllocationInfo;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSELAllocationInfoResponse(this);
     }
 
     @Override

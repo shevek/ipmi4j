@@ -7,6 +7,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.sensor;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
 
@@ -23,6 +24,11 @@ public class GetSensorThresholdResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSensorThreshold;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSensorThresholdResponse(this);
     }
 
     @Override

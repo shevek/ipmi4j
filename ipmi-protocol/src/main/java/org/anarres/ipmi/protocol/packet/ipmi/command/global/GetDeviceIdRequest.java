@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.global;
 
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleRequest;
 
@@ -17,5 +18,10 @@ public class GetDeviceIdRequest extends AbstractIpmiSimpleRequest {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetDeviceID;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetDeviceIdRequest(this);
     }
 }

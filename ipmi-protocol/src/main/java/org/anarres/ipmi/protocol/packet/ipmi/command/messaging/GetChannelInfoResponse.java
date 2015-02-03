@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelMedium;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
@@ -153,6 +154,11 @@ public class GetChannelInfoResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetChannelInfoCommand;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetChannelInfoResponse(this);
     }
 
     @Override

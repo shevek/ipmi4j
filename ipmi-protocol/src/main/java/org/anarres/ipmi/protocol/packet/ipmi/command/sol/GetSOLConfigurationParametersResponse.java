@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.sol;
 
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiConfigurationParametersResponse;
 
@@ -17,5 +18,10 @@ public class GetSOLConfigurationParametersResponse extends AbstractIpmiConfigura
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSOLConfigurationParameters;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSOLConfigurationParametersResponse(this);
     }
 }

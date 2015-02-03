@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleResponse;
 
@@ -17,5 +18,10 @@ public class CloseSessionResponse extends AbstractIpmiSimpleResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.CloseSession;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleCloseSessionResponse(this);
     }
 }

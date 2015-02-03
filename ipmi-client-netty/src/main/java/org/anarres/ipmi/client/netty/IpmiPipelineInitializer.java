@@ -26,9 +26,9 @@ public class IpmiPipelineInitializer extends ChannelInitializer<Channel> {
         // These are all singleton instances.
 
         // private final TftpExceptionHandler exceptionHandler = new TftpExceptionHandler();
-        private final LoggingHandler wireLogger = new LoggingHandler("tftp-datagram");
+        private final LoggingHandler wireLogger = new LoggingHandler("ipmi-datagram");
         private final IpmiCodec codec;
-        private final LoggingHandler packetLogger = new LoggingHandler("tftp-packet");
+        private final LoggingHandler packetLogger = new LoggingHandler("ipmi-packet");
         private boolean debug = false;
 
         public SharedHandlers(@Nonnull IpmiContext context) {

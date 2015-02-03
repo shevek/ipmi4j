@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Wireable;
 
 /**
@@ -16,4 +17,6 @@ public interface IpmiPayload extends Wireable {
 
     @Nonnull
     public IpmiPayloadType getPayloadType();
+
+    public void apply(@Nonnull IpmiClientPayloadHandler handler);
 }

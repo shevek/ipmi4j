@@ -8,6 +8,7 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.IpmiClientCommandHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -62,6 +63,11 @@ public class GetSystemRestartCauseResponse extends AbstractIpmiResponse {
     @Override
     public IpmiCommandName getCommandName() {
         return IpmiCommandName.GetSystemRestartCause;
+    }
+
+    @Override
+    public void apply(IpmiClientCommandHandler handler) {
+        handler.handleGetSystemRestartCauseResponse(this);
     }
 
     @Override

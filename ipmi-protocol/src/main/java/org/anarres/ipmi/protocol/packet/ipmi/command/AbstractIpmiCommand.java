@@ -12,6 +12,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
+import org.anarres.ipmi.protocol.client.IpmiClientPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.AbstractIpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -42,6 +43,11 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     @Override
     public IpmiPayloadType getPayloadType() {
         return IpmiPayloadType.IPMI;
+    }
+
+    @Override
+    public void apply(IpmiClientPayloadHandler handler) {
+        handler.handleIPMI(this);
     }
 
     public byte getTargetAddress() {
@@ -215,6 +221,11 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         return (byte) ((b0 & 0xF) << 4 | (b1 & 0xF));
     }
 
+    @Nonnegative
+    public static void toWireBcdLE(@Nonnull ByteBuffer buffer, @Nonnegative byte data) {
+        buffer.put(toWireBcdLE(data));
+    }
+
     /**
      * Decodes one byte (two digits) of BCD.
      * The return value cannot be negative as the range is 0-99.
@@ -226,6 +237,22 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         Preconditions.checkPositionIndex(b0, 9, "BCD decoder low digit out of range");
         Preconditions.checkPositionIndex(b1, 9, "BCD decoder high digit out of range");
         return (byte) (b1 * 10 + b0);
+    }
+
+    @Nonnegative
+    public static byte fromWireBcdLE(@Nonnull ByteBuffer buffer) {
+        return fromWireBcdLE(buffer.get());
+    }
+
+    /** I2C addresses are written to the wire with the low bit set to 0. */
+    public static void toWireI2CAddress(@Nonnull ByteBuffer buffer, byte data) {
+        buffer.put((byte) (data << 1));
+    }
+
+    /** I2C addresses are written to the wire with the low bit set to 0. */
+    public static byte fromWireI2CAddress(@Nonnull ByteBuffer buffer) {
+        byte data = buffer.get();
+        return (byte) (data >>> 1);
     }
 
     public static boolean getBit(byte data, @Nonnegative int bit) {

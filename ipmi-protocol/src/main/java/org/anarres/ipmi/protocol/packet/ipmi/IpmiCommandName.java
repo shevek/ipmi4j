@@ -16,6 +16,10 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.ChassisControlRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.ChassisControlResponse;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisCapabilitiesRequest;
+import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisCapabilitiesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseRequest;
@@ -138,9 +142,9 @@ public enum IpmiCommandName implements Code.Wrapper {
     // unassigned("unassigned", IpmiNetworkFunction.App, 0x58h-5F),
     // FirmwareFirewallConfiguration("Firmware Firewall Configuration (see IPM Device Commands, above)", IpmiNetworkFunction.App, 0x60h-64),
     // Chassis Device Commands
-    GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00, User),
+    GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00, User, GetChassisCapabilitiesRequest.class, GetChassisCapabilitiesResponse.class),
     GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01, User, GetChassisStatusRequest.class, GetChassisStatusResponse.class),
-    ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02, Operator),
+    ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02, Operator, ChassisControlRequest.class, ChassisControlResponse.class),
     ChassisReset("Chassis Reset", IpmiNetworkFunction.Chassis, 0x03, Operator),
     ChassisIdentify("Chassis Identify", IpmiNetworkFunction.Chassis, 0x04, Operator),
     SetFrontPanelButtonEnables("Set Front Panel Button Enables", IpmiNetworkFunction.Chassis, 0x0A, Administrator),
@@ -327,6 +331,16 @@ public enum IpmiCommandName implements Code.Wrapper {
     @CheckForNull
     public IpmiChannelPrivilegeLevel getPrivilegeLevel() {
         return privilegeLevel;
+    }
+
+    @CheckForNull
+    public Class<? extends IpmiRequest> getRequestType() {
+        return requestType;
+    }
+
+    @CheckForNull
+    public Class<? extends IpmiResponse> getResponseType() {
+        return responseType;
     }
 
     // TODO: Packet data factory.
