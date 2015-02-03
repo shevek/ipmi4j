@@ -5,8 +5,8 @@
 package org.anarres.ipmi.client.netty;
 
 import org.anarres.ipmi.protocol.client.IpmiClient;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.junit.Test;
 // import static org.junit.Assert.*;
 

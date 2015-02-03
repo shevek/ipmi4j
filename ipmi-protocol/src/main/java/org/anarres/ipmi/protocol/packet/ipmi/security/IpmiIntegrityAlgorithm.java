@@ -16,7 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.HMAC_SHA256
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.MAC;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.MD5_128;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.None;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 13.28.4, table 13-18, page 159.

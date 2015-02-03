@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.session;
+package org.anarres.ipmi.protocol.client.session;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
+import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
@@ -23,7 +24,10 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
  */
 public class IpmiSession {
 
-    private final int id;
+    private IpmiSessionState state = IpmiSessionState.UNKNOWN;
+    private final int consoleSessionId;
+    private GetChannelAuthenticationCapabilitiesResponse channelAuthenticationCapabilities;
+    private int systemSessionId;
     private AtomicInteger encryptedSequenceNumber = new AtomicInteger(0);
     private AtomicInteger unencryptedSequenceNumber = new AtomicInteger(0);
     private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.RMCPP;
@@ -32,12 +36,20 @@ public class IpmiSession {
     private IpmiConfidentialityAlgorithm.State confidentialityAlgorithmState;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
 
-    public IpmiSession(int id) {
-        this.id = id;
+    public IpmiSession(int consoleSessionId) {
+        this.consoleSessionId = consoleSessionId;
     }
 
-    public int getId() {
-        return id;
+    public int getConsoleSessionId() {
+        return consoleSessionId;
+    }
+
+    public int getSystemSessionId() {
+        return systemSessionId;
+    }
+
+    public void setSystemSessionId(int systemSessionId) {
+        this.systemSessionId = systemSessionId;
     }
 
     public int nextUnencryptedSequenceNumber() {

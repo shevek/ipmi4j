@@ -5,7 +5,7 @@
 package org.anarres.ipmi.protocol.client;
 
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  *

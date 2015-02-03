@@ -16,12 +16,12 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  *
  * @author shevek
  */
-public class RmcpMessageHandlerImpl extends IpmiClientRmcpMessageHandler.Adapter {
+public class RmcpMessageHandler extends IpmiClientRmcpMessageHandler.Adapter {
 
     private final IpmiClientAsfMessageHandler asfHandler;
     private final IpmiClientIpmiPayloadHandler ipmiHandler;
 
-    public RmcpMessageHandlerImpl(@Nonnull IpmiClientAsfMessageHandler asfHandler, @Nonnull IpmiClientIpmiPayloadHandler ipmiHandler) {
+    public RmcpMessageHandler(@Nonnull IpmiClientAsfMessageHandler asfHandler, @Nonnull IpmiClientIpmiPayloadHandler ipmiHandler) {
         this.asfHandler = asfHandler;
         this.ipmiHandler = ipmiHandler;
     }

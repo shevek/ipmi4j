@@ -10,7 +10,7 @@ import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

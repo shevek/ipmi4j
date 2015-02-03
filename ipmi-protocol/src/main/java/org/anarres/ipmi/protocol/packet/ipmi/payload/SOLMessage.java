@@ -6,7 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 
 /**
  * [IPMI2] Section 15.9, page 210.

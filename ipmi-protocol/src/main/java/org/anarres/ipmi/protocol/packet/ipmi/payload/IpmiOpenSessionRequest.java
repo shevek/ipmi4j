@@ -13,7 +13,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 
 /**
  * [IPMI2] Section 13.17, table 13-9, page 147.

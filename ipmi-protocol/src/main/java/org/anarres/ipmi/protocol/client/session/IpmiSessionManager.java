@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.anarres.ipmi.protocol.packet.ipmi.session;
+package org.anarres.ipmi.protocol.client.session;
 
 import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,11 +25,9 @@ public class IpmiSessionManager implements IpmiContext {
             int id = random.nextInt();
             if (id == 0)
                 continue;
-            if (sessions.putIfAbsent(id, dummy) == null) {
-                IpmiSession session = new IpmiSession(id);
-                sessions.put(id, session);
+            IpmiSession session = new IpmiSession(id);
+            if (sessions.putIfAbsent(id, session) == null)
                 return session;
-            }
         }
     }
 

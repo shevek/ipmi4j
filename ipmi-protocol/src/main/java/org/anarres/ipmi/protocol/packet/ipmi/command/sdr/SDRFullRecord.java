@@ -9,7 +9,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.packet.common.Bits;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 
 /**
  * [IPMI2] Section 43.1, table 43-1, pages 524-530.

@@ -4,8 +4,8 @@
  */
 package org.anarres.ipmi.protocol.codec;
 
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSessionManager;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

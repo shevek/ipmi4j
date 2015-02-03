@@ -18,8 +18,9 @@ import org.anarres.ipmi.protocol.client.AbstractIpmiClient;
 import org.anarres.ipmi.protocol.client.IpmiClientConnectHandler;
 import org.anarres.ipmi.protocol.client.IpmiClientResponseHandler;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 
 /**
@@ -34,6 +35,11 @@ public class IpmiClientImpl extends AbstractIpmiClient {
 
     public IpmiClientImpl(@Nonnull IpmiContext context) {
         this.sharedHandlers = new IpmiPipelineInitializer.SharedHandlers(context);
+    }
+
+    @Override
+    public IpmiSessionManager getSessionManager() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setDebug(boolean debug) {
@@ -78,11 +84,10 @@ public class IpmiClientImpl extends AbstractIpmiClient {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void send(IpmiSession session, IpmiRequest request, IpmiClientResponseHandler responseHandler) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    // @Override
+    // public void send(IpmiSession session, IpmiRequest request, IpmiClientResponseHandler responseHandler) {
+    // throw new UnsupportedOperationException("Not supported yet.");
+    // }
     @Override
     public void stop() throws IOException, InterruptedException {
         EventLoop loop = channel.eventLoop();

@@ -7,7 +7,7 @@ package org.anarres.ipmi.protocol.packet.common;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 
 /**
  * An object which may be written to and read from a {@link ByteBuffer}.

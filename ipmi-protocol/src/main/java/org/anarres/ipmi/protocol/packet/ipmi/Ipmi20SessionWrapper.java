@@ -22,8 +22,8 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorith
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

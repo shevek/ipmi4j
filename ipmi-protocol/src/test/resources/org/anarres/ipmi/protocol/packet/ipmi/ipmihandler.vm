@@ -25,31 +25,34 @@ import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiSession;
  */
 public interface IpmiClientIpmiCommandHandler {
 
+    public static class Context {
+    }
+
     public static class Adapter implements IpmiClientIpmiCommandHandler {
 
-        public void handleDefault(@CheckForNull IpmiSession session, @Nonnull IpmiCommand command) {
+        public void handleDefault(@Nonnull Context context, @Nonnull IpmiCommand command) {
         }
 
-        public void handleRequest(@CheckForNull IpmiSession session, @Nonnull IpmiRequest request) {
-            handleDefault(session, request);
+        public void handleRequest(@Nonnull Context context, @Nonnull IpmiRequest request) {
+            handleDefault(context, request);
         }
 
-        public void handleResponse(@CheckForNull IpmiSession session, @Nonnull IpmiResponse response) {
-            handleDefault(session, response);
+        public void handleResponse(@Nonnull Context context, @Nonnull IpmiResponse response) {
+            handleDefault(context, response);
         }
 #foreach ($value in $values)
 #if (${value.requestType})
 
         @Override
-        public void handle${value.requestType.simpleName}(IpmiSession session, ${value.requestType.simpleName} request) {
-            handleRequest(session, request);
+        public void handle${value.requestType.simpleName}(Context context, ${value.requestType.simpleName} request) {
+            handleRequest(context, request);
         }
 #end
 #if (${value.responseType})
 
         @Override
-        public void handle${value.responseType.simpleName}(IpmiSession session, ${value.responseType.simpleName} response) {
-            handleResponse(session, response);
+        public void handle${value.responseType.simpleName}(Context context, ${value.responseType.simpleName} response) {
+            handleResponse(context, response);
         }
 #end
 #end
@@ -57,11 +60,11 @@ public interface IpmiClientIpmiCommandHandler {
 #foreach ($value in $values)
 #if (${value.requestType})
 
-    public void handle${value.requestType.simpleName}(@CheckForNull IpmiSession session, @Nonnull ${value.requestType.simpleName} request);
+    public void handle${value.requestType.simpleName}(@Nonnull Context context, @Nonnull ${value.requestType.simpleName} request);
 #end
 #if (${value.responseType})
 
-    public void handle${value.responseType.simpleName}(@CheckForNull IpmiSession session, @Nonnull ${value.responseType.simpleName} response);
+    public void handle${value.responseType.simpleName}(@Nonnull Context context, @Nonnull ${value.responseType.simpleName} response);
 #end
 #end
 }

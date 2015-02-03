@@ -17,7 +17,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi20SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
-import org.anarres.ipmi.protocol.packet.ipmi.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
