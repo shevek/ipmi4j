@@ -12,6 +12,7 @@ import java.util.Arrays;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
@@ -103,8 +104,8 @@ public class AsfRAKPMessage1Data extends AbstractAsfData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfRAKPMessage1Data(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfRAKPMessage1Data(context, this);
     }
 
     @Override

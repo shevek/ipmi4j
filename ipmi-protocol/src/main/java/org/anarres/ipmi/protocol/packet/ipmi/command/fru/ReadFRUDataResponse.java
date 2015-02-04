@@ -6,9 +6,9 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.fru;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 34.2, table 34-3, page 450.
@@ -27,8 +27,8 @@ public class ReadFRUDataResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleReadFRUDataResponse(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleReadFRUDataResponse(context, this);
     }
 
     @Override

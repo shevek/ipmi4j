@@ -6,12 +6,12 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 22.13, table 22-15, page 283.
@@ -30,8 +30,8 @@ public class GetChannelAuthenticationCapabilitiesRequest extends AbstractIpmiReq
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleGetChannelAuthenticationCapabilitiesRequest(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleGetChannelAuthenticationCapabilitiesRequest(context, this);
     }
 
     @Override

@@ -5,6 +5,7 @@
 package org.anarres.ipmi.protocol.packet.asf;
 
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
  * PowerCycleReset.
@@ -23,7 +24,7 @@ public class AsfPowerCycleResetData extends AbstractAsfBootData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfPowerCycleResetData(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfPowerCycleResetData(context, this);
     }
 }

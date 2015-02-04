@@ -7,9 +7,9 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.fru;
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 34.2, table 34-3, page 450.
@@ -29,8 +29,8 @@ public class ReadFRUDataRequest extends AbstractIpmiRequest {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleReadFRUDataRequest(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleReadFRUDataRequest(context, this);
     }
 
     @Override

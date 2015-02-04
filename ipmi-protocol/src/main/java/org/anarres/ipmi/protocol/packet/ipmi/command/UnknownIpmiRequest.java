@@ -6,8 +6,8 @@ package org.anarres.ipmi.protocol.packet.ipmi.command;
 
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  *
@@ -20,6 +20,6 @@ public class UnknownIpmiRequest extends UnknownIpmiCommand implements IpmiReques
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
     }
 }

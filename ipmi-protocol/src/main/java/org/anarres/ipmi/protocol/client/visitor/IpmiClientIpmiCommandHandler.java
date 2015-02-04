@@ -3,9 +3,7 @@
  */
 package org.anarres.ipmi.protocol.client.visitor;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;
@@ -61,325 +59,326 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationPara
  */
 public interface IpmiClientIpmiCommandHandler {
 
+
     public static class Adapter implements IpmiClientIpmiCommandHandler {
 
-        public void handleDefault(@CheckForNull IpmiSession session, @Nonnull IpmiCommand command) {
+        public void handleDefault(@Nonnull IpmiHandlerContext context, @Nonnull IpmiCommand command) {
         }
 
-        public void handleRequest(@CheckForNull IpmiSession session, @Nonnull IpmiRequest request) {
-            handleDefault(session, request);
+        public void handleRequest(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRequest request) {
+            handleDefault(context, request);
         }
 
-        public void handleResponse(@CheckForNull IpmiSession session, @Nonnull IpmiResponse response) {
-            handleDefault(session, response);
-        }
-
-        @Override
-        public void handleGetDeviceIdRequest(IpmiSession session, GetDeviceIdRequest request) {
-            handleRequest(session, request);
+        public void handleResponse(@Nonnull IpmiHandlerContext context, @Nonnull IpmiResponse response) {
+            handleDefault(context, response);
         }
 
         @Override
-        public void handleGetDeviceIdResponse(IpmiSession session, GetDeviceIdResponse response) {
-            handleResponse(session, response);
+        public void handleGetDeviceIdRequest(IpmiHandlerContext context, GetDeviceIdRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChannelAuthenticationCapabilitiesRequest(IpmiSession session, GetChannelAuthenticationCapabilitiesRequest request) {
-            handleRequest(session, request);
+        public void handleGetDeviceIdResponse(IpmiHandlerContext context, GetDeviceIdResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChannelAuthenticationCapabilitiesResponse(IpmiSession session, GetChannelAuthenticationCapabilitiesResponse response) {
-            handleResponse(session, response);
+        public void handleGetChannelAuthenticationCapabilitiesRequest(IpmiHandlerContext context, GetChannelAuthenticationCapabilitiesRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleSetSessionPrivilegeLevelRequest(IpmiSession session, SetSessionPrivilegeLevelRequest request) {
-            handleRequest(session, request);
+        public void handleGetChannelAuthenticationCapabilitiesResponse(IpmiHandlerContext context, GetChannelAuthenticationCapabilitiesResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleSetSessionPrivilegeLevelResponse(IpmiSession session, SetSessionPrivilegeLevelResponse response) {
-            handleResponse(session, response);
+        public void handleSetSessionPrivilegeLevelRequest(IpmiHandlerContext context, SetSessionPrivilegeLevelRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleCloseSessionRequest(IpmiSession session, CloseSessionRequest request) {
-            handleRequest(session, request);
+        public void handleSetSessionPrivilegeLevelResponse(IpmiHandlerContext context, SetSessionPrivilegeLevelResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleCloseSessionResponse(IpmiSession session, CloseSessionResponse response) {
-            handleResponse(session, response);
+        public void handleCloseSessionRequest(IpmiHandlerContext context, CloseSessionRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChannelAccessRequest(IpmiSession session, GetChannelAccessRequest request) {
-            handleRequest(session, request);
+        public void handleCloseSessionResponse(IpmiHandlerContext context, CloseSessionResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChannelAccessResponse(IpmiSession session, GetChannelAccessResponse response) {
-            handleResponse(session, response);
+        public void handleGetChannelAccessRequest(IpmiHandlerContext context, GetChannelAccessRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChannelInfoRequest(IpmiSession session, GetChannelInfoRequest request) {
-            handleRequest(session, request);
+        public void handleGetChannelAccessResponse(IpmiHandlerContext context, GetChannelAccessResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChannelInfoResponse(IpmiSession session, GetChannelInfoResponse response) {
-            handleResponse(session, response);
+        public void handleGetChannelInfoRequest(IpmiHandlerContext context, GetChannelInfoRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChannelCipherSuitesRequest(IpmiSession session, GetChannelCipherSuitesRequest request) {
-            handleRequest(session, request);
+        public void handleGetChannelInfoResponse(IpmiHandlerContext context, GetChannelInfoResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChannelCipherSuitesResponse(IpmiSession session, GetChannelCipherSuitesResponse response) {
-            handleResponse(session, response);
+        public void handleGetChannelCipherSuitesRequest(IpmiHandlerContext context, GetChannelCipherSuitesRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChassisCapabilitiesRequest(IpmiSession session, GetChassisCapabilitiesRequest request) {
-            handleRequest(session, request);
+        public void handleGetChannelCipherSuitesResponse(IpmiHandlerContext context, GetChannelCipherSuitesResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChassisCapabilitiesResponse(IpmiSession session, GetChassisCapabilitiesResponse response) {
-            handleResponse(session, response);
+        public void handleGetChassisCapabilitiesRequest(IpmiHandlerContext context, GetChassisCapabilitiesRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetChassisStatusRequest(IpmiSession session, GetChassisStatusRequest request) {
-            handleRequest(session, request);
+        public void handleGetChassisCapabilitiesResponse(IpmiHandlerContext context, GetChassisCapabilitiesResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetChassisStatusResponse(IpmiSession session, GetChassisStatusResponse response) {
-            handleResponse(session, response);
+        public void handleGetChassisStatusRequest(IpmiHandlerContext context, GetChassisStatusRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleChassisControlRequest(IpmiSession session, ChassisControlRequest request) {
-            handleRequest(session, request);
+        public void handleGetChassisStatusResponse(IpmiHandlerContext context, GetChassisStatusResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleChassisControlResponse(IpmiSession session, ChassisControlResponse response) {
-            handleResponse(session, response);
+        public void handleChassisControlRequest(IpmiHandlerContext context, ChassisControlRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSystemRestartCauseRequest(IpmiSession session, GetSystemRestartCauseRequest request) {
-            handleRequest(session, request);
+        public void handleChassisControlResponse(IpmiHandlerContext context, ChassisControlResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSystemRestartCauseResponse(IpmiSession session, GetSystemRestartCauseResponse response) {
-            handleResponse(session, response);
+        public void handleGetSystemRestartCauseRequest(IpmiHandlerContext context, GetSystemRestartCauseRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSensorThresholdRequest(IpmiSession session, GetSensorThresholdRequest request) {
-            handleRequest(session, request);
+        public void handleGetSystemRestartCauseResponse(IpmiHandlerContext context, GetSystemRestartCauseResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSensorThresholdResponse(IpmiSession session, GetSensorThresholdResponse response) {
-            handleResponse(session, response);
+        public void handleGetSensorThresholdRequest(IpmiHandlerContext context, GetSensorThresholdRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSensorReadingRequest(IpmiSession session, GetSensorReadingRequest request) {
-            handleRequest(session, request);
+        public void handleGetSensorThresholdResponse(IpmiHandlerContext context, GetSensorThresholdResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSensorReadingResponse(IpmiSession session, GetSensorReadingResponse response) {
-            handleResponse(session, response);
+        public void handleGetSensorReadingRequest(IpmiHandlerContext context, GetSensorReadingRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetFRUInventoryAreaInfoRequest(IpmiSession session, GetFRUInventoryAreaInfoRequest request) {
-            handleRequest(session, request);
+        public void handleGetSensorReadingResponse(IpmiHandlerContext context, GetSensorReadingResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetFRUInventoryAreaInfoResponse(IpmiSession session, GetFRUInventoryAreaInfoResponse response) {
-            handleResponse(session, response);
+        public void handleGetFRUInventoryAreaInfoRequest(IpmiHandlerContext context, GetFRUInventoryAreaInfoRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleReadFRUDataRequest(IpmiSession session, ReadFRUDataRequest request) {
-            handleRequest(session, request);
+        public void handleGetFRUInventoryAreaInfoResponse(IpmiHandlerContext context, GetFRUInventoryAreaInfoResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleReadFRUDataResponse(IpmiSession session, ReadFRUDataResponse response) {
-            handleResponse(session, response);
+        public void handleReadFRUDataRequest(IpmiHandlerContext context, ReadFRUDataRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSDRRepositoryInfoRequest(IpmiSession session, GetSDRRepositoryInfoRequest request) {
-            handleRequest(session, request);
+        public void handleReadFRUDataResponse(IpmiHandlerContext context, ReadFRUDataResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSDRRepositoryInfoResponse(IpmiSession session, GetSDRRepositoryInfoResponse response) {
-            handleResponse(session, response);
+        public void handleGetSDRRepositoryInfoRequest(IpmiHandlerContext context, GetSDRRepositoryInfoRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleReserveSDRRepositoryRequest(IpmiSession session, ReserveSDRRepositoryRequest request) {
-            handleRequest(session, request);
+        public void handleGetSDRRepositoryInfoResponse(IpmiHandlerContext context, GetSDRRepositoryInfoResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleReserveSDRRepositoryResponse(IpmiSession session, ReserveSDRRepositoryResponse response) {
-            handleResponse(session, response);
+        public void handleReserveSDRRepositoryRequest(IpmiHandlerContext context, ReserveSDRRepositoryRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSDRRequest(IpmiSession session, GetSDRRequest request) {
-            handleRequest(session, request);
+        public void handleReserveSDRRepositoryResponse(IpmiHandlerContext context, ReserveSDRRepositoryResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSDRResponse(IpmiSession session, GetSDRResponse response) {
-            handleResponse(session, response);
+        public void handleGetSDRRequest(IpmiHandlerContext context, GetSDRRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSELInfoRequest(IpmiSession session, GetSELInfoRequest request) {
-            handleRequest(session, request);
+        public void handleGetSDRResponse(IpmiHandlerContext context, GetSDRResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSELInfoResponse(IpmiSession session, GetSELInfoResponse response) {
-            handleResponse(session, response);
+        public void handleGetSELInfoRequest(IpmiHandlerContext context, GetSELInfoRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSELAllocationInfoRequest(IpmiSession session, GetSELAllocationInfoRequest request) {
-            handleRequest(session, request);
+        public void handleGetSELInfoResponse(IpmiHandlerContext context, GetSELInfoResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSELAllocationInfoResponse(IpmiSession session, GetSELAllocationInfoResponse response) {
-            handleResponse(session, response);
+        public void handleGetSELAllocationInfoRequest(IpmiHandlerContext context, GetSELAllocationInfoRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetLANConfigurationParametersRequest(IpmiSession session, GetLANConfigurationParametersRequest request) {
-            handleRequest(session, request);
+        public void handleGetSELAllocationInfoResponse(IpmiHandlerContext context, GetSELAllocationInfoResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetLANConfigurationParametersResponse(IpmiSession session, GetLANConfigurationParametersResponse response) {
-            handleResponse(session, response);
+        public void handleGetLANConfigurationParametersRequest(IpmiHandlerContext context, GetLANConfigurationParametersRequest request) {
+            handleRequest(context, request);
         }
 
         @Override
-        public void handleGetSOLConfigurationParametersRequest(IpmiSession session, GetSOLConfigurationParametersRequest request) {
-            handleRequest(session, request);
+        public void handleGetLANConfigurationParametersResponse(IpmiHandlerContext context, GetLANConfigurationParametersResponse response) {
+            handleResponse(context, response);
         }
 
         @Override
-        public void handleGetSOLConfigurationParametersResponse(IpmiSession session, GetSOLConfigurationParametersResponse response) {
-            handleResponse(session, response);
+        public void handleGetSOLConfigurationParametersRequest(IpmiHandlerContext context, GetSOLConfigurationParametersRequest request) {
+            handleRequest(context, request);
+        }
+
+        @Override
+        public void handleGetSOLConfigurationParametersResponse(IpmiHandlerContext context, GetSOLConfigurationParametersResponse response) {
+            handleResponse(context, response);
         }
     }
 
-    public void handleGetDeviceIdRequest(@CheckForNull IpmiSession session, @Nonnull GetDeviceIdRequest request);
+    public void handleGetDeviceIdRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetDeviceIdRequest request);
 
-    public void handleGetDeviceIdResponse(@CheckForNull IpmiSession session, @Nonnull GetDeviceIdResponse response);
+    public void handleGetDeviceIdResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetDeviceIdResponse response);
 
-    public void handleGetChannelAuthenticationCapabilitiesRequest(@CheckForNull IpmiSession session, @Nonnull GetChannelAuthenticationCapabilitiesRequest request);
+    public void handleGetChannelAuthenticationCapabilitiesRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelAuthenticationCapabilitiesRequest request);
 
-    public void handleGetChannelAuthenticationCapabilitiesResponse(@CheckForNull IpmiSession session, @Nonnull GetChannelAuthenticationCapabilitiesResponse response);
+    public void handleGetChannelAuthenticationCapabilitiesResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelAuthenticationCapabilitiesResponse response);
 
-    public void handleSetSessionPrivilegeLevelRequest(@CheckForNull IpmiSession session, @Nonnull SetSessionPrivilegeLevelRequest request);
+    public void handleSetSessionPrivilegeLevelRequest(@Nonnull IpmiHandlerContext context, @Nonnull SetSessionPrivilegeLevelRequest request);
 
-    public void handleSetSessionPrivilegeLevelResponse(@CheckForNull IpmiSession session, @Nonnull SetSessionPrivilegeLevelResponse response);
+    public void handleSetSessionPrivilegeLevelResponse(@Nonnull IpmiHandlerContext context, @Nonnull SetSessionPrivilegeLevelResponse response);
 
-    public void handleCloseSessionRequest(@CheckForNull IpmiSession session, @Nonnull CloseSessionRequest request);
+    public void handleCloseSessionRequest(@Nonnull IpmiHandlerContext context, @Nonnull CloseSessionRequest request);
 
-    public void handleCloseSessionResponse(@CheckForNull IpmiSession session, @Nonnull CloseSessionResponse response);
+    public void handleCloseSessionResponse(@Nonnull IpmiHandlerContext context, @Nonnull CloseSessionResponse response);
 
-    public void handleGetChannelAccessRequest(@CheckForNull IpmiSession session, @Nonnull GetChannelAccessRequest request);
+    public void handleGetChannelAccessRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelAccessRequest request);
 
-    public void handleGetChannelAccessResponse(@CheckForNull IpmiSession session, @Nonnull GetChannelAccessResponse response);
+    public void handleGetChannelAccessResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelAccessResponse response);
 
-    public void handleGetChannelInfoRequest(@CheckForNull IpmiSession session, @Nonnull GetChannelInfoRequest request);
+    public void handleGetChannelInfoRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelInfoRequest request);
 
-    public void handleGetChannelInfoResponse(@CheckForNull IpmiSession session, @Nonnull GetChannelInfoResponse response);
+    public void handleGetChannelInfoResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelInfoResponse response);
 
-    public void handleGetChannelCipherSuitesRequest(@CheckForNull IpmiSession session, @Nonnull GetChannelCipherSuitesRequest request);
+    public void handleGetChannelCipherSuitesRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelCipherSuitesRequest request);
 
-    public void handleGetChannelCipherSuitesResponse(@CheckForNull IpmiSession session, @Nonnull GetChannelCipherSuitesResponse response);
+    public void handleGetChannelCipherSuitesResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChannelCipherSuitesResponse response);
 
-    public void handleGetChassisCapabilitiesRequest(@CheckForNull IpmiSession session, @Nonnull GetChassisCapabilitiesRequest request);
+    public void handleGetChassisCapabilitiesRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChassisCapabilitiesRequest request);
 
-    public void handleGetChassisCapabilitiesResponse(@CheckForNull IpmiSession session, @Nonnull GetChassisCapabilitiesResponse response);
+    public void handleGetChassisCapabilitiesResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChassisCapabilitiesResponse response);
 
-    public void handleGetChassisStatusRequest(@CheckForNull IpmiSession session, @Nonnull GetChassisStatusRequest request);
+    public void handleGetChassisStatusRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetChassisStatusRequest request);
 
-    public void handleGetChassisStatusResponse(@CheckForNull IpmiSession session, @Nonnull GetChassisStatusResponse response);
+    public void handleGetChassisStatusResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetChassisStatusResponse response);
 
-    public void handleChassisControlRequest(@CheckForNull IpmiSession session, @Nonnull ChassisControlRequest request);
+    public void handleChassisControlRequest(@Nonnull IpmiHandlerContext context, @Nonnull ChassisControlRequest request);
 
-    public void handleChassisControlResponse(@CheckForNull IpmiSession session, @Nonnull ChassisControlResponse response);
+    public void handleChassisControlResponse(@Nonnull IpmiHandlerContext context, @Nonnull ChassisControlResponse response);
 
-    public void handleGetSystemRestartCauseRequest(@CheckForNull IpmiSession session, @Nonnull GetSystemRestartCauseRequest request);
+    public void handleGetSystemRestartCauseRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSystemRestartCauseRequest request);
 
-    public void handleGetSystemRestartCauseResponse(@CheckForNull IpmiSession session, @Nonnull GetSystemRestartCauseResponse response);
+    public void handleGetSystemRestartCauseResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSystemRestartCauseResponse response);
 
-    public void handleGetSensorThresholdRequest(@CheckForNull IpmiSession session, @Nonnull GetSensorThresholdRequest request);
+    public void handleGetSensorThresholdRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSensorThresholdRequest request);
 
-    public void handleGetSensorThresholdResponse(@CheckForNull IpmiSession session, @Nonnull GetSensorThresholdResponse response);
+    public void handleGetSensorThresholdResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSensorThresholdResponse response);
 
-    public void handleGetSensorReadingRequest(@CheckForNull IpmiSession session, @Nonnull GetSensorReadingRequest request);
+    public void handleGetSensorReadingRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSensorReadingRequest request);
 
-    public void handleGetSensorReadingResponse(@CheckForNull IpmiSession session, @Nonnull GetSensorReadingResponse response);
+    public void handleGetSensorReadingResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSensorReadingResponse response);
 
-    public void handleGetFRUInventoryAreaInfoRequest(@CheckForNull IpmiSession session, @Nonnull GetFRUInventoryAreaInfoRequest request);
+    public void handleGetFRUInventoryAreaInfoRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetFRUInventoryAreaInfoRequest request);
 
-    public void handleGetFRUInventoryAreaInfoResponse(@CheckForNull IpmiSession session, @Nonnull GetFRUInventoryAreaInfoResponse response);
+    public void handleGetFRUInventoryAreaInfoResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetFRUInventoryAreaInfoResponse response);
 
-    public void handleReadFRUDataRequest(@CheckForNull IpmiSession session, @Nonnull ReadFRUDataRequest request);
+    public void handleReadFRUDataRequest(@Nonnull IpmiHandlerContext context, @Nonnull ReadFRUDataRequest request);
 
-    public void handleReadFRUDataResponse(@CheckForNull IpmiSession session, @Nonnull ReadFRUDataResponse response);
+    public void handleReadFRUDataResponse(@Nonnull IpmiHandlerContext context, @Nonnull ReadFRUDataResponse response);
 
-    public void handleGetSDRRepositoryInfoRequest(@CheckForNull IpmiSession session, @Nonnull GetSDRRepositoryInfoRequest request);
+    public void handleGetSDRRepositoryInfoRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSDRRepositoryInfoRequest request);
 
-    public void handleGetSDRRepositoryInfoResponse(@CheckForNull IpmiSession session, @Nonnull GetSDRRepositoryInfoResponse response);
+    public void handleGetSDRRepositoryInfoResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSDRRepositoryInfoResponse response);
 
-    public void handleReserveSDRRepositoryRequest(@CheckForNull IpmiSession session, @Nonnull ReserveSDRRepositoryRequest request);
+    public void handleReserveSDRRepositoryRequest(@Nonnull IpmiHandlerContext context, @Nonnull ReserveSDRRepositoryRequest request);
 
-    public void handleReserveSDRRepositoryResponse(@CheckForNull IpmiSession session, @Nonnull ReserveSDRRepositoryResponse response);
+    public void handleReserveSDRRepositoryResponse(@Nonnull IpmiHandlerContext context, @Nonnull ReserveSDRRepositoryResponse response);
 
-    public void handleGetSDRRequest(@CheckForNull IpmiSession session, @Nonnull GetSDRRequest request);
+    public void handleGetSDRRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSDRRequest request);
 
-    public void handleGetSDRResponse(@CheckForNull IpmiSession session, @Nonnull GetSDRResponse response);
+    public void handleGetSDRResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSDRResponse response);
 
-    public void handleGetSELInfoRequest(@CheckForNull IpmiSession session, @Nonnull GetSELInfoRequest request);
+    public void handleGetSELInfoRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSELInfoRequest request);
 
-    public void handleGetSELInfoResponse(@CheckForNull IpmiSession session, @Nonnull GetSELInfoResponse response);
+    public void handleGetSELInfoResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSELInfoResponse response);
 
-    public void handleGetSELAllocationInfoRequest(@CheckForNull IpmiSession session, @Nonnull GetSELAllocationInfoRequest request);
+    public void handleGetSELAllocationInfoRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSELAllocationInfoRequest request);
 
-    public void handleGetSELAllocationInfoResponse(@CheckForNull IpmiSession session, @Nonnull GetSELAllocationInfoResponse response);
+    public void handleGetSELAllocationInfoResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSELAllocationInfoResponse response);
 
-    public void handleGetLANConfigurationParametersRequest(@CheckForNull IpmiSession session, @Nonnull GetLANConfigurationParametersRequest request);
+    public void handleGetLANConfigurationParametersRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetLANConfigurationParametersRequest request);
 
-    public void handleGetLANConfigurationParametersResponse(@CheckForNull IpmiSession session, @Nonnull GetLANConfigurationParametersResponse response);
+    public void handleGetLANConfigurationParametersResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetLANConfigurationParametersResponse response);
 
-    public void handleGetSOLConfigurationParametersRequest(@CheckForNull IpmiSession session, @Nonnull GetSOLConfigurationParametersRequest request);
+    public void handleGetSOLConfigurationParametersRequest(@Nonnull IpmiHandlerContext context, @Nonnull GetSOLConfigurationParametersRequest request);
 
-    public void handleGetSOLConfigurationParametersResponse(@CheckForNull IpmiSession session, @Nonnull GetSOLConfigurationParametersResponse response);
+    public void handleGetSOLConfigurationParametersResponse(@Nonnull IpmiHandlerContext context, @Nonnull GetSOLConfigurationParametersResponse response);
 }

@@ -17,6 +17,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.anarres.ipmi.protocol.packet.rmcp.RspRmcpPacket;
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class IpmiPacketTest {
         };
         IpmiClientAsfMessageHandler asfHandler = new IpmiClientAsfMessageHandler.Adapter() {
             @Override
-            public void handleDefault(AsfRmcpData message) {
+            public void handleDefault(IpmiHandlerContext context, AsfRmcpData message) {
                 LOG.debug(String.valueOf(message));
             }
         };

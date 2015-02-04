@@ -12,6 +12,7 @@ import org.anarres.ipmi.protocol.IanaEnterpriseNumber;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 
 /**
@@ -41,8 +42,8 @@ public abstract class AbstractAsfData extends AbstractWireable implements AsfRmc
     }
 
     @Override
-    public void apply(IpmiClientRmcpMessageHandler handler) {
-        handler.handleAsfRmcpData(this);
+    public void apply(IpmiClientRmcpMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfRmcpData(context, this);
     }
 
     public byte getMessageTag() {

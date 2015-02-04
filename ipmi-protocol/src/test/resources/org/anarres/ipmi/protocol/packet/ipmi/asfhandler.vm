@@ -18,18 +18,18 @@ public interface IpmiClientAsfMessageHandler {
 
     public static class Adapter implements IpmiClientAsfMessageHandler {
 
-        public void handleDefault(@Nonnull AsfRmcpData message) {
+        public void handleDefault(@Nonnull IpmiHandlerContext context, @Nonnull AsfRmcpData message) {
         }
 #foreach ($value in $values)
 
         @Override
-        public void handle${value.newPacketData().class.simpleName}(${value.newPacketData().class.simpleName} message) {
-            handleDefault(message);
+        public void handle${value.newPacketData().class.simpleName}(IpmiHandlerContext context, ${value.newPacketData().class.simpleName} message) {
+            handleDefault(context, message);
         }
 #end
     }
 #foreach ($value in $values)
 
-    public void handle${value.newPacketData().class.simpleName}(@Nonnull ${value.newPacketData().class.simpleName} message);
+    public void handle${value.newPacketData().class.simpleName}(@Nonnull IpmiHandlerContext context, @Nonnull ${value.newPacketData().class.simpleName} message);
 #end
 }

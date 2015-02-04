@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
  * CloseSessionRequest.
@@ -24,8 +25,8 @@ public class AsfCloseSessionRequestData extends AbstractAsfData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfCloseSessionRequestData(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfCloseSessionRequestData(context, this);
     }
 
     @Override

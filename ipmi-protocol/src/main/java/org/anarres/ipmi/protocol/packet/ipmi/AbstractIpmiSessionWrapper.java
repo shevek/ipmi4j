@@ -25,6 +25,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,12 +122,12 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     }
 
     @Override
-    public void apply(IpmiClientRmcpMessageHandler handler) {
-        handler.handleIpmiRmcpData(this);
+    public void apply(IpmiClientRmcpMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleIpmiRmcpData(context, this);
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler) {
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
         getIpmiPayload().apply(handler);
     }
 

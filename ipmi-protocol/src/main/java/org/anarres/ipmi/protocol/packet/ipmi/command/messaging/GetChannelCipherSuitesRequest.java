@@ -6,12 +6,12 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 22.15, table 22-17, page 290.
@@ -36,8 +36,8 @@ public class GetChannelCipherSuitesRequest extends AbstractIpmiRequest {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleGetChannelCipherSuitesRequest(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleGetChannelCipherSuitesRequest(context, this);
     }
 
     @Override

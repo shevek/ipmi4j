@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 
@@ -101,8 +102,8 @@ public class AsfSystemStateResponseData extends AbstractAsfData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfSystemStateResponseData(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfSystemStateResponseData(context, this);
     }
 
     @Override

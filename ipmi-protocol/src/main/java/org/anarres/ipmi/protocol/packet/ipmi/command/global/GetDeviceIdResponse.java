@@ -10,10 +10,10 @@ import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 20.1, table 20-2, page 244.
@@ -61,8 +61,8 @@ public class GetDeviceIdResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleGetDeviceIdResponse(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleGetDeviceIdResponse(context, this);
     }
 
     @Override

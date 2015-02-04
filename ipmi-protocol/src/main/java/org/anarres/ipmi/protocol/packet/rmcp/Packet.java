@@ -3,6 +3,7 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 import java.net.SocketAddress;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Wireable;
 
 /**
@@ -31,5 +32,5 @@ public interface Packet extends Wireable {
     @Nonnull
     public Packet withData(@Nonnull RmcpData data);
 
-    public void apply(@Nonnull IpmiClientRmcpMessageHandler handler);
+    public void apply(@Nonnull IpmiClientRmcpMessageHandler handler, @Nonnull IpmiHandlerContext context);
 }

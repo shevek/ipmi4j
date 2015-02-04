@@ -8,9 +8,9 @@ import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiResponse;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 35.9, table 35-9, page 459.
@@ -28,8 +28,8 @@ public class GetSensorThresholdResponse extends AbstractIpmiResponse {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleGetSensorThresholdResponse(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleGetSensorThresholdResponse(context, this);
     }
 
     @Override

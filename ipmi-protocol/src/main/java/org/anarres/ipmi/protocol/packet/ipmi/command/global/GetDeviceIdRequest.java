@@ -5,9 +5,9 @@
 package org.anarres.ipmi.protocol.packet.ipmi.command.global;
 
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
 import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiSimpleRequest;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 
 /**
  * [IPMI2] Section 20.1, table 20-2, page 244.
@@ -22,7 +22,7 @@ public class GetDeviceIdRequest extends AbstractIpmiSimpleRequest {
     }
 
     @Override
-    public void apply(IpmiClientIpmiCommandHandler handler, IpmiSession session) {
-        handler.handleGetDeviceIdRequest(session, this);
+    public void apply(IpmiClientIpmiCommandHandler handler, IpmiHandlerContext context) {
+        handler.handleGetDeviceIdRequest(context, this);
     }
 }

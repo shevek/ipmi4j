@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**
@@ -18,5 +19,5 @@ public interface AsfRmcpData extends RmcpData {
     @Nonnull
     public AsfRmcpMessageType getMessageType();
 
-    public void apply(@Nonnull IpmiClientAsfMessageHandler handler);
+    public void apply(@Nonnull IpmiClientAsfMessageHandler handler, IpmiHandlerContext context);
 }

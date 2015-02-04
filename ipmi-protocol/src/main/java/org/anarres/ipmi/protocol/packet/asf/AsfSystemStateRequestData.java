@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.asf;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
  * SystemStateRequest.
@@ -24,8 +25,8 @@ public class AsfSystemStateRequestData extends AbstractAsfData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfSystemStateRequestData(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfSystemStateRequestData(context, this);
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
  *
@@ -23,8 +24,8 @@ public class OEMRmcpMessage extends AbstractWireable implements RmcpData {
     }
 
     @Override
-    public void apply(IpmiClientRmcpMessageHandler handler) {
-        handler.handleOemRmcpData(this);
+    public void apply(IpmiClientRmcpMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleOemRmcpData(context, this);
     }
 
     @Override

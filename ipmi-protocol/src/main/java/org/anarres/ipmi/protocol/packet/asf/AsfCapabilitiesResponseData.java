@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientAsfMessageHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 
 /**
@@ -102,8 +103,8 @@ public class AsfCapabilitiesResponseData extends AbstractAsfData {
     }
 
     @Override
-    public void apply(IpmiClientAsfMessageHandler handler) {
-        handler.handleAsfCapabilitiesResponseData(this);
+    public void apply(IpmiClientAsfMessageHandler handler, IpmiHandlerContext context) {
+        handler.handleAsfCapabilitiesResponseData(context, this);
     }
 
     public int getOemDefined() {

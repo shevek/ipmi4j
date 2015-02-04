@@ -18,6 +18,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi20SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,8 +105,8 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
     }
 
     @Override
-    public void apply(IpmiClientRmcpMessageHandler handler) {
-        getData().apply(handler);
+    public void apply(IpmiClientRmcpMessageHandler handler, IpmiHandlerContext context) {
+        getData().apply(handler, context);
     }
 
     @Nonnegative
