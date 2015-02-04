@@ -128,7 +128,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
 
     @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        getIpmiPayload().apply(handler);
+        getIpmiPayload().apply(handler, context);
     }
 
     @Nonnull

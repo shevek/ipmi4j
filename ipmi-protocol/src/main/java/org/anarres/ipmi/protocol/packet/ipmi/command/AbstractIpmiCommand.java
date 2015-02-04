@@ -22,6 +22,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthent
 import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,8 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler) {
-        handler.handleCommand(this);
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
+        handler.handleCommand(context, this);
     }
 
     public byte getTargetAddress() {

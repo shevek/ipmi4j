@@ -24,52 +24,52 @@ public interface IpmiClientIpmiPayloadHandler {
 
     public static class Adapter implements IpmiClientIpmiPayloadHandler {
 
-        public void handleDefault(@Nonnull IpmiPayload payload) {
+        public void handleDefault(@Nonnull IpmiHandlerContext context, @Nonnull IpmiPayload payload) {
         }
 
         @Override
-        public void handleOpenSessionRequest(IpmiOpenSessionRequest request) {
-            handleDefault(request);
+        public void handleOpenSessionRequest(IpmiHandlerContext context, IpmiOpenSessionRequest request) {
+            handleDefault(context, request);
         }
 
         @Override
-        public void handleOpenSessionResponse(IpmiOpenSessionResponse response) {
-            handleDefault(response);
+        public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiOpenSessionResponse response) {
+            handleDefault(context, response);
         }
 
         @Override
-        public void handleRAKPMessage1(IpmiRAKPMessage1 message) {
-            handleDefault(message);
+        public void handleRAKPMessage1(IpmiHandlerContext context, IpmiRAKPMessage1 message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleRAKPMessage2(IpmiRAKPMessage2 message) {
-            handleDefault(message);
+        public void handleRAKPMessage2(IpmiHandlerContext context, IpmiRAKPMessage2 message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleRAKPMessage3(IpmiRAKPMessage3 message) {
-            handleDefault(message);
+        public void handleRAKPMessage3(IpmiHandlerContext context, IpmiRAKPMessage3 message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleRAKPMessage4(IpmiRAKPMessage4 message) {
-            handleDefault(message);
+        public void handleRAKPMessage4(IpmiHandlerContext context, IpmiRAKPMessage4 message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleOemExplicit(OemExplicit message) {
-            handleDefault(message);
+        public void handleOemExplicit(IpmiHandlerContext context, OemExplicit message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleCommand(IpmiCommand message) {
-            handleDefault(message);
+        public void handleCommand(IpmiHandlerContext context, IpmiCommand message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleSOL(SOLMessage message) {
-            handleDefault(message);
+        public void handleSOL(IpmiHandlerContext context, SOLMessage message) {
+            handleDefault(context, message);
         }
     }
 
@@ -82,23 +82,23 @@ public interface IpmiClientIpmiPayloadHandler {
      }
      }
      */
-    public void handleOpenSessionRequest(@Nonnull IpmiOpenSessionRequest request);
+    public void handleOpenSessionRequest(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionRequest request);
 
-    public void handleOpenSessionResponse(@Nonnull IpmiOpenSessionResponse response);
+    public void handleOpenSessionResponse(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionResponse response);
 
-    public void handleRAKPMessage1(@Nonnull IpmiRAKPMessage1 message);
+    public void handleRAKPMessage1(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRAKPMessage1 message);
 
-    public void handleRAKPMessage2(@Nonnull IpmiRAKPMessage2 message);
+    public void handleRAKPMessage2(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRAKPMessage2 message);
 
-    public void handleRAKPMessage3(@Nonnull IpmiRAKPMessage3 message);
+    public void handleRAKPMessage3(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRAKPMessage3 message);
 
-    public void handleRAKPMessage4(@Nonnull IpmiRAKPMessage4 message);
+    public void handleRAKPMessage4(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRAKPMessage4 message);
 
-    public void handleOemExplicit(@Nonnull OemExplicit message);
+    public void handleOemExplicit(@Nonnull IpmiHandlerContext context, @Nonnull OemExplicit message);
 
-    public void handleCommand(@Nonnull IpmiCommand command);
+    public void handleCommand(@Nonnull IpmiHandlerContext context, @Nonnull IpmiCommand command);
 
-    public void handleSOL(@Nonnull SOLMessage message);
+    public void handleSOL(@Nonnull IpmiHandlerContext context, @Nonnull SOLMessage message);
     // /* Does not distinguish between {@link IpmiPayloadType#OEM0} through {@link IpmiPayloadType#OEM7}. */
-    // public void handleOEM(@Nonnull OEMMessage message)
+    // public void handleOEM(@Nonnull IpmiHandlerContext context,@Nonnull OEMMessage message)
 }

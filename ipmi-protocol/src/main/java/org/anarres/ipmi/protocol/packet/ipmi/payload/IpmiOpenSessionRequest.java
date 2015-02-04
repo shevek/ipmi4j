@@ -14,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorith
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
  * [IPMI2] Section 13.17, table 13-9, page 147.
@@ -35,8 +36,8 @@ public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler) {
-        handler.handleOpenSessionRequest(this);
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
+        handler.handleOpenSessionRequest(context, this);
     }
 
     @Override

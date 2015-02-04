@@ -50,7 +50,7 @@ public class IpmiPacketTest {
     public void testPackets() throws Exception {
         IpmiClientIpmiPayloadHandler ipmiHandler = new IpmiClientIpmiPayloadHandler.Adapter() {
             @Override
-            public void handleDefault(IpmiPayload payload) {
+            public void handleDefault(IpmiHandlerContext context, IpmiPayload payload) {
                 LOG.debug(String.valueOf(payload));
             }
         };

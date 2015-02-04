@@ -11,9 +11,9 @@ import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
+import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage2;
@@ -51,26 +51,26 @@ public class IpmiPayloadHandler extends IpmiClientIpmiPayloadHandler.Adapter {
     }
 
     @Override
-    public void handleDefault(IpmiPayload payload) {
+    public void handleDefault(IpmiHandlerContext context, IpmiPayload payload) {
         LOG.info("Ignored " + payload);
     }
 
     @Override
-    public void handleOpenSessionResponse(IpmiOpenSessionResponse response) {
+    public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiOpenSessionResponse response) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void handleRAKPMessage2(IpmiRAKPMessage2 message) {
+    public void handleRAKPMessage2(IpmiHandlerContext context, IpmiRAKPMessage2 message) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void handleRAKPMessage4(IpmiRAKPMessage4 message) {
+    public void handleRAKPMessage4(IpmiHandlerContext context, IpmiRAKPMessage4 message) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void handleCommand(IpmiCommand message) {
+    public void handleCommand(IpmiHandlerContext context, IpmiCommand message) {
     }
 }
