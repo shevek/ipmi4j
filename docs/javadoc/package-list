@@ -1,6 +1,9 @@
 org.anarres.ipmi.client.netty
 org.anarres.ipmi.protocol
 org.anarres.ipmi.protocol.client
+org.anarres.ipmi.protocol.client.impl
+org.anarres.ipmi.protocol.client.session
+org.anarres.ipmi.protocol.client.visitor
 org.anarres.ipmi.protocol.codec
 org.anarres.ipmi.protocol.packet.asf
 org.anarres.ipmi.protocol.packet.common
@@ -20,5 +23,4 @@ org.anarres.ipmi.protocol.packet.ipmi.security
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.authentication
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.confidentiality
 org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity
-org.anarres.ipmi.protocol.packet.ipmi.session
 org.anarres.ipmi.protocol.packet.rmcp
