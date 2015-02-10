@@ -116,17 +116,17 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
 
     /**
      * RMCP Packet Header.
-     * [ASF] Section 3.2.2.2 page 21.
+     * [ASF2] Section 3.2.2.2 page 21.
      */
     private void toWireHeader(@Nonnull ByteBuffer buffer) {
         // DSP0136 page 22
         buffer.put(getVersion().getCode());
         buffer.put((byte) 0x00); // ASF reserved
         buffer.put(getSequenceNumber());
-        byte messageClass = this.messageClass.getCode();
-        if (messageRole == RmcpMessageRole.ACK)
-            messageClass |= 0x80;
-        buffer.put(messageClass);
+        byte messageClassByte = getMessageClass().getCode();
+        if (RmcpMessageRole.ACK.equals(getMessageRole()))
+            messageClassByte |= 0x80;
+        buffer.put(messageClassByte);
     }
 
     protected void toWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
@@ -134,26 +134,28 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         getData().toWire(context, buffer);
     }
 
-    private void fromWireHeader(@Nonnull ByteBuffer buffer) {
+    @Nonnull
+    private RmcpMessageClass fromWireHeader(@Nonnull ByteBuffer buffer) {
         assertWireByte(buffer, getVersion().getCode(), "RMCP version");
         assertWireByte(buffer, (byte) 0, "reserved field");
         withSequenceNumber(buffer.get());
-        byte messageClass = buffer.get();
-        withMessageClass(Code.fromByte(RmcpMessageClass.class, (byte) (messageClass & 0x7f)));
-        withMessageRole(Code.fromByte(RmcpMessageRole.class, (byte) (messageClass >>> 7)));
+        byte messageClassByte = buffer.get();
+        withMessageClass(Code.fromInt(RmcpMessageClass.class, messageClassByte & 0x7f));
+        withMessageRole(Code.fromInt(RmcpMessageRole.class, (messageClassByte >>> 7) & 0x1));
+        return getMessageClass();
     }
 
     protected void fromWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
-        fromWireHeader(buffer);
+        RmcpMessageClass messageClass = fromWireHeader(buffer);
         RmcpData data;
 
         int position = buffer.position();
-        switch (getMessageClass()) {
+        switch (messageClass) {
             case ASF:
-                int enterpriseNumber = buffer.getInt();
+                int enterpriseNumber = buffer.getInt(buffer.position());
                 if (enterpriseNumber != AbstractAsfData.IANA_ENTERPRISE_NUMBER.getNumber())
                     throw new IllegalArgumentException("Unknown enterprise number 0x" + Integer.toHexString(enterpriseNumber));
-                AsfRmcpMessageType messageType = Code.fromBuffer(AsfRmcpMessageType.class, buffer);
+                AsfRmcpMessageType messageType = Code.fromByte(AsfRmcpMessageType.class, buffer.get(buffer.position() + 4));
                 data = messageType.newPacketData();
                 break;
             case IPMI:
@@ -168,7 +170,7 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
                 data = new OEMRmcpMessage();
                 break;
             default:
-                throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + getMessageClass());
+                throw new IllegalArgumentException("Can't decode buffer: Unknown MessageClass " + messageClass);
         }
         buffer.position(position);
 

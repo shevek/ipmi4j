@@ -18,11 +18,10 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
  *
  * @author shevek
  */
-public class IpmiRAKPMessage2 extends AbstractIpmiPayload {
+public class IpmiRAKPMessage2 extends AbstractTaggedIpmiPayload {
 
-    private byte messageTag;
     private AsfRsspSessionStatus statusCode;
-    private int consoleSessionId;
+    public int consoleSessionId;
     private byte[] systemRandom;   // length = 16
     private UUID systemGuid;
     private byte[] keyExchangeAuthenticationCode;

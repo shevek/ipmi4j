@@ -17,9 +17,8 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
  *
  * @author shevek
  */
-public class IpmiRAKPMessage3 extends AbstractIpmiPayload {
+public class IpmiRAKPMessage3 extends AbstractTaggedIpmiPayload {
 
-    private byte messageTag;
     private AsfRsspSessionStatus statusCode;
     private int systemSessionId;
     private byte[] keyExchangeAuthenticationCode;

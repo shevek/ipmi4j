@@ -6,6 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -14,6 +15,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorith
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
@@ -21,14 +23,24 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
  *
  * @author shevek
  */
-public class IpmiOpenSessionRequest extends AbstractIpmiPayload {
+public class IpmiOpenSessionRequest extends AbstractTaggedIpmiPayload {
 
-    private byte messageTag;
     private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
     private int consoleSessionId;
     private IpmiAuthenticationAlgorithm authenticationAlgorithm;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
     private IpmiConfidentialityAlgorithm confidentialityAlgorithm;
+
+    public IpmiOpenSessionRequest() {
+    }
+
+    public IpmiOpenSessionRequest(@Nonnull IpmiSession session, @Nonnull RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel) {
+        this.requestedMaximumPrivilegeLevel = requestedMaximumPrivilegeLevel;
+        this.consoleSessionId = session.getConsoleSessionId();
+        this.authenticationAlgorithm = session.getAuthenticationAlgorithm();
+        this.integrityAlgorithm = session.getIntegrityAlgorithm();
+        this.confidentialityAlgorithm = session.getConfidentialityAlgorithm();
+    }
 
     @Override
     public IpmiPayloadType getPayloadType() {

@@ -34,12 +34,11 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements IpmiCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIpmiCommand.class);
-    public static final int SEQUENCE_NUMBER_MASK = 0x3F;
-    private byte targetAddress;
+    private byte targetAddress = 0x20;
     private IpmiLun targetLun = IpmiLun.L0;
-    private byte sourceAddress;
+    private byte sourceAddress = (byte) 0x81;
     private IpmiLun sourceLun = IpmiLun.L0;
-    private int sequenceNumber;
+    private byte sequenceNumber;
 
     @Override
     public IpmiPayloadType getPayloadType() {
@@ -51,52 +50,54 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         handler.handleCommand(context, this);
     }
 
+    @Override
     public byte getTargetAddress() {
         return targetAddress;
     }
 
+    @Override
     public IpmiLun getTargetLun() {
         return targetLun;
     }
 
     @Nonnull
-    public AbstractIpmiCommand withTarget(byte targetAddress, IpmiLun targetLun) {
+    public AbstractIpmiCommand withTarget(byte targetAddress, @Nonnull IpmiLun targetLun) {
         this.targetAddress = targetAddress;
         this.targetLun = targetLun;
         return this;
     }
 
     @Nonnull
-    public AbstractIpmiCommand withTarget(int targetAddress, IpmiLun targetLun) {
+    public AbstractIpmiCommand withTarget(@Nonnegative int targetAddress, @Nonnull IpmiLun targetLun) {
         return withTarget(UnsignedBytes.checkedCast(targetAddress), targetLun);
     }
 
+    @Override
     public byte getSourceAddress() {
         return sourceAddress;
     }
 
+    @Override
     public IpmiLun getSourceLun() {
         return sourceLun;
     }
 
     @Nonnull
-    public AbstractIpmiCommand withSource(byte sourceAddress, IpmiLun sourceLun) {
+    public AbstractIpmiCommand withSource(byte sourceAddress, @Nonnull IpmiLun sourceLun) {
         this.sourceAddress = sourceAddress;
         this.sourceLun = sourceLun;
         return this;
     }
 
     @Nonnull
-    public AbstractIpmiCommand withSource(int sourceAddress, IpmiLun sourceLun) {
+    public AbstractIpmiCommand withSource(@Nonnegative int sourceAddress, @Nonnull IpmiLun sourceLun) {
         return withSource(UnsignedBytes.checkedCast(sourceAddress), sourceLun);
     }
 
-    public int getSequenceNumber() {
+    @Override
+    public byte getSequenceNumber() {
         return sequenceNumber;
     }
-
-    @Nonnull
-    public abstract IpmiCommandName getCommandName();
 
     @Override
     public int getWireLength(IpmiContext context) {
@@ -135,7 +136,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
      * This implementation must be called with a buffer of exactly decodeable
      * length, as some packet types require consumption of "optional" or
      * "remaining" data without an auxiliary embedded length field.
-     * 
+     *
      * @see AbstractIpmiSessionWrapper#newPayload(ByteBuffer, IpmiPayloadType)
      */
     @Override
@@ -150,7 +151,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         int chk2Start = buffer.position();
         sourceAddress = buffer.get();
         tmp = UnsignedBytes.toInt(buffer.get());
-        sequenceNumber = (tmp >>> 2) & SEQUENCE_NUMBER_MASK;
+        sequenceNumber = (byte) ((tmp >>> 2) & SEQUENCE_NUMBER_MASK);
         sourceLun = Code.fromInt(IpmiLun.class, tmp & IpmiLun.MASK);
         IpmiCommandName commandName = IpmiCommandName.fromByte(networkFunction, buffer.get());
         buffer.limit(buffer.limit() - 1);   // Represent an accurate data length to the packet data decoder.
@@ -282,5 +283,6 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
         appendValue(buf, depth, "SourceLun", getSourceLun());
         appendValue(buf, depth, "TargetAddress", "0x" + UnsignedBytes.toString(getTargetAddress(), 16));
         appendValue(buf, depth, "TargetLun", getTargetLun());
+        appendValue(buf, depth, "SequenceNumber", getSequenceNumber());
     }
 }

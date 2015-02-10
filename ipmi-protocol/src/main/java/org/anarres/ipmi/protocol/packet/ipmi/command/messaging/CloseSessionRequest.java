@@ -6,6 +6,8 @@ package org.anarres.ipmi.protocol.packet.ipmi.command.messaging;
 
 import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
+import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiCommandHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCommandName;
@@ -20,6 +22,27 @@ public class CloseSessionRequest extends AbstractIpmiRequest {
 
     public int sessionId;
     public byte sessionHandle;
+
+    public CloseSessionRequest() {
+    }
+
+    public CloseSessionRequest(int sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public CloseSessionRequest(@Nonnull IpmiSession session) {
+        this(session.getConsoleSessionId());
+    }
+
+    public CloseSessionRequest withSessionId(int sessionId) {
+        this.sessionId = sessionId;
+        return this;
+    }
+
+    public CloseSessionRequest withSessionHandle(byte sessionHandle) {
+        this.sessionHandle = sessionHandle;
+        return this;
+    }
 
     @Override
     public IpmiCommandName getCommandName() {

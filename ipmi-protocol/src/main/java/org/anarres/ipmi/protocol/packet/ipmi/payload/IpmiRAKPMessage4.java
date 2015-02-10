@@ -17,11 +17,10 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
  *
  * @author shevek
  */
-public class IpmiRAKPMessage4 extends AbstractIpmiPayload {
+public class IpmiRAKPMessage4 extends AbstractTaggedIpmiPayload {
 
-    private byte messageTag;
     private AsfRsspSessionStatus statusCode;
-    private int consoleSessionId;
+    public int consoleSessionId;
     private byte[] integrityCheckValue;
 
     @Override

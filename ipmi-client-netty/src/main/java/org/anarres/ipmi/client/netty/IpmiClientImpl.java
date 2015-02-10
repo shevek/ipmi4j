@@ -10,18 +10,14 @@ import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.AbstractIpmiClient;
-import org.anarres.ipmi.protocol.client.IpmiClientConnectHandler;
-import org.anarres.ipmi.protocol.client.IpmiClientResponseHandler;
-import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
-import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 
 /**
  *
@@ -70,18 +66,8 @@ public class IpmiClientImpl extends AbstractIpmiClient {
     }
 
     @Override
-    public void connect(InetSocketAddress target, IpmiClientConnectHandler connectHandler) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void send(Packet packet) throws IOException {
+    public void send(Packet packet) {
         Future<?> f = channel.writeAndFlush(packet, channel.voidPromise());
-    }
-
-    @Override
-    public void send(InetSocketAddress target, IpmiRequest request, IpmiClientResponseHandler responseHandler) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     // @Override

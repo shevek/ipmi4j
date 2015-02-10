@@ -12,6 +12,7 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
@@ -19,11 +20,34 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
  *
  * @author shevek
  */
-public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
+public class IpmiRAKPMessage1 extends AbstractTaggedIpmiPayload {
 
     public static enum PrivilegeLookupMode implements Bits.Wrapper, Code.Wrapper {
 
+        /**
+         * Both the Requested Privilege Level and User Name are used to look up password/key.
+         * The BMC will search the user entries
+         * starting with USER ID 1 and use the first entry that matches the specified user
+         * name and has a Maximum Privilege Level that matches the Requested
+         * Privilege Level. This can be used in combination with ‘null’ user names to
+         * enable a “role only” login with a password that is just associated with the
+         * requested privilege level.
+         */
         USERNAME_PRIVILEGE(new Bits(0, 1 << 4, 0)),
+        /**
+         * User Name alone is used to look up password/key.
+         * Privilege Level field acts as a ‘Maximum Requested Privilege Level’ as
+         * in IPMI v1.5.
+         * <ul>
+         * <li>If the Requested Privilege Level is greater than the privilege limit for the
+         * channel/user, the user will be allowed to connect but will be restricted to the
+         * channel/user privilege limit that was configured for the user.</li>
+         * <li>If the Requested Privilege Level is less than the channel/user privilege limit,
+         * the user will be allowed to connect and Request Privilege Level will become
+         * the effective privilege limit for the user. I.e. the user will not be able to raise
+         * their privilege level higher than the Requested Privilege Level.</li>
+         * </ul>
+         */
         NAME_ONLY(new Bits(0, 1 << 4, 1 << 4));
         public static final int MASK = 0x0F << 4;
         private final Bits bits;
@@ -42,12 +66,21 @@ public class IpmiRAKPMessage1 extends AbstractIpmiPayload {
             return UnsignedBytes.checkedCast(getBits().getByteValue());
         }
     }
-    private byte messageTag;
     private int systemSessionId;
     private byte[] consoleRandom;   // length = 16
-    private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
-    private PrivilegeLookupMode privilegeLookupMode;
+    private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel = RequestedMaximumPrivilegeLevel.ADMINISTRATOR;
+    private PrivilegeLookupMode privilegeLookupMode = PrivilegeLookupMode.USERNAME_PRIVILEGE;
     private String username;
+
+    public IpmiRAKPMessage1() {
+    }
+
+    public IpmiRAKPMessage1(@Nonnull IpmiSession session) {
+        this.systemSessionId = session.getSystemSessionId();
+        byte[] tmp = new byte[16];
+        session.getRandom().nextBytes(tmp);
+        this.consoleRandom = tmp;
+    }
 
     @Override
     public IpmiPayloadType getPayloadType() {

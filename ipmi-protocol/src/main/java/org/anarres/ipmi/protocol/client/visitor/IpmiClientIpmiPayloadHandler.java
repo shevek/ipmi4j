@@ -28,13 +28,13 @@ public interface IpmiClientIpmiPayloadHandler {
         }
 
         @Override
-        public void handleOpenSessionRequest(IpmiHandlerContext context, IpmiOpenSessionRequest request) {
-            handleDefault(context, request);
+        public void handleOpenSessionRequest(IpmiHandlerContext context, IpmiOpenSessionRequest message) {
+            handleDefault(context, message);
         }
 
         @Override
-        public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiOpenSessionResponse response) {
-            handleDefault(context, response);
+        public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiOpenSessionResponse message) {
+            handleDefault(context, message);
         }
 
         @Override
@@ -82,9 +82,9 @@ public interface IpmiClientIpmiPayloadHandler {
      }
      }
      */
-    public void handleOpenSessionRequest(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionRequest request);
+    public void handleOpenSessionRequest(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionRequest message);
 
-    public void handleOpenSessionResponse(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionResponse response);
+    public void handleOpenSessionResponse(@Nonnull IpmiHandlerContext context, @Nonnull IpmiOpenSessionResponse message);
 
     public void handleRAKPMessage1(@Nonnull IpmiHandlerContext context, @Nonnull IpmiRAKPMessage1 message);
 
@@ -96,7 +96,7 @@ public interface IpmiClientIpmiPayloadHandler {
 
     public void handleOemExplicit(@Nonnull IpmiHandlerContext context, @Nonnull OemExplicit message);
 
-    public void handleCommand(@Nonnull IpmiHandlerContext context, @Nonnull IpmiCommand command);
+    public void handleCommand(@Nonnull IpmiHandlerContext context, @Nonnull IpmiCommand message);
 
     public void handleSOL(@Nonnull IpmiHandlerContext context, @Nonnull SOLMessage message);
     // /* Does not distinguish between {@link IpmiPayloadType#OEM0} through {@link IpmiPayloadType#OEM7}. */

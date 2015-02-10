@@ -24,14 +24,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author shevek
  */
-public class IpmiOpenSessionResponse extends AbstractIpmiPayload {
+public class IpmiOpenSessionResponse extends AbstractTaggedIpmiPayload {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiOpenSessionResponse.class);
-    private byte messageTag;
     private AsfRsspSessionStatus statusCode;
     private RequestedMaximumPrivilegeLevel requestedMaximumPrivilegeLevel;
-    private int consoleSessionId;
-    private int systemSessionId;
+    public int consoleSessionId;
+    public int systemSessionId;
     private IpmiAuthenticationAlgorithm authenticationAlgorithm;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
     private IpmiConfidentialityAlgorithm confidentialityAlgorithm;

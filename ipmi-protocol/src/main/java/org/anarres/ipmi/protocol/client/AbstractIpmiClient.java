@@ -5,11 +5,8 @@
 package org.anarres.ipmi.protocol.client;
 
 import java.io.IOException;
-import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +22,7 @@ public abstract class AbstractIpmiClient implements IpmiClient {
     @PostConstruct
     public abstract void start() throws IOException, InterruptedException;
 
-    public abstract void send(@Nonnull Packet packet) throws IOException;
-
+    // public abstract void send(@Nonnull Packet packet) throws IOException;
     public void receive(Packet packet) throws IOException {
         LOG.info("Receive\n" + packet);
     }

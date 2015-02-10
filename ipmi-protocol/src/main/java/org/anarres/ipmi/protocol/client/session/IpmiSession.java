@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -24,9 +25,10 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
  */
 public class IpmiSession {
 
+    private final IpmiSessionManager sessionManager;
     private IpmiSessionState state = IpmiSessionState.UNKNOWN;
     private final int consoleSessionId;
-    private GetChannelAuthenticationCapabilitiesResponse channelAuthenticationCapabilities;
+    public GetChannelAuthenticationCapabilitiesResponse channelAuthenticationCapabilities;
     private int systemSessionId;
     private AtomicInteger encryptedSequenceNumber = new AtomicInteger(0);
     private AtomicInteger unencryptedSequenceNumber = new AtomicInteger(0);
@@ -36,8 +38,19 @@ public class IpmiSession {
     private IpmiConfidentialityAlgorithm.State confidentialityAlgorithmState;
     private IpmiIntegrityAlgorithm integrityAlgorithm;
 
-    public IpmiSession(int consoleSessionId) {
+    public IpmiSession(@Nonnull IpmiSessionManager sessionManager, int consoleSessionId) {
+        this.sessionManager = sessionManager;
         this.consoleSessionId = consoleSessionId;
+    }
+
+    @Nonnull
+    public IpmiSessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    @Nonnull
+    public Random getRandom() {
+        return getSessionManager().getRandom();
     }
 
     public int getConsoleSessionId() {
