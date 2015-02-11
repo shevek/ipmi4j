@@ -10,10 +10,13 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.net.InetSocketAddress;
 import java.util.concurrent.LinkedBlockingQueue;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
+import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractTaggedIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionRequest;
@@ -26,6 +29,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage4;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
+import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 
 /**
  *
@@ -33,12 +37,13 @@ import org.anarres.ipmi.protocol.packet.rmcp.Packet;
  */
 public class IpmiPayloadTransmitQueue {
 
-    public static interface Sender {
+    public static interface IpmiPacketSender {
 
         public void send(@Nonnull Packet packet);
     }
 
-    private static class State extends LinkedBlockingQueue<Object> {
+    // -> Queue<QueueItem>
+    private static class Queue extends LinkedBlockingQueue<IpmiPayload> {
 
         /** @see AbstractTaggedIpmiPayload#getMessageTag() */
         private int nextMessageTag;
@@ -46,23 +51,39 @@ public class IpmiPayloadTransmitQueue {
         private int nextSequenceNumber;
         private int outstandingRequests;
     }
-    private final LoadingCache<InetSocketAddress, State> ipmiQueues = CacheBuilder.newBuilder()
+
+    private static class QueueItem {
+
+        private final IpmiSession session;
+        private final IpmiPayload payload;
+        private final IpmiReceiverKey key;
+        private final IpmiReceiver receiver;
+
+        public QueueItem(@CheckForNull IpmiSession session, @Nonnull IpmiPayload payload,
+                @Nonnull IpmiReceiverKey key, @Nonnull IpmiReceiver receiver) {
+            this.session = session;
+            this.payload = payload;
+            this.key = key;
+            this.receiver = receiver;
+        }
+    }
+    private final LoadingCache<InetSocketAddress, Queue> ipmiQueues = CacheBuilder.newBuilder()
             // .weakKeys() // Discard queues for closed connections?
             .recordStats()
-            .build(new CacheLoader<InetSocketAddress, State>() {
+            .build(new CacheLoader<InetSocketAddress, Queue>() {
 
                 @Override
-                public State load(InetSocketAddress key) throws Exception {
-                    return new State();
+                public Queue load(InetSocketAddress key) throws Exception {
+                    return new Queue();
                 }
             });
-    private final IpmiClientIpmiPayloadHandler ipmiSequencer = new IpmiClientIpmiPayloadHandler() {
+    private final IpmiClientIpmiPayloadHandler ipmiPayloadSequencer = new IpmiClientIpmiPayloadHandler() {
 
         private void handleTagged(@Nonnull IpmiHandlerContext context, @Nonnull AbstractTaggedIpmiPayload message) {
-            State state = getState(context);
-            synchronized (state) {
-                message.setMessageTag((byte) state.nextMessageTag++);
-                state.add(message);
+            Queue queue = getState(context);
+            synchronized (queue) {
+                message.setMessageTag((byte) queue.nextMessageTag++);
+                queue.add(message);
             }
         }
 
@@ -98,37 +119,66 @@ public class IpmiPayloadTransmitQueue {
 
         @Override
         public void handleCommand(IpmiHandlerContext context, IpmiSession session, IpmiCommand message) {
-            State state = getState(context);
-            synchronized (state) {
-                message.setSequenceNumber((byte) state.nextSequenceNumber++);
-                state.add(message);
+            Queue queue = getState(context);
+            synchronized (queue) {
+                byte sequenceNumber = (byte) queue.nextSequenceNumber++;
+                message.setSequenceNumber(sequenceNumber);
+                // receiver.setReceiver(context, null, sequenceNumber, null);
+                queue.add(message);
             }
         }
 
         @Override
         public void handleSOL(IpmiHandlerContext context, IpmiSession session, SOLMessage message) {
-            State state = getState(context);
-            state.add(message);
+            Queue queue = getState(context);
+            queue.add(message);
         }
 
         @Override
         public void handleOemExplicit(IpmiHandlerContext context, IpmiSession session, OemExplicit message) {
-            State state = getState(context);
-            state.add(message);
+            Queue queue = getState(context);
+            queue.add(message);
         }
     };
-    private final Sender sender;
+    private final IpmiReceiverRepository receiver;
+    private final IpmiPacketSender sender;
 
-    public IpmiPayloadTransmitQueue(@Nonnull Sender sender) {
+    public IpmiPayloadTransmitQueue(@Nonnull IpmiReceiverRepository receiver, @Nonnull IpmiPacketSender sender) {
+        this.receiver = receiver;
         this.sender = sender;
     }
 
     @Nonnull
-    private State getState(@Nonnull IpmiHandlerContext context) {
+    private Queue getState(@Nonnull IpmiHandlerContext context) {
         return ipmiQueues.getUnchecked(context.getSystemAddress());
     }
 
     public void send(@Nonnull IpmiHandlerContext context, @Nonnull IpmiSession session, @Nonnull IpmiPayload message) {
-        message.apply(ipmiSequencer, context, session);
+        message.apply(ipmiPayloadSequencer, context, session);
+    }
+
+    private void doSend(@Nonnull InetSocketAddress systemAddress, @Nonnull QueueItem item) {
+        @CheckForNull
+        IpmiSession session = item.session;
+        @Nonnull
+        IpmiPayload payload = item.payload;
+
+        IpmiSessionWrapper wrapper = new Ipmi15SessionWrapper();
+        wrapper.setIpmiPayload(payload);
+        if (session != null) {
+            if (wrapper.isEncrypted())
+                wrapper.setIpmiSessionSequenceNumber(session.nextEncryptedSequenceNumber());
+            else
+                wrapper.setIpmiSessionSequenceNumber(session.nextUnencryptedSequenceNumber());
+        } else {
+            wrapper.setIpmiSessionSequenceNumber(0);
+        }
+
+        RmcpPacket packet = new RmcpPacket();
+        packet.withRemoteAddress(systemAddress);
+        packet.withData(wrapper);
+
+        receiver.setReceiver(item.key, item.receiver);
+        sender.send(packet);
     }
 }

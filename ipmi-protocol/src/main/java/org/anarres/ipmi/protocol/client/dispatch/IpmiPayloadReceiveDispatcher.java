@@ -9,7 +9,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
@@ -39,7 +38,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author shevek
  */
-public class IpmiPayloadReceiveDispatcher implements IpmiClientRmcpMessageHandler, IpmiClientIpmiPayloadHandler {
+public class IpmiPayloadReceiveDispatcher
+        implements IpmiClientRmcpMessageHandler, IpmiClientIpmiPayloadHandler, IpmiReceiverRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiPayloadReceiveDispatcher.class);
 
@@ -56,7 +56,7 @@ public class IpmiPayloadReceiveDispatcher implements IpmiClientRmcpMessageHandle
     };
     private final Cache<IpmiReceiverKey, IpmiReceiver> ipmiReceivers = CacheBuilder.newBuilder()
             // .maximumSize(64)
-            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .expireAfterWrite(180, TimeUnit.SECONDS)
             .removalListener(removalListener)
             .recordStats()
             .build();
@@ -65,10 +65,15 @@ public class IpmiPayloadReceiveDispatcher implements IpmiClientRmcpMessageHandle
         this.sessionManager = sessionManager;
     }
 
-    @CheckForNull
-    private IpmiReceiver getReceiver(@Nonnull IpmiHandlerContext context, Class<? extends IpmiPayload> payloadType, byte messageId) {
+    @Override
+    public IpmiReceiver getReceiver(@Nonnull IpmiHandlerContext context, Class<? extends IpmiPayload> payloadType, byte messageId) {
         IpmiReceiverKey key = new IpmiReceiverKey(context.getSystemAddress(), payloadType, messageId);
         return ipmiReceivers.asMap().remove(key);
+    }
+
+    @Override
+    public void setReceiver(@Nonnull IpmiReceiverKey key, @Nonnull IpmiReceiver receiver) {
+        ipmiReceivers.put(key, receiver);
     }
 
     private void handleDiscard(@Nonnull IpmiHandlerContext context, @Nonnull Object message) {

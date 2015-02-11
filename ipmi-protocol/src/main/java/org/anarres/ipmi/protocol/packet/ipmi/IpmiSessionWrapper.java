@@ -29,5 +29,9 @@ public interface IpmiSessionWrapper extends RmcpData {
 
     public void setIpmiPayload(@Nonnull IpmiPayload ipmiPayload);
 
+    public boolean isEncrypted();
+
+    public boolean isAuthenticated();
+
     // public void apply(@Nonnull IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context);
 }

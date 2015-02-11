@@ -43,6 +43,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
 
     // private IanaEnterpriseNumber oemEnterpriseNumber;    // 3 byte oem iana; 1 byte zero
     // private char oemPayloadId;
+    @Override
     public boolean isEncrypted() {
         return encrypted;
     }
@@ -62,6 +63,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
         return session.getConfidentialityAlgorithm();
     }
 
+    @Override
     public boolean isAuthenticated() {
         return authenticated;
     }

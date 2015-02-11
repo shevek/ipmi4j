@@ -13,8 +13,8 @@ import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
+import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
-import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 
 /**
  * [IPMI2] Section 13.20 page 150.
@@ -79,7 +79,7 @@ public class IpmiRAKPMessage1 extends AbstractTaggedIpmiPayload {
     public IpmiRAKPMessage1(@Nonnull IpmiSession session) {
         this.systemSessionId = session.getSystemSessionId();
         byte[] tmp = new byte[16];
-        session.getRandom().nextBytes(tmp);
+        IpmiSessionManager.RANDOM.nextBytes(tmp);
         this.consoleRandom = tmp;
     }
 

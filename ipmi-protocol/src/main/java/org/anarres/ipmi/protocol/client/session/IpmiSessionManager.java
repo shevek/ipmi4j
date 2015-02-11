@@ -5,7 +5,6 @@
 package org.anarres.ipmi.protocol.client.session;
 
 import java.security.SecureRandom;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnull;
@@ -16,22 +15,17 @@ import javax.annotation.Nonnull;
  */
 public class IpmiSessionManager implements IpmiContext {
 
-    private final SecureRandom random = new SecureRandom();
-    private final IpmiSession dummy = new IpmiSession(this, 0);
+    public static final SecureRandom RANDOM = new SecureRandom();
+    // private final IpmiSession dummy = new IpmiSession(0);
     private final ConcurrentMap<Integer, IpmiSession> sessions = new ConcurrentHashMap<>();
-
-    @Nonnull
-    public Random getRandom() {
-        return random;
-    }
 
     @Nonnull
     public IpmiSession newIpmiSession() {
         for (;;) {
-            int id = random.nextInt();
+            int id = RANDOM.nextInt();
             if (id == 0)
                 continue;
-            IpmiSession session = new IpmiSession(this, id);
+            IpmiSession session = new IpmiSession(id);
             if (sessions.putIfAbsent(id, session) == null)
                 return session;
         }

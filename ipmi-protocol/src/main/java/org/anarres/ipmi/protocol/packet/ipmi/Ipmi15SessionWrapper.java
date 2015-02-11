@@ -28,6 +28,16 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     // private byte[] ipmiMessageAuthenticationCode;   // 16 bytes
     private IpmiSessionAuthenticationType authenticationType = IpmiSessionAuthenticationType.NONE;
 
+    @Override
+    public boolean isEncrypted() {
+        return false;
+    }
+
+    @Override
+    public boolean isAuthenticated() {
+        return !IpmiSessionAuthenticationType.NONE.equals(authenticationType);
+    }
+
     // @Override
     // public int getIpmiSessionId() { return ipmiSessionId; }
     // @Override
