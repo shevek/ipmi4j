@@ -8,6 +8,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractTaggedIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
@@ -24,9 +25,46 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
  */
 public interface IpmiClientIpmiPayloadHandler {
 
+    public static class TaggedAdapter extends Adapter {
+
+        protected void handleTagged(@Nonnull IpmiHandlerContext context, @CheckForNull IpmiSession session, @Nonnull AbstractTaggedIpmiPayload message) {
+            handleDefault(context, session, message);
+        }
+
+        @Override
+        public void handleOpenSessionRequest(IpmiHandlerContext context, IpmiSession session, IpmiOpenSessionRequest message) {
+            handleTagged(context, session, message);
+        }
+
+        @Override
+        public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiSession session, IpmiOpenSessionResponse message) {
+            handleTagged(context, session, message);
+        }
+
+        @Override
+        public void handleRAKPMessage1(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage1 message) {
+            handleTagged(context, session, message);
+        }
+
+        @Override
+        public void handleRAKPMessage2(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage2 message) {
+            handleTagged(context, session, message);
+        }
+
+        @Override
+        public void handleRAKPMessage3(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage3 message) {
+            handleTagged(context, session, message);
+        }
+
+        @Override
+        public void handleRAKPMessage4(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage4 message) {
+            handleTagged(context, session, message);
+        }
+    }
+
     public static class Adapter implements IpmiClientIpmiPayloadHandler {
 
-        public void handleDefault(@Nonnull IpmiHandlerContext context, @CheckForNull IpmiSession session, @Nonnull IpmiPayload payload) {
+        protected void handleDefault(@Nonnull IpmiHandlerContext context, @CheckForNull IpmiSession session, @Nonnull IpmiPayload payload) {
         }
 
         @Override

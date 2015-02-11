@@ -50,7 +50,7 @@ public abstract class AbstractIpmiClient implements IpmiClient {
     public void receive(@Nonnull Packet packet) throws IOException {
         LOG.info("Receive\n" + packet);
         IpmiHandlerContext context = new IpmiHandlerContext(this, (InetSocketAddress) packet.getRemoteAddress());
-        packet.apply(dispatcher, context);
+        dispatcher.dispatch(context, packet);
     }
 
     @PreDestroy

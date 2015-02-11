@@ -10,6 +10,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.net.InetSocketAddress;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
@@ -19,15 +20,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractTaggedIpmiPayload;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionRequest;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage1;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage2;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage3;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage4;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
-import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 
@@ -45,8 +38,10 @@ public class IpmiPayloadTransmitQueue {
     // -> Queue<QueueItem>
     private static class Queue extends LinkedBlockingQueue<IpmiPayload> {
 
+        // private final BitSet messageTags = new BitSet(256);
         /** @see AbstractTaggedIpmiPayload#getMessageTag() */
         private int nextMessageTag;
+        // private final BitSet sequenceNumbers = new BitSet(IpmiCommand.SEQUENCE_NUMBER_MASK + 1);
         /** @see IpmiCommand#getSequenceNumber() */
         private int nextSequenceNumber;
         private int outstandingRequests;
@@ -67,54 +62,33 @@ public class IpmiPayloadTransmitQueue {
             this.receiver = receiver;
         }
     }
+
+    private static class QueueFactory extends CacheLoader<InetSocketAddress, Queue> {
+
+        @Override
+        public Queue load(InetSocketAddress key) throws Exception {
+            return new Queue();
+        }
+    };
     private final LoadingCache<InetSocketAddress, Queue> ipmiQueues = CacheBuilder.newBuilder()
             // .weakKeys() // Discard queues for closed connections?
+            .expireAfterAccess(1, TimeUnit.HOURS)
             .recordStats()
-            .build(new CacheLoader<InetSocketAddress, Queue>() {
+            .build(new QueueFactory());
+    private final IpmiClientIpmiPayloadHandler ipmiPayloadSequencer = new IpmiClientIpmiPayloadHandler.TaggedAdapter() {
 
-                @Override
-                public Queue load(InetSocketAddress key) throws Exception {
-                    return new Queue();
-                }
-            });
-    private final IpmiClientIpmiPayloadHandler ipmiPayloadSequencer = new IpmiClientIpmiPayloadHandler() {
+        @Override
+        protected void handleDefault(IpmiHandlerContext context, IpmiSession session, IpmiPayload payload) {
+            throw new UnsupportedOperationException();
+        }
 
-        private void handleTagged(@Nonnull IpmiHandlerContext context, @Nonnull AbstractTaggedIpmiPayload message) {
+        @Override
+        protected void handleTagged(IpmiHandlerContext context, IpmiSession session, AbstractTaggedIpmiPayload message) {
             Queue queue = getState(context);
             synchronized (queue) {
                 message.setMessageTag((byte) queue.nextMessageTag++);
                 queue.add(message);
             }
-        }
-
-        @Override
-        public void handleOpenSessionRequest(IpmiHandlerContext context, IpmiSession session, IpmiOpenSessionRequest message) {
-            handleTagged(context, message);
-        }
-
-        @Override
-        public void handleOpenSessionResponse(IpmiHandlerContext context, IpmiSession session, IpmiOpenSessionResponse message) {
-            handleTagged(context, message);
-        }
-
-        @Override
-        public void handleRAKPMessage1(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage1 message) {
-            handleTagged(context, message);
-        }
-
-        @Override
-        public void handleRAKPMessage2(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage2 message) {
-            handleTagged(context, message);
-        }
-
-        @Override
-        public void handleRAKPMessage3(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage3 message) {
-            handleTagged(context, message);
-        }
-
-        @Override
-        public void handleRAKPMessage4(IpmiHandlerContext context, IpmiSession session, IpmiRAKPMessage4 message) {
-            handleTagged(context, message);
         }
 
         @Override
@@ -126,18 +100,6 @@ public class IpmiPayloadTransmitQueue {
                 // receiver.setReceiver(context, null, sequenceNumber, null);
                 queue.add(message);
             }
-        }
-
-        @Override
-        public void handleSOL(IpmiHandlerContext context, IpmiSession session, SOLMessage message) {
-            Queue queue = getState(context);
-            queue.add(message);
-        }
-
-        @Override
-        public void handleOemExplicit(IpmiHandlerContext context, IpmiSession session, OemExplicit message) {
-            Queue queue = getState(context);
-            queue.add(message);
         }
     };
     private final IpmiReceiverRepository receiver;
