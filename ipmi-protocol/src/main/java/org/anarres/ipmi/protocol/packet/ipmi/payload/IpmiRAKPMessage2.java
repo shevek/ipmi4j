@@ -11,6 +11,7 @@ import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
 /**
@@ -32,8 +33,8 @@ public class IpmiRAKPMessage2 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        handler.handleRAKPMessage2(context, this);
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
+        handler.handleRAKPMessage2(context, session, this);
     }
 
     @Override

@@ -5,8 +5,6 @@
 package org.anarres.ipmi.client.netty;
 
 import org.anarres.ipmi.protocol.client.IpmiClient;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
-import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.junit.Test;
 // import static org.junit.Assert.*;
 
@@ -18,7 +16,6 @@ public class IpmiClientImplTest {
 
     @Test
     public void testClient() {
-        IpmiContext context = new IpmiSessionManager();
-        IpmiClient client = new IpmiClientImpl(context);
+        IpmiClient client = new IpmiClientImpl();
     }
 }

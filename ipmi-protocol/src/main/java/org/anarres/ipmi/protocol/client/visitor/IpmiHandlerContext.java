@@ -8,6 +8,8 @@ import java.net.InetSocketAddress;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.IpmiClient;
+import org.anarres.ipmi.protocol.client.dispatch.AbstractIpmiReceiver;
+import org.anarres.ipmi.protocol.client.dispatch.IpmiReceiver;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
@@ -63,9 +65,15 @@ public class IpmiHandlerContext {
         client.send(packet);
     }
 
-    public void send(@CheckForNull IpmiSession session, @Nonnull IpmiPayload payload) {
+    public void send(@CheckForNull IpmiSession session, @Nonnull IpmiPayload payload,
+            @Nonnull Class<? extends IpmiPayload> responseType, @Nonnull IpmiReceiver receiver) {
         IpmiSessionWrapper wrapper = new Ipmi15SessionWrapper();
         wrapper.setIpmiPayload(payload);
         send(wrapper);
+    }
+
+    public void send(@CheckForNull IpmiSession session, @Nonnull IpmiPayload payload,
+            @Nonnull AbstractIpmiReceiver receiver) {
+        send(session, payload, receiver.getPayloadType(), receiver);
     }
 }

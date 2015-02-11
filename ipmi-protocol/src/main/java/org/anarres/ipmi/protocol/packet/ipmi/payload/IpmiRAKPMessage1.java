@@ -14,6 +14,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
+import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 
 /**
  * [IPMI2] Section 13.20 page 150.
@@ -88,8 +89,8 @@ public class IpmiRAKPMessage1 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        handler.handleRAKPMessage1(context, this);
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
+        handler.handleRAKPMessage1(context, session, this);
     }
 
     @Override

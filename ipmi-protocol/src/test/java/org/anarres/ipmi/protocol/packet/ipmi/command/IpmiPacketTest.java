@@ -16,6 +16,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiOpenSessionResponse;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
@@ -50,7 +51,7 @@ public class IpmiPacketTest {
     public void testPackets() throws Exception {
         IpmiClientIpmiPayloadHandler ipmiHandler = new IpmiClientIpmiPayloadHandler.Adapter() {
             @Override
-            public void handleDefault(IpmiHandlerContext context, IpmiPayload payload) {
+            public void handleDefault(IpmiHandlerContext context, IpmiSession session, IpmiPayload payload) {
                 LOG.debug(String.valueOf(payload));
             }
         };

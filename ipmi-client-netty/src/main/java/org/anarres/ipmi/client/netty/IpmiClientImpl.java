@@ -14,10 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.AbstractIpmiClient;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
-import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
-import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 
 /**
  *
@@ -26,16 +23,11 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 public class IpmiClientImpl extends AbstractIpmiClient {
 
     private Channel channel;
-    private IpmiPipelineInitializer.SharedHandlers sharedHandlers;
+    private final IpmiPipelineInitializer.SharedHandlers sharedHandlers;
     private IpmiChannelType channelType = IpmiChannelType.NIO;
 
-    public IpmiClientImpl(@Nonnull IpmiContext context) {
-        this.sharedHandlers = new IpmiPipelineInitializer.SharedHandlers(context);
-    }
-
-    @Override
-    public IpmiSessionManager getSessionManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public IpmiClientImpl() {
+        this.sharedHandlers = new IpmiPipelineInitializer.SharedHandlers(getSessionManager());
     }
 
     public void setDebug(boolean debug) {

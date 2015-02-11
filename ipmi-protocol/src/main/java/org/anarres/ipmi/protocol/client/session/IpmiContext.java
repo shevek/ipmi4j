@@ -10,6 +10,7 @@ import javax.annotation.CheckForNull;
  *
  * @author shevek
  */
+// -> IpmiSessionContext or IpmiSessionProvider.
 public interface IpmiContext {
 
     @CheckForNull

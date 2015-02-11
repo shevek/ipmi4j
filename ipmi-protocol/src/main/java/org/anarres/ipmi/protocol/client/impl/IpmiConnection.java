@@ -8,6 +8,8 @@ import com.google.common.primitives.Ints;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiLun;
 
 /**
+ * A value-object for an IPMI "connection" from a
+ * source address/LUN to a target address/LUN.
  *
  * @author shevek
  */

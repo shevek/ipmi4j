@@ -8,7 +8,6 @@ import com.google.common.primitives.UnsignedBytes;
 import java.nio.ByteBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
@@ -26,6 +25,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
+import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +67,8 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
                 return isResponse ? commandName.newResponseMessage() : commandName.newRequestMessage();
             case SOL:
                 return new SOLMessage();
+            case OEM_EXPLICIT:
+                return new OemExplicit();
             default:
                 throw new UnsupportedOperationException("Unsupported payload type " + payloadType);
         }
@@ -90,6 +92,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
         this.ipmiSessionId = ipmiSessionId;
     }
 
+    /*
     @Nonnull
     protected IpmiSession getIpmiSession(@Nonnull IpmiContext context) {
         int sessionId = getIpmiSessionId();
@@ -100,6 +103,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
             throw new IllegalStateException("No such IPMI session " + Integer.toHexString(sessionId));
         return session;
     }
+    */
 
     @Override
     public int getIpmiSessionSequenceNumber() {
@@ -126,10 +130,12 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
         handler.handleIpmiRmcpData(context, this);
     }
 
+    /*
     @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        getIpmiPayload().apply(handler, context);
+        getIpmiPayload().apply(handler, context, this);
     }
+    */
 
     @Nonnull
     public static IpmiIntegrityAlgorithm getIntegrityAlgorithm(@CheckForNull IpmiSession session) {

@@ -48,8 +48,8 @@ public class IpmiOpenSessionRequest extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        handler.handleOpenSessionRequest(context, this);
+    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
+        handler.handleOpenSessionRequest(context, session, this);
     }
 
     @Override

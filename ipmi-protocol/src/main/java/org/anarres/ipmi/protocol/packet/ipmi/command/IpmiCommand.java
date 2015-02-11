@@ -38,10 +38,20 @@ public interface IpmiCommand extends IpmiPayload {
      * The IPMI sequence number.
      * NOT the session sequence number.
      * Between 0 and 63.
+     *
      * @see #SEQUENCE_NUMBER_MASK
      */
     @Nonnegative
     public byte getSequenceNumber();
+
+    /**
+     * Sets the IPMI sequence number.
+     *
+     * This method masks the sequence number with {@link #SEQUENCE_NUMBER_MASK}.
+     *
+     * @param sequenceNumber The number to set.
+     */
+    public void setSequenceNumber(@Nonnegative byte sequenceNumber);
 
     @Nonnull
     public IpmiCommandName getCommandName();

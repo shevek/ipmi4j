@@ -29,5 +29,5 @@ public interface IpmiSessionWrapper extends RmcpData {
 
     public void setIpmiPayload(@Nonnull IpmiPayload ipmiPayload);
 
-    public void apply(@Nonnull IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context);
+    // public void apply(@Nonnull IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context);
 }

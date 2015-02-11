@@ -4,7 +4,9 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.common.Wireable;
@@ -19,5 +21,5 @@ public interface IpmiPayload extends Wireable {
     @Nonnull
     public IpmiPayloadType getPayloadType();
 
-    public void apply(@Nonnull IpmiClientIpmiPayloadHandler handler, @Nonnull IpmiHandlerContext context);
+    public void apply(@Nonnull IpmiClientIpmiPayloadHandler handler, @Nonnull IpmiHandlerContext context, @CheckForNull IpmiSession session);
 }
