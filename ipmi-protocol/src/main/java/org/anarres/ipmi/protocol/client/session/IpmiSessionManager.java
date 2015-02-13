@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
  *
  * @author shevek
  */
-public class IpmiSessionManager implements IpmiContext {
+public class IpmiSessionManager implements IpmiPacketContext {
 
     public static final SecureRandom RANDOM = new SecureRandom();
     // private final IpmiSession dummy = new IpmiSession(0);

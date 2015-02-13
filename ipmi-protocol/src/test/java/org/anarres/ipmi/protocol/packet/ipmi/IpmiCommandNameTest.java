@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author shevek
  */
-// @Ignore
+@Ignore
 public class IpmiCommandNameTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiCommandNameTest.class);

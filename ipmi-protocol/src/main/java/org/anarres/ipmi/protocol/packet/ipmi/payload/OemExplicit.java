@@ -6,7 +6,7 @@ package org.anarres.ipmi.protocol.packet.ipmi.payload;
 
 import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
@@ -47,17 +47,17 @@ public class OemExplicit extends AbstractIpmiPayload {
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return data.length;
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         buffer.put(data);
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         data = new byte[buffer.remaining()];
         buffer.get(data);
     }

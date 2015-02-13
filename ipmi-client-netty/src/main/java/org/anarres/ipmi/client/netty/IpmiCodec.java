@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.codec.IpmiPacketDecoder;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 public class IpmiCodec extends ChannelDuplexHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiCodec.class);
-    private final IpmiContext context;
+    private final IpmiPacketContext context;
     private final IpmiPacketDecoder decoder;
 
-    public IpmiCodec(IpmiContext context) {
+    public IpmiCodec(IpmiPacketContext context) {
         this.context = context;
         this.decoder = new IpmiPacketDecoder(context);
     }

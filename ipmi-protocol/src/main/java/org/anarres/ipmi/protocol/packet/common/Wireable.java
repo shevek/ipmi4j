@@ -7,7 +7,7 @@ package org.anarres.ipmi.protocol.packet.common;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 
 /**
  * An object which may be written to and read from a {@link ByteBuffer}.
@@ -29,17 +29,17 @@ public interface Wireable {
      * cannot be computed.
      */
     @Nonnegative
-    public int getWireLength(@Nonnull IpmiContext context);
+    public int getWireLength(@Nonnull IpmiPacketContext context);
 
     /**
      * Writes bytes from this object onto the wire, serializing it.
      */
-    public void toWire(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
+    public void toWire(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer);
 
     /**
      * Reads bytes from the wire into this object, deserializing it.
      */
-    public void fromWire(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
+    public void fromWire(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer);
 
     public void toStringBuilder(@Nonnull StringBuilder buf, @Nonnegative int depth);
 }

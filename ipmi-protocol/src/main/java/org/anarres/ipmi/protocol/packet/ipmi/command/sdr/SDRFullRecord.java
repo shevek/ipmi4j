@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnegative;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 
 /**
@@ -98,17 +98,17 @@ public class SDRFullRecord extends SDRHeader {
     public String id;
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 48 + idCodec.getEncodedLength(id);
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

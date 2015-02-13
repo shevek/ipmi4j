@@ -14,7 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.slf4j.Logger;
@@ -42,17 +42,27 @@ public class IpmiOpenSessionResponse extends AbstractTaggedIpmiPayload {
     }
 
     @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getRequestType() {
+        return IpmiOpenSessionRequest.class;
+    }
+
+    @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getResponseType() {
+        return IpmiOpenSessionResponse.class;
+    }
+
+    @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
         handler.handleOpenSessionResponse(context, session, this);
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 36;
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
@@ -65,7 +75,7 @@ public class IpmiOpenSessionResponse extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         byte requestedMaximumPrivilegeLevelByte = buffer.get();

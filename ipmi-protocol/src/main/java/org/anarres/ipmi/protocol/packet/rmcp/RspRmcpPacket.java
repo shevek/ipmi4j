@@ -3,7 +3,7 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 
 /**
  * RMCP Security Extensions Protocol (RSP).
@@ -53,7 +53,7 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         int length = 4 // sessionId
                 + 4 // sessionSequenceNumber
                 + getRawWireLength(context);
@@ -65,7 +65,7 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         int start = buffer.position();
         buffer.putInt(sessionId);
         buffer.putInt(sessionSequenceNumber);
@@ -82,7 +82,7 @@ public class RspRmcpPacket extends AbstractPacket {
     }
 
     @Override
-    protected final void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected final void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         int start = buffer.position();
         int sessionId = buffer.getInt();
         withSessionId(sessionId);

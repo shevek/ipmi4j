@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.common.Bits;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
@@ -89,17 +89,27 @@ public class IpmiRAKPMessage1 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getRequestType() {
+        return IpmiRAKPMessage1.class;
+    }
+
+    @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getResponseType() {
+        return IpmiRAKPMessage2.class;
+    }
+
+    @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
         handler.handleRAKPMessage1(context, session, this);
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 28 + ((username == null) ? 0 : username.length());
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(new byte[3]);    // reserved
         toWireIntLE(buffer, systemSessionId);
@@ -116,7 +126,7 @@ public class IpmiRAKPMessage1 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         assertWireBytesZero(buffer, 3);
         systemSessionId = fromWireIntLE(buffer);

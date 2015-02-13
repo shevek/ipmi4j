@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
 
 /**
@@ -18,5 +19,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiCompletionCode;
  */
 public interface IpmiResponse extends IpmiCommand {
 
+    @Nonnull
+    public Class<? extends IpmiRequest> getRequestType();
     // public byte getCompletionCode();
 }

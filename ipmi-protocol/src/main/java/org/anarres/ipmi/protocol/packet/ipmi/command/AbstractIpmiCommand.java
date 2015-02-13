@@ -4,6 +4,7 @@
  */
 package org.anarres.ipmi.protocol.packet.ipmi.command;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedBytes;
@@ -21,7 +22,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.IpmiNetworkFunction;
 import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.AbstractIpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.slf4j.Logger;
@@ -40,6 +41,18 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     private byte sourceAddress = (byte) 0x81;
     private IpmiLun sourceLun = IpmiLun.L0;
     private byte sequenceNumber;
+
+    /* implements IpmiResponse */
+    @Nonnull
+    public Class<? extends IpmiRequest> getRequestType() {
+        return MoreObjects.firstNonNull(getCommandName().getRequestType(), UnknownIpmiRequest.class);
+    }
+
+    /* implements IpmiRequest */
+    @Nonnull
+    public Class<? extends IpmiResponse> getResponseType() {
+        return MoreObjects.firstNonNull(getCommandName().getResponseType(), UnknownIpmiResponse.class);
+    }
 
     @Override
     public IpmiPayloadType getPayloadType() {
@@ -106,7 +119,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 6
                 + getDataWireLength()
                 + 1;    // data checksum.
@@ -117,7 +130,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
     protected abstract int getDataWireLength();
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         int chk1Start = buffer.position();
         buffer.put(getTargetAddress());
         byte networkFunctionByte = getCommandName().getNetworkFunction().getCode();
@@ -146,7 +159,7 @@ public abstract class AbstractIpmiCommand extends AbstractIpmiPayload implements
      * @see AbstractIpmiSessionWrapper#newPayload(ByteBuffer, IpmiPayloadType)
      */
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         int chk1Start = buffer.position();
         int tmp;
         targetAddress = buffer.get();

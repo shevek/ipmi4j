@@ -22,10 +22,10 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage3;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage4;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
+import org.anarres.ipmi.protocol.packet.rmcp.Encapsulation;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpMessageClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,18 +93,17 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     }
 
     /*
-    @Nonnull
-    protected IpmiSession getIpmiSession(@Nonnull IpmiContext context) {
-        int sessionId = getIpmiSessionId();
-        if (sessionId == 0)
-            throw new IllegalStateException("Cannot lookup illegal IPMI session id 0.");
-        IpmiSession session = context.getIpmiSession(sessionId);
-        if (session == null)
-            throw new IllegalStateException("No such IPMI session " + Integer.toHexString(sessionId));
-        return session;
-    }
-    */
-
+     @Nonnull
+     protected IpmiSession getIpmiSession(@Nonnull IpmiContext context) {
+     int sessionId = getIpmiSessionId();
+     if (sessionId == 0)
+     throw new IllegalStateException("Cannot lookup illegal IPMI session id 0.");
+     IpmiSession session = context.getIpmiSession(sessionId);
+     if (session == null)
+     throw new IllegalStateException("No such IPMI session " + Integer.toHexString(sessionId));
+     return session;
+     }
+     */
     @Override
     public int getIpmiSessionSequenceNumber() {
         return ipmiSessionSequenceNumber;
@@ -131,17 +130,23 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     }
 
     /*
-    @Override
-    public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
-        getIpmiPayload().apply(handler, context, this);
-    }
-    */
-
+     @Override
+     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context) {
+     getIpmiPayload().apply(handler, context, this);
+     }
+     */
     @Nonnull
     public static IpmiIntegrityAlgorithm getIntegrityAlgorithm(@CheckForNull IpmiSession session) {
         if (session == null)
             return IpmiIntegrityAlgorithm.NONE;
         return session.getIntegrityAlgorithm();
+    }
+
+    @Override
+    public <T> T getEncapsulated(Class<T> type) {
+        if (type.isInstance(this))
+            return type.cast(this);
+        return Encapsulation.Utils.getEncapsulated(type, getIpmiPayload());
     }
 
     @Override

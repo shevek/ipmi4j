@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.packet.asf.AsfRsspSessionStatus;
 import org.anarres.ipmi.protocol.packet.common.Code;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
@@ -30,17 +30,27 @@ public class IpmiRAKPMessage4 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getRequestType() {
+        return IpmiRAKPMessage3.class;
+    }
+
+    @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getResponseType() {
+        return IpmiRAKPMessage4.class;
+    }
+
+    @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
         handler.handleRAKPMessage4(context, session, this);
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 8 + integrityCheckValue.length;
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(statusCode.getCode());
         buffer.putChar((char) 0);    // reserved
@@ -49,7 +59,7 @@ public class IpmiRAKPMessage4 extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         statusCode = Code.fromBuffer(AsfRsspSessionStatus.class, buffer);
         assertWireBytesZero(buffer, 2);

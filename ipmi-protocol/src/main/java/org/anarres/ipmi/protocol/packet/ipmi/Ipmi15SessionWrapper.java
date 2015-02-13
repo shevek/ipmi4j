@@ -10,7 +10,7 @@ import org.anarres.ipmi.protocol.packet.common.AbstractWireable;
 import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayloadType;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     // @Override
     // public int getIpmiSessionSequenceNumber() { return ipmiSessionSequenceNumber; }
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 1 // authenticationType
                 + 4 // ipmiSessionSequenceNumber
                 + 4 // ipmiSessionId
@@ -54,7 +54,7 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
 
     /** Sequence number handling: [IPMI2] Section 6.12.8, page 58. */
     @Override
-    public void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    public void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         // Page 133
         buffer.put(authenticationType.getCode());
         buffer.putInt(getIpmiSessionSequenceNumber());
@@ -74,7 +74,7 @@ public class Ipmi15SessionWrapper extends AbstractIpmiSessionWrapper {
     }
 
     @Override
-    public void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    public void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         IpmiSessionAuthenticationType authenticationType = Code.fromBuffer(IpmiSessionAuthenticationType.class, buffer);
         setIpmiSessionSequenceNumber(buffer.getInt());
         setIpmiSessionId(buffer.getInt());

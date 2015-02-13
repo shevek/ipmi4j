@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
+import org.anarres.ipmi.protocol.packet.rmcp.Encapsulation;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
 
 /**
@@ -15,7 +16,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpData;
  *
  * @author shevek
  */
-public interface IpmiSessionWrapper extends RmcpData {
+public interface IpmiSessionWrapper extends RmcpData, Encapsulation {
 
     public int getIpmiSessionId();
 

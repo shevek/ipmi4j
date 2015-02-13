@@ -4,15 +4,16 @@
  */
 package org.anarres.ipmi.protocol.client.dispatch;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
-import org.anarres.ipmi.protocol.client.session.IpmiSessionManager;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientIpmiPayloadHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiClientRmcpMessageHandler;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
@@ -34,7 +35,7 @@ public class IpmiPayloadReceiveDispatcher implements IpmiReceiverRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiPayloadReceiveDispatcher.class);
 
-    private final IpmiContext sessionManager;
+    private final IpmiPacketContext sessionManager;
     private final RemovalListener<IpmiReceiverKey, IpmiReceiver> removalListener = new RemovalListener<IpmiReceiverKey, IpmiReceiver>() {
 
         @Override
@@ -45,6 +46,7 @@ public class IpmiPayloadReceiveDispatcher implements IpmiReceiverRepository {
                 receiver.timeout(key);
         }
     };
+    /** [IPMI2] Section 6.12.15, page 60: Session inactivity timeout is 60 seconds +/-3 seconds. */
     private final Cache<IpmiReceiverKey, IpmiReceiver> ipmiReceivers = CacheBuilder.newBuilder()
             // .maximumSize(64)
             .expireAfterWrite(180, TimeUnit.SECONDS)
@@ -96,27 +98,34 @@ public class IpmiPayloadReceiveDispatcher implements IpmiReceiverRepository {
                     return;
                 }
             }
-            handleDiscard(context, session);
+            handleDiscard(context, message);
         }
     };
 
-    public IpmiPayloadReceiveDispatcher(@Nonnull IpmiSessionManager sessionManager) {
+    public IpmiPayloadReceiveDispatcher(@Nonnull IpmiPacketContext sessionManager) {
         this.sessionManager = sessionManager;
     }
 
     @Override
     public IpmiReceiver getReceiver(@Nonnull IpmiHandlerContext context, Class<? extends IpmiPayload> payloadType, byte messageId) {
         IpmiReceiverKey key = new IpmiReceiverKey(context.getSystemAddress(), payloadType, messageId);
-        return ipmiReceivers.asMap().remove(key);
+        IpmiReceiver receiver = ipmiReceivers.asMap().remove(key);
+        if (LOG.isDebugEnabled())
+            LOG.debug("Get: " + key + " -> " + receiver);
+        return receiver;
     }
 
     @Override
     public void setReceiver(@Nonnull IpmiReceiverKey key, @Nonnull IpmiReceiver receiver) {
+        if (LOG.isDebugEnabled())
+            LOG.debug("Set: " + key + " -> " + receiver);
         ipmiReceivers.put(key, receiver);
     }
 
-    private void handleDiscard(@Nonnull IpmiHandlerContext context, @Nonnull Object message) {
-        LOG.warn("Discarded " + message);
+    @VisibleForTesting
+    protected void handleDiscard(@Nonnull IpmiHandlerContext context, @Nonnull Object message) {
+        Preconditions.checkNotNull(message, "Message was null.");
+        LOG.warn("Discarded:\n" + message);
     }
 
     public void dispatch(@Nonnull IpmiHandlerContext context, @Nonnull Packet packet) {

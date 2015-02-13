@@ -14,7 +14,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAlgorithmUtils;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 
@@ -48,17 +48,27 @@ public class IpmiOpenSessionRequest extends AbstractTaggedIpmiPayload {
     }
 
     @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getRequestType() {
+        return IpmiOpenSessionRequest.class;
+    }
+
+    @Override
+    public Class<? extends AbstractTaggedIpmiPayload> getResponseType() {
+        return IpmiOpenSessionResponse.class;
+    }
+
+    @Override
     public void apply(IpmiClientIpmiPayloadHandler handler, IpmiHandlerContext context, IpmiSession session) {
         handler.handleOpenSessionRequest(context, session, this);
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         return 32;
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         buffer.put(messageTag);
         buffer.put(Bits.toByte(requestedMaximumPrivilegeLevel));
         buffer.putChar((char) 0);   // reserved
@@ -69,7 +79,7 @@ public class IpmiOpenSessionRequest extends AbstractTaggedIpmiPayload {
     }
 
     @Override
-    protected void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         messageTag = buffer.get();
         byte requestedMaximumPrivilegeLevelByte = buffer.get();
         requestedMaximumPrivilegeLevel = Code.fromByte(RequestedMaximumPrivilegeLevel.class, (byte) (requestedMaximumPrivilegeLevelByte & RequestedMaximumPrivilegeLevel.MASK));

@@ -14,7 +14,7 @@ import java.util.UUID;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,10 @@ public abstract class AbstractWireable implements Wireable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractWireable.class);
 
-    protected abstract void toWireUnchecked(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
+    protected abstract void toWireUnchecked(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer);
 
     @Override
-    public void toWire(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
+    public void toWire(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer) {
         Preconditions.checkNotNull(buffer, "ByteBuffer was null.");
         int start = buffer.position();
         toWireUnchecked(context, buffer);
@@ -40,10 +40,10 @@ public abstract class AbstractWireable implements Wireable {
             throw new IllegalStateException("Object should serialize to " + expectedLength + " bytes, but generated " + actualLength + ": " + this);
     }
 
-    protected abstract void fromWireUnchecked(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer);
+    protected abstract void fromWireUnchecked(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer);
 
     @Override
-    public void fromWire(@Nonnull IpmiContext context, ByteBuffer buffer) {
+    public void fromWire(@Nonnull IpmiPacketContext context, ByteBuffer buffer) {
         Preconditions.checkNotNull(buffer, "ByteBuffer was null.");
         int start = buffer.position();
         fromWireUnchecked(context, buffer);

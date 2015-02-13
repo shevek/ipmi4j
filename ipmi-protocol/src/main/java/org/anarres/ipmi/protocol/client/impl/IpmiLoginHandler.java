@@ -43,8 +43,7 @@ public class IpmiLoginHandler {
         // 2
         @Override
         public void handleGetChannelAuthenticationCapabilitiesResponse(IpmiHandlerContext context, GetChannelAuthenticationCapabilitiesResponse response) {
-            // -> Make global.
-            IpmiSession session = context.getClient().getSessionManager().newIpmiSession();
+            IpmiSession session = getSession(0, 0);
             context.send(session, new CloseSessionRequest(session),
                     CloseSessionResponse.class, receiver);
         }
@@ -52,12 +51,17 @@ public class IpmiLoginHandler {
         // 3
         @Override
         public void handleCloseSessionResponse(IpmiHandlerContext context, CloseSessionResponse response) {
-            IpmiSession session = null;
+            IpmiSession session = getSession(0, 0);
             context.send(null, new IpmiOpenSessionRequest(session, RequestedMaximumPrivilegeLevel.ADMINISTRATOR),
                     IpmiOpenSessionResponse.class, receiver);
         }
     };
     private final IpmiClientIpmiPayloadHandler payloadHandler = new IpmiClientIpmiPayloadHandler.Adapter() {
+
+        @Override
+        protected void handleDefault(IpmiHandlerContext context, IpmiSession session, IpmiPayload payload) {
+            LOG.info("Ignored " + payload);
+        }
 
         // 4
         @Override
@@ -78,6 +82,7 @@ public class IpmiLoginHandler {
         @Override
         public void handleRAKPMessage4(IpmiHandlerContext context, IpmiSession _session, IpmiRAKPMessage4 message) {
             IpmiSession session = getSession(message.consoleSessionId, 0);
+            // Now your session is open.
         }
 
         @Override
@@ -104,12 +109,6 @@ public class IpmiLoginHandler {
         this.session = session;
     }
 
-    // 1
-    public void open(@Nonnull IpmiHandlerContext context) {
-        context.send(null, new GetChannelAuthenticationCapabilitiesRequest(),
-                GetChannelAuthenticationCapabilitiesResponse.class, receiver);
-    }
-
     @Nonnull
     private IpmiSession getSession(int consoleSessionId, int systemSessionId) {
         if (consoleSessionId != 0)
@@ -119,5 +118,11 @@ public class IpmiLoginHandler {
             if (systemSessionId != session.getSystemSessionId())
                 throw new IllegalArgumentException("Bad systemSessionId " + Integer.toHexString(systemSessionId) + "; expected " + Integer.toHexString(session.getSystemSessionId()));
         return session;
+    }
+
+    // 1
+    public void open(@Nonnull IpmiHandlerContext context) {
+        context.send(null, new GetChannelAuthenticationCapabilitiesRequest(),
+                GetChannelAuthenticationCapabilitiesResponse.class, receiver);
     }
 }

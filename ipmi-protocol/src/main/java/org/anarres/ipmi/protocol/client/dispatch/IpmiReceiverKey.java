@@ -6,7 +6,7 @@
 package org.anarres.ipmi.protocol.client.dispatch;
 
 import com.google.common.base.MoreObjects;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -20,7 +20,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiPayload;
  */
 public class IpmiReceiverKey {
 
-    private final InetSocketAddress remoteAddress;
+    private final SocketAddress remoteAddress;
     // TODO: SessionId?
     private final Class<? extends IpmiPayload> payloadType;
     private final byte messageId;
@@ -33,7 +33,7 @@ public class IpmiReceiverKey {
      * @param messageId The {@link AbstractTaggedIpmiPayload#getMessageTag() message tag}
      * or {@link IpmiCommand#getSequenceNumber() sequence number} to match.
      */
-    public IpmiReceiverKey(@Nonnull InetSocketAddress remoteAddress, @Nonnull Class<? extends IpmiPayload> payloadType, @Nonnegative byte messageId) {
+    public IpmiReceiverKey(@Nonnull SocketAddress remoteAddress, @Nonnull Class<? extends IpmiPayload> payloadType, @Nonnegative byte messageId) {
         this.remoteAddress = remoteAddress;
         this.payloadType = payloadType;
         this.messageId = messageId;

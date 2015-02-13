@@ -17,7 +17,7 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi15SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.Ipmi20SessionWrapper;
 import org.anarres.ipmi.protocol.packet.ipmi.IpmiSessionAuthenticationType;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,12 +105,19 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
     }
 
     @Override
+    public <T> T getEncapsulated(Class<T> type) {
+        if (type.isInstance(this))
+            return type.cast(this);
+        return Encapsulation.Utils.getEncapsulated(type, getData());
+    }
+
+    @Override
     public void apply(IpmiClientRmcpMessageHandler handler, IpmiHandlerContext context) {
         getData().apply(handler, context);
     }
 
     @Nonnegative
-    protected int getRawWireLength(@Nonnull IpmiContext context) {
+    protected int getRawWireLength(@Nonnull IpmiPacketContext context) {
         return RMCP_HEADER_LENGTH + getData().getWireLength(context);
     }
 
@@ -129,7 +136,7 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         buffer.put(messageClassByte);
     }
 
-    protected void toWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
+    protected void toWireRaw(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer) {
         toWireHeader(buffer);
         getData().toWire(context, buffer);
     }
@@ -145,7 +152,7 @@ public abstract class AbstractPacket extends AbstractWireable implements Packet 
         return getMessageClass();
     }
 
-    protected void fromWireRaw(@Nonnull IpmiContext context, @Nonnull ByteBuffer buffer) {
+    protected void fromWireRaw(@Nonnull IpmiPacketContext context, @Nonnull ByteBuffer buffer) {
         RmcpMessageClass messageClass = fromWireHeader(buffer);
         RmcpData data;
 

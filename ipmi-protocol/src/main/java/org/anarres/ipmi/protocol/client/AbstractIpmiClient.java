@@ -43,7 +43,7 @@ public abstract class AbstractIpmiClient implements IpmiClient {
     @Override
     public void queue(IpmiHandlerContext context, IpmiSession session, IpmiPayload message,
             Class<? extends IpmiPayload> responseType, IpmiReceiver receiver) {
-        queue.send(context, session, message);
+        queue.queue(context, session, message, responseType, receiver);
     }
 
     @VisibleForTesting

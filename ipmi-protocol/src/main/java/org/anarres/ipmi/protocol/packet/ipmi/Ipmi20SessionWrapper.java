@@ -22,7 +22,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiAuthenticationAlgorith
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiConfidentialityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
 import org.anarres.ipmi.protocol.packet.ipmi.security.impl.integrity.IntegrityPad;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         try {
             @CheckForNull
             IpmiSession session = context.getIpmiSession(getIpmiSessionId());
@@ -119,7 +119,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
 
     /** Sequence number handling: [IPMI2] Section 6.12.13, page 59. */
     @Override
-    public void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    public void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         try {
             @CheckForNull
             IpmiSession session = context.getIpmiSession(getIpmiSessionId());
@@ -186,7 +186,7 @@ public class Ipmi20SessionWrapper extends AbstractIpmiSessionWrapper {
     }
 
     @Override
-    public void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    public void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         try {
             AbstractWireable.assertWireByte(buffer, AUTHENTICATION_TYPE.getCode(), "IPMI session authentication type");
             byte payloadTypeByte = buffer.get();

@@ -2,13 +2,13 @@ package org.anarres.ipmi.protocol.packet.rmcp;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 
 /**
  * RMCP Packet.
- * 
+ *
  * [ASF2] Section 3.2.3 page 23.
- * 
+ *
  * Uses UDP port 0x026F.
  *
  * @author shevek
@@ -32,27 +32,29 @@ public class RmcpPacket extends AbstractPacket {
     }
 
     @Override
-    public int getWireLength(IpmiContext context) {
+    public int getWireLength(IpmiPacketContext context) {
         int length = getRawWireLength(context);
         // if (isPaddingRequired(length)) length++;
         return length;
     }
 
     @Override
-    protected void toWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected void toWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         toWireRaw(context, buffer);
         // TODO: Compute this based on buffer position rather than re-walking the packet.
         // if (isPaddingRequired(getRawWireLength(context))) buffer.put((byte) 0);
     }
 
     @Override
-    protected final void fromWireUnchecked(IpmiContext context, ByteBuffer buffer) {
+    protected final void fromWireUnchecked(IpmiPacketContext context, ByteBuffer buffer) {
         fromWireRaw(context, buffer);
         // There may or may not be one additional byte here.
     }
 
     @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, "PacketHeader");
+        appendValue(buf, depth, "RemoteAddress", getRemoteAddress());
         appendHeader(buf, depth, "RmcpHeader");
         super.toStringBuilder(buf, depth + 1);  // Header
         appendChild(buf, depth, "RmcpData", getData());

@@ -8,7 +8,7 @@ package org.anarres.ipmi.protocol.client.dispatch;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.CheckForNull;
@@ -28,7 +28,7 @@ import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
  *
  * @author shevek
  */
-public class IpmiPayloadTransmitQueue {
+public class IpmiPayloadTransmitQueue implements IpmiHandlerContext.IpmiPacketQueue {
 
     public static interface IpmiPacketSender {
 
@@ -63,14 +63,14 @@ public class IpmiPayloadTransmitQueue {
         }
     }
 
-    private static class QueueFactory extends CacheLoader<InetSocketAddress, Queue> {
+    private static class QueueFactory extends CacheLoader<SocketAddress, Queue> {
 
         @Override
-        public Queue load(InetSocketAddress key) throws Exception {
+        public Queue load(SocketAddress key) throws Exception {
             return new Queue();
         }
     };
-    private final LoadingCache<InetSocketAddress, Queue> ipmiQueues = CacheBuilder.newBuilder()
+    private final LoadingCache<SocketAddress, Queue> ipmiQueues = CacheBuilder.newBuilder()
             // .weakKeys() // Discard queues for closed connections?
             .expireAfterAccess(1, TimeUnit.HOURS)
             .recordStats()
@@ -115,11 +115,13 @@ public class IpmiPayloadTransmitQueue {
         return ipmiQueues.getUnchecked(context.getSystemAddress());
     }
 
-    public void send(@Nonnull IpmiHandlerContext context, @Nonnull IpmiSession session, @Nonnull IpmiPayload message) {
+    @Override
+    public void queue(IpmiHandlerContext context, IpmiSession session, IpmiPayload message,
+            Class<? extends IpmiPayload> responseType, IpmiReceiver receiver) {
         message.apply(ipmiPayloadSequencer, context, session);
     }
 
-    private void doSend(@Nonnull InetSocketAddress systemAddress, @Nonnull QueueItem item) {
+    private void doSend(@Nonnull SocketAddress systemAddress, @Nonnull QueueItem item) {
         @CheckForNull
         IpmiSession session = item.session;
         @Nonnull

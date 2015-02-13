@@ -10,7 +10,7 @@ import org.anarres.ipmi.protocol.packet.common.Wireable;
  *
  * @author shevek
  */
-public interface Packet extends Wireable {
+public interface Packet extends Wireable, Encapsulation {
 
     /**
      * Returns the remote address from which this packet was received, or to which it will be sent.

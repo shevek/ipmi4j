@@ -9,7 +9,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
-import org.anarres.ipmi.protocol.client.session.IpmiContext;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.packet.rmcp.Packet;
 import org.anarres.ipmi.protocol.packet.rmcp.RmcpPacket;
 import org.slf4j.Logger;
@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 public class IpmiPacketDecoder {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpmiPacketDecoder.class);
-    private final IpmiContext context;
+    private final IpmiPacketContext context;
 
-    public IpmiPacketDecoder(@Nonnull IpmiContext context) {
+    public IpmiPacketDecoder(@Nonnull IpmiPacketContext context) {
         this.context = context;
     }
 
