@@ -1,6 +1,7 @@
 org.anarres.ipmi.client.netty
 org.anarres.ipmi.protocol
 org.anarres.ipmi.protocol.client
+org.anarres.ipmi.protocol.client.dispatch
 org.anarres.ipmi.protocol.client.impl
 org.anarres.ipmi.protocol.client.session
 org.anarres.ipmi.protocol.client.visitor
