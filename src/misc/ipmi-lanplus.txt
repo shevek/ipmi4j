@@ -1,3 +1,5 @@
+ipmitool -I lanplus -H 10.130.11.49 -U admin -P admin -C 0 shell
+
 chassis power status
 sol info 0
 channel info 0
