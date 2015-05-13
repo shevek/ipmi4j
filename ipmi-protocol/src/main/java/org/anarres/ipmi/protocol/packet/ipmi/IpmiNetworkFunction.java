@@ -30,7 +30,7 @@ public enum IpmiNetworkFunction implements Code.Wrapper {
     Firmware(0x08),
     /** Non-volatile Storage Requests and Responses. */
     Storage(0x0A),
-    /** Media-specific Configuration & Control. */
+    /** Media-specific Configuration and Control. */
     Transport(0x0C),
     /** Non-IPMI Group Requests and Responses. */
     GroupExtension(0x2C),

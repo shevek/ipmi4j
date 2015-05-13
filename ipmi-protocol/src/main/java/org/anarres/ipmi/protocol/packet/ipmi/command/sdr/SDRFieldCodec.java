@@ -20,7 +20,6 @@ import org.anarres.ipmi.protocol.packet.common.Code;
 /**
  * [IPMI2] Section 43.15, pages 554-556.
  * 
- * <p>
  * These codecs are somewhat under-documented. The issues are:
  * <ol>
  * <li>What is the "unicode" encoding?
@@ -42,7 +41,6 @@ import org.anarres.ipmi.protocol.packet.common.Code;
  *   Please send me examples and/or packet dumps.
  * </li>
  * </ol>
- * </p>
  *
  * @author shevek
  */

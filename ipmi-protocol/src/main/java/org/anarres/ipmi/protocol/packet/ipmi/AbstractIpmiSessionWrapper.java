@@ -22,6 +22,7 @@ import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage3;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.IpmiRAKPMessage4;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.SOLMessage;
 import org.anarres.ipmi.protocol.packet.ipmi.security.IpmiIntegrityAlgorithm;
+import org.anarres.ipmi.protocol.client.session.IpmiPacketContext;
 import org.anarres.ipmi.protocol.client.session.IpmiSession;
 import org.anarres.ipmi.protocol.client.visitor.IpmiHandlerContext;
 import org.anarres.ipmi.protocol.packet.ipmi.payload.OemExplicit;
@@ -39,7 +40,7 @@ public abstract class AbstractIpmiSessionWrapper extends AbstractWireable implem
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIpmiSessionWrapper.class);
 
     /**
-     * @see AbstractIpmiCommand#fromWireUnchecked(IpmiContext, ByteBuffer)
+     * @see AbstractIpmiCommand#fromWireUnchecked(IpmiPacketContext, ByteBuffer)
      */
     @Nonnull
     protected static IpmiPayload newPayload(@Nonnull ByteBuffer buffer, @Nonnull IpmiPayloadType payloadType) {

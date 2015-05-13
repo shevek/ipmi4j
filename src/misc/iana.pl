@@ -67,14 +67,15 @@ for (split(/\n/, $res->content)) {
 			$name =~ tr/\x20-\x7f//cd;
 			$name = "_$name" if $name =~ /^\d/;
 			$data[$_] = escape($data[$_]) for (1, 2, 3);
+			$data[3] =~ s/\&/@/;
 			if (exists $data{$name}) {
 				$name .= $data{$name}++;
 			} else {
 				$data{$name} = 1;
 			}
 			if ($include{$data[0]}) {
-				print "\t/** $data[1]. $data[2] <$data[3]> */\n";
-				print "\t$name($data[0], \"$data[1]\"),\n";
+				print "    /** $data[1]. $data[2] &lt;$data[3]&gt; */\n";
+				print "    $name($data[0], \"$data[1]\"),\n";
 			}
 		}
 		@data = ();
@@ -82,24 +83,24 @@ for (split(/\n/, $res->content)) {
 }
 
 print <<"EOM";
-	EOD(-1, null);
+    EOD(-1, null);
 
-	private final int number;
-	private final String name;
+    private final int number;
+    private final String name;
 
-	private IanaEnterpriseNumber(int number, String name) {
-		this.number = number;
-		this.name = name;
-	}
+    private IanaEnterpriseNumber(int number, String name) {
+        this.number = number;
+        this.name = name;
+    }
 
-	\@Nonnegative
-	public int getNumber() {
-		return number;
-	}
+    \@Nonnegative
+    public int getNumber() {
+        return number;
+    }
 
-	\@Nonnull
-	public String getName() {
-		return name;
-	}
+    \@Nonnull
+    public String getName() {
+        return name;
+    }
 }
 EOM
