@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * To change this template, choose Tools | Templates<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * and open the template in the editor.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> */<a name="line.4"></a>
+<span class="sourceLineNo">005</span>package org.anarres.ipmi.protocol.packet.ipmi;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.google.common.base.Throwables;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import com.google.common.primitives.UnsignedBytes;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import javax.annotation.CheckForNull;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import javax.annotation.Nonnegative;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import javax.annotation.Nonnull;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.anarres.ipmi.protocol.packet.common.Code;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiCommand;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiRequest;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.anarres.ipmi.protocol.packet.ipmi.command.IpmiResponse;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiRequest;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import org.anarres.ipmi.protocol.packet.ipmi.command.UnknownIpmiResponse;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.ChassisControlRequest;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.ChassisControlResponse;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisCapabilitiesRequest;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisCapabilitiesResponse;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusRequest;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetChassisStatusResponse;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseRequest;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseResponse;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoRequest;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.anarres.ipmi.protocol.packet.ipmi.command.fru.GetFRUInventoryAreaInfoResponse;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.anarres.ipmi.protocol.packet.ipmi.command.fru.ReadFRUDataRequest;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.anarres.ipmi.protocol.packet.ipmi.command.fru.ReadFRUDataResponse;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdRequest;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.anarres.ipmi.protocol.packet.ipmi.command.global.GetDeviceIdResponse;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersRequest;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.anarres.ipmi.protocol.packet.ipmi.command.lan.GetLANConfigurationParametersResponse;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionRequest;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.CloseSessionResponse;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessRequest;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAccessResponse;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesRequest;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelAuthenticationCapabilitiesResponse;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesRequest;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelCipherSuitesResponse;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoRequest;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.GetChannelInfoResponse;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelRequest;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import org.anarres.ipmi.protocol.packet.ipmi.command.messaging.SetSessionPrivilegeLevelResponse;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoRequest;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRepositoryInfoResponse;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRRequest;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.GetSDRResponse;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryRequest;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sdr.ReserveSDRRepositoryResponse;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoRequest;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELAllocationInfoResponse;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoRequest;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sel.GetSELInfoResponse;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorReadingRequest;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorReadingResponse;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdRequest;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sensor.GetSensorThresholdResponse;<a name="line.59"></a>
+<span class="sourceLineNo">060</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersRequest;<a name="line.60"></a>
+<span class="sourceLineNo">061</span>import org.anarres.ipmi.protocol.packet.ipmi.command.sol.GetSOLConfigurationParametersResponse;<a name="line.61"></a>
+<span class="sourceLineNo">062</span>import static org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelPrivilegeLevel.*;<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>/**<a name="line.64"></a>
+<span class="sourceLineNo">065</span> * [IPMI2] Appendix G, pages 591-596.<a name="line.65"></a>
+<span class="sourceLineNo">066</span> *<a name="line.66"></a>
+<span class="sourceLineNo">067</span> * @author shevek<a name="line.67"></a>
+<span class="sourceLineNo">068</span> */<a name="line.68"></a>
+<span class="sourceLineNo">069</span>public enum IpmiCommandName implements Code.Wrapper {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>// IPM Device 'Global' Commands<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>    // reserved("reserved", IpmiNetworkFunction.App, 0x00),<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    GetDeviceID("Get Device ID", IpmiNetworkFunction.App, 0x01, User, GetDeviceIdRequest.class, GetDeviceIdResponse.class),<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    BroadcastGetDeviceID("Broadcast 'Get Device ID'", IpmiNetworkFunction.App, 0x01, null), // Local only<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    ColdReset("Cold Reset", IpmiNetworkFunction.App, 0x02, Administrator),<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    WarmReset("Warm Reset", IpmiNetworkFunction.App, 0x03, Administrator),<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    GetSelfTestResults("Get Self Test Results", IpmiNetworkFunction.App, 0x04, User),<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    ManufacturingTestOn("Manufacturing Test On", IpmiNetworkFunction.App, 0x05, Administrator),<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    SetACPIPowerState("Set ACPI Power State", IpmiNetworkFunction.App, 0x06, Administrator),<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    GetACPIPowerState("Get ACPI Power State", IpmiNetworkFunction.App, 0x07, User),<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    GetDeviceGUID("Get Device GUID", IpmiNetworkFunction.App, 0x08, User),<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    GetNetFnSupport("Get NetFn Support", IpmiNetworkFunction.App, 0x09, User),<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    GetCommandSupport("Get Command Support", IpmiNetworkFunction.App, 0x0A, User),<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    GetCommandSubFunctionSupport("Get Command Sub-function Support", IpmiNetworkFunction.App, 0x0B, User),<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    GetConfigurableCommands("Get Configurable Commands", IpmiNetworkFunction.App, 0x0C, User),<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    GetConfigurableCommandSubFunctions("Get Configurable Command Sub-functions", IpmiNetworkFunction.App, 0x0D, User),<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    // unassigned("unassigned", IpmiNetworkFunction.App, 0x0Eh-0F),<a name="line.87"></a>
+<span class="sourceLineNo">088</span>    SetCommandEnables("Set Command Enables", IpmiNetworkFunction.App, 0x60, Administrator),<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    GetCommandEnables("Get Command Enables", IpmiNetworkFunction.App, 0x61, User),<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    SetCommandSubFunctionEnables("Set Command Sub-function Enables", IpmiNetworkFunction.App, 0x62, Administrator),<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    GetCommandSubFunctionEnables("Get Command Sub-function Enables", IpmiNetworkFunction.App, 0x63, User),<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    GetOEMNetFnIANASupport("Get OEM NetFn IANA Support", IpmiNetworkFunction.App, 0x64, User),<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    // BMC Watchdog Timer Commands<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    ResetWatchdogTimer("Reset Watchdog Timer", IpmiNetworkFunction.App, 0x22, Operator),<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    SetWatchdogTimer("Set Watchdog Timer", IpmiNetworkFunction.App, 0x24, Operator),<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    GetWatchdogTimer("Get Watchdog Timer", IpmiNetworkFunction.App, 0x25, User),<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    // BMC Device and Messaging Commands<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    SetBMCGlobalEnables("Set BMC Global Enables", IpmiNetworkFunction.App, 0x2E, null),<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    GetBMCGlobalEnables("Get BMC Global Enables", IpmiNetworkFunction.App, 0x2F, User),<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    ClearMessageFlags("Clear Message Flags", IpmiNetworkFunction.App, 0x30, null),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    GetMessageFlags("Get Message Flags", IpmiNetworkFunction.App, 0x31, null),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    EnableMessageChannelReceive("Enable Message Channel Receive", IpmiNetworkFunction.App, 0x32, null),<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    GetMessage("Get Message", IpmiNetworkFunction.App, 0x33, null),<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    SendMessage("Send Message", IpmiNetworkFunction.App, 0x34, User), // Administator for some channels<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    ReadEventMessageBuffer("Read Event Message Buffer", IpmiNetworkFunction.App, 0x35, null), // System interface only<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    GetBTInterfaceCapabilities("Get BT Interface Capabilities", IpmiNetworkFunction.App, 0x36, User),<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    GetSystemGUID("Get System GUID", IpmiNetworkFunction.App, 0x37, Unprotected),<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    SetSystemInfoParameters("Set System Info Parameters", IpmiNetworkFunction.App, 0x58, Administrator),<a name="line.108"></a>
+<span class="sourceLineNo">109</span>    GetSystemInfoParameters("Get System Info Parameters", IpmiNetworkFunction.App, 0x59, User),<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    GetChannelAuthenticationCapabilities("Get Channel Authentication Capabilities", IpmiNetworkFunction.App, 0x38, Unprotected, GetChannelAuthenticationCapabilitiesRequest.class, GetChannelAuthenticationCapabilitiesResponse.class),<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    GetSessionChallenge("Get Session Challenge", IpmiNetworkFunction.App, 0x39, Unprotected),<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    ActivateSession("Activate Session", IpmiNetworkFunction.App, 0x3A, Unprotected),<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    SetSessionPrivilegeLevel("Set Session Privilege Level", IpmiNetworkFunction.App, 0x3B, User, SetSessionPrivilegeLevelRequest.class, SetSessionPrivilegeLevelResponse.class),<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    CloseSession("Close Session", IpmiNetworkFunction.App, 0x3C, IpmiChannelPrivilegeLevel.Callback, CloseSessionRequest.class, CloseSessionResponse.class),<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    GetSessionInfo("Get Session Info", IpmiNetworkFunction.App, 0x3D, User),<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    // unassigned("unassigned", IpmiNetworkFunction.App, 0x3E),<a name="line.116"></a>
+<span class="sourceLineNo">117</span>    GetAuthCode("Get AuthCode", IpmiNetworkFunction.App, 0x3F, Operator),<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    SetChannelAccess("Set Channel Access", IpmiNetworkFunction.App, 0x40, Administrator),<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    GetChannelAccess("Get Channel Access", IpmiNetworkFunction.App, 0x41, User, GetChannelAccessRequest.class, GetChannelAccessResponse.class),<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    GetChannelInfoCommand("Get Channel Info Command", IpmiNetworkFunction.App, 0x42, User, GetChannelInfoRequest.class, GetChannelInfoResponse.class),<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    SetUserAccessCommand("Set User Access Command", IpmiNetworkFunction.App, 0x43, Administrator),<a name="line.121"></a>
+<span class="sourceLineNo">122</span>    GetUserAccessCommand("Get User Access Command", IpmiNetworkFunction.App, 0x44, Operator),<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    SetUserName("Set User Name", IpmiNetworkFunction.App, 0x45, Administrator),<a name="line.123"></a>
+<span class="sourceLineNo">124</span>    GetUserNameCommand("Get User Name Command", IpmiNetworkFunction.App, 0x46, Operator),<a name="line.124"></a>
+<span class="sourceLineNo">125</span>    SetUserPasswordCommand("Set User Password Command", IpmiNetworkFunction.App, 0x47, Administrator),<a name="line.125"></a>
+<span class="sourceLineNo">126</span>    ActivatePayload("Activate Payload", IpmiNetworkFunction.App, 0x48), // Depends on payload type.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    DeactivatePayload("Deactivate Payload", IpmiNetworkFunction.App, 0x49), // Depends on payload type.<a name="line.127"></a>
+<span class="sourceLineNo">128</span>    GetPayloadActivationStatus("Get Payload Activation Status", IpmiNetworkFunction.App, 0x4A, User),<a name="line.128"></a>
+<span class="sourceLineNo">129</span>    GetPayloadInstanceInfo("Get Payload Instance Info", IpmiNetworkFunction.App, 0x4B, User),<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    SetUserPayloadAccess("Set User Payload Access", IpmiNetworkFunction.App, 0x4C, Administrator),<a name="line.130"></a>
+<span class="sourceLineNo">131</span>    GetUserPayloadAccess("Get User Payload Access", IpmiNetworkFunction.App, 0x4D, Operator),<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    GetChannelPayloadSupport("Get Channel Payload Support", IpmiNetworkFunction.App, 0x4E, User),<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    GetChannelPayloadVersion("Get Channel Payload Version", IpmiNetworkFunction.App, 0x4F, User),<a name="line.133"></a>
+<span class="sourceLineNo">134</span>    GetChannelOEMPayloadInfo("Get Channel OEM Payload Info", IpmiNetworkFunction.App, 0x50, User),<a name="line.134"></a>
+<span class="sourceLineNo">135</span>    // unassigned("unassigned", IpmiNetworkFunction.App, 0x51),<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    MasterWriteRead("Master Write-Read", IpmiNetworkFunction.App, 0x52, Operator),<a name="line.136"></a>
+<span class="sourceLineNo">137</span>    // unassigned("unassigned", IpmiNetworkFunction.App, 0x53),<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    GetChannelCipherSuites("Get Channel Cipher Suites", IpmiNetworkFunction.App, 0x54, Unprotected, GetChannelCipherSuitesRequest.class, GetChannelCipherSuitesResponse.class),<a name="line.138"></a>
+<span class="sourceLineNo">139</span>    SuspendResumePayloadEncryption("Suspend/Resume Payload Encryption", IpmiNetworkFunction.App, 0x55, User),<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    SetChannelSecurityKeys("Set Channel Security Keys", IpmiNetworkFunction.App, 0x56, Administrator),<a name="line.140"></a>
+<span class="sourceLineNo">141</span>    GetSystemInterfaceCapabilities("Get System Interface Capabilities", IpmiNetworkFunction.App, 0x57, User),<a name="line.141"></a>
+<span class="sourceLineNo">142</span>    // unassigned("unassigned", IpmiNetworkFunction.App, 0x58h-5F),<a name="line.142"></a>
+<span class="sourceLineNo">143</span>    // FirmwareFirewallConfiguration("Firmware Firewall Configuration (see IPM Device Commands, above)", IpmiNetworkFunction.App, 0x60h-64),<a name="line.143"></a>
+<span class="sourceLineNo">144</span>    // Chassis Device Commands<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    GetChassisCapabilities("Get Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x00, User, GetChassisCapabilitiesRequest.class, GetChassisCapabilitiesResponse.class),<a name="line.145"></a>
+<span class="sourceLineNo">146</span>    GetChassisStatus("Get Chassis Status", IpmiNetworkFunction.Chassis, 0x01, User, GetChassisStatusRequest.class, GetChassisStatusResponse.class),<a name="line.146"></a>
+<span class="sourceLineNo">147</span>    ChassisControl("Chassis Control", IpmiNetworkFunction.Chassis, 0x02, Operator, ChassisControlRequest.class, ChassisControlResponse.class),<a name="line.147"></a>
+<span class="sourceLineNo">148</span>    ChassisReset("Chassis Reset", IpmiNetworkFunction.Chassis, 0x03, Operator),<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    ChassisIdentify("Chassis Identify", IpmiNetworkFunction.Chassis, 0x04, Operator),<a name="line.149"></a>
+<span class="sourceLineNo">150</span>    SetFrontPanelButtonEnables("Set Front Panel Button Enables", IpmiNetworkFunction.Chassis, 0x0A, Administrator),<a name="line.150"></a>
+<span class="sourceLineNo">151</span>    SetChassisCapabilities("Set Chassis Capabilities", IpmiNetworkFunction.Chassis, 0x05, Administrator),<a name="line.151"></a>
+<span class="sourceLineNo">152</span>    SetPowerRestorePolicy("Set Power Restore Policy", IpmiNetworkFunction.Chassis, 0x06, Operator),<a name="line.152"></a>
+<span class="sourceLineNo">153</span>    SetPowerCycleInterval("Set Power Cycle Interval", IpmiNetworkFunction.Chassis, 0x0B, Administrator),<a name="line.153"></a>
+<span class="sourceLineNo">154</span>    GetSystemRestartCause("Get System Restart Cause", IpmiNetworkFunction.Chassis, 0x07, User, GetSystemRestartCauseRequest.class, GetSystemRestartCauseResponse.class),<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    SetSystemBootOptions("Set System Boot Options", IpmiNetworkFunction.Chassis, 0x08, Operator),<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    GetSystemBootOptions("Get System Boot Options", IpmiNetworkFunction.Chassis, 0x09, Operator),<a name="line.156"></a>
+<span class="sourceLineNo">157</span>    // unassigned("unassigned", IpmiNetworkFunction.Chassis, 0x0Ch-0E),<a name="line.157"></a>
+<span class="sourceLineNo">158</span>    GetPOHCounter("Get POH Counter", IpmiNetworkFunction.Chassis, 0x0F, User),<a name="line.158"></a>
+<span class="sourceLineNo">159</span>    // Event Commands<a name="line.159"></a>
+<span class="sourceLineNo">160</span>    SetEventReceiver("Set Event Receiver", IpmiNetworkFunction.Sensor, 0x00, Administrator),<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    GetEventReceiver("Get Event Receiver", IpmiNetworkFunction.Sensor, 0x01, User),<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    PlatformEvent("Platform Event (a.k.a. 'Event Message')", IpmiNetworkFunction.Sensor, 0x02, Operator),<a name="line.162"></a>
+<span class="sourceLineNo">163</span>    // unassigned("unassigned", IpmiNetworkFunction.Sensor, 0x03h-0F),<a name="line.163"></a>
+<span class="sourceLineNo">164</span>    // PEF and Alerting Commands<a name="line.164"></a>
+<span class="sourceLineNo">165</span>    GetPEFCapabilities("Get PEF Capabilities", IpmiNetworkFunction.Sensor, 0x10, User),<a name="line.165"></a>
+<span class="sourceLineNo">166</span>    ArmPEFPostponeTimer("Arm PEF Postpone Timer", IpmiNetworkFunction.Sensor, 0x11, Administrator),<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    SetPEFConfigurationParameters("Set PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x12, Administrator),<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    GetPEFConfigurationParameters("Get PEF Configuration Parameters", IpmiNetworkFunction.Sensor, 0x13, Operator),<a name="line.168"></a>
+<span class="sourceLineNo">169</span>    SetLastProcessedEventID("Set Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x14, Administrator),<a name="line.169"></a>
+<span class="sourceLineNo">170</span>    GetLastProcessedEventID("Get Last Processed Event ID", IpmiNetworkFunction.Sensor, 0x15, Administrator),<a name="line.170"></a>
+<span class="sourceLineNo">171</span>    AlertImmediate("Alert Immediate", IpmiNetworkFunction.Sensor, 0x16, Administrator),<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    PETAcknowledge("PET Acknowledge", IpmiNetworkFunction.Sensor, 0x17, Unprotected),<a name="line.172"></a>
+<span class="sourceLineNo">173</span>    // Sensor Device Commands<a name="line.173"></a>
+<span class="sourceLineNo">174</span>    GetDeviceSDRInfo("Get Device SDR Info", IpmiNetworkFunction.Sensor, 0x20), // Local only<a name="line.174"></a>
+<span class="sourceLineNo">175</span>    GetDeviceSDR("Get Device SDR", IpmiNetworkFunction.Sensor, 0x21), // Local only<a name="line.175"></a>
+<span class="sourceLineNo">176</span>    ReserveDeviceSDRRepository("Reserve Device SDR Repository", IpmiNetworkFunction.Sensor, 0x22), // Local only<a name="line.176"></a>
+<span class="sourceLineNo">177</span>    GetSensorReadingFactors("Get Sensor Reading Factors", IpmiNetworkFunction.Sensor, 0x23, User),<a name="line.177"></a>
+<span class="sourceLineNo">178</span>    SetSensorHysteresis("Set Sensor Hysteresis", IpmiNetworkFunction.Sensor, 0x24, Operator),<a name="line.178"></a>
+<span class="sourceLineNo">179</span>    GetSensorHysteresis("Get Sensor Hysteresis", IpmiNetworkFunction.Sensor, 0x25, User),<a name="line.179"></a>
+<span class="sourceLineNo">180</span>    SetSensorThreshold("Set Sensor Threshold", IpmiNetworkFunction.Sensor, 0x26, Operator),<a name="line.180"></a>
+<span class="sourceLineNo">181</span>    GetSensorThreshold("Get Sensor Threshold", IpmiNetworkFunction.Sensor, 0x27, User, GetSensorThresholdRequest.class, GetSensorThresholdResponse.class),<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    SetSensorEventEnable("Set Sensor Event Enable", IpmiNetworkFunction.Sensor, 0x28, Operator),<a name="line.182"></a>
+<span class="sourceLineNo">183</span>    GetSensorEventEnable("Get Sensor Event Enable", IpmiNetworkFunction.Sensor, 0x29, User),<a name="line.183"></a>
+<span class="sourceLineNo">184</span>    ReArmSensorEvents("Re-arm Sensor Events", IpmiNetworkFunction.Sensor, 0x2A, Operator),<a name="line.184"></a>
+<span class="sourceLineNo">185</span>    GetSensorEventStatus("Get Sensor Event Status", IpmiNetworkFunction.Sensor, 0x2B, User),<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    GetSensorReading("Get Sensor Reading", IpmiNetworkFunction.Sensor, 0x2D, User, GetSensorReadingRequest.class, GetSensorReadingResponse.class),<a name="line.186"></a>
+<span class="sourceLineNo">187</span>    SetSensorType("Set Sensor Type", IpmiNetworkFunction.Sensor, 0x2E, Operator),<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    GetSensorType("Get Sensor Type", IpmiNetworkFunction.Sensor, 0x2F, User),<a name="line.188"></a>
+<span class="sourceLineNo">189</span>    SetSensorReadingAndEventStatus("Set Sensor Reading And Event Status", IpmiNetworkFunction.Sensor, 0x30, Operator),<a name="line.189"></a>
+<span class="sourceLineNo">190</span>    // FRU Device Commands<a name="line.190"></a>
+<span class="sourceLineNo">191</span>    GetFRUInventoryAreaInfo("Get FRU Inventory Area Info", IpmiNetworkFunction.Storage, 0x10, User, GetFRUInventoryAreaInfoRequest.class, GetFRUInventoryAreaInfoResponse.class),<a name="line.191"></a>
+<span class="sourceLineNo">192</span>    ReadFRUData("Read FRU Data", IpmiNetworkFunction.Storage, 0x11, User, ReadFRUDataRequest.class, ReadFRUDataResponse.class),<a name="line.192"></a>
+<span class="sourceLineNo">193</span>    WriteFRUData("Write FRU Data", IpmiNetworkFunction.Storage, 0x12, Operator),<a name="line.193"></a>
+<span class="sourceLineNo">194</span>    // SDR Device Commands<a name="line.194"></a>
+<span class="sourceLineNo">195</span>    GetSDRRepositoryInfo("Get SDR Repository Info", IpmiNetworkFunction.Storage, 0x20, User, GetSDRRepositoryInfoRequest.class, GetSDRRepositoryInfoResponse.class),<a name="line.195"></a>
+<span class="sourceLineNo">196</span>    GetSDRRepositoryAllocationInfo("Get SDR Repository Allocation Info", IpmiNetworkFunction.Storage, 0x21, User),<a name="line.196"></a>
+<span class="sourceLineNo">197</span>    ReserveSDRRepository("Reserve SDR Repository", IpmiNetworkFunction.Storage, 0x22, User, ReserveSDRRepositoryRequest.class, ReserveSDRRepositoryResponse.class),<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    GetSDR("Get SDR", IpmiNetworkFunction.Storage, 0x23, User, GetSDRRequest.class, GetSDRResponse.class),<a name="line.198"></a>
+<span class="sourceLineNo">199</span>    AddSDR("Add SDR", IpmiNetworkFunction.Storage, 0x24, Operator),<a name="line.199"></a>
+<span class="sourceLineNo">200</span>    PartialAddSDR("Partial Add SDR", IpmiNetworkFunction.Storage, 0x25, Operator),<a name="line.200"></a>
+<span class="sourceLineNo">201</span>    DeleteSDR("Delete SDR", IpmiNetworkFunction.Storage, 0x26, Operator),<a name="line.201"></a>
+<span class="sourceLineNo">202</span>    ClearSDRRepository("Clear SDR Repository", IpmiNetworkFunction.Storage, 0x27, Operator),<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    GetSDRRepositoryTime("Get SDR Repository Time", IpmiNetworkFunction.Storage, 0x28, User),<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    SetSDRRepositoryTime("Set SDR Repository Time", IpmiNetworkFunction.Storage, 0x29, Operator),<a name="line.204"></a>
+<span class="sourceLineNo">205</span>    EnterSDRRepositoryUpdateMode("Enter SDR Repository Update Mode", IpmiNetworkFunction.Storage, 0x2A, Operator),<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    ExitSDRRepositoryUpdateMode("Exit SDR Repository Update Mode", IpmiNetworkFunction.Storage, 0x2B, Operator),<a name="line.206"></a>
+<span class="sourceLineNo">207</span>    RunInitializationAgent("Run Initialization Agent", IpmiNetworkFunction.Storage, 0x2C, Operator),<a name="line.207"></a>
+<span class="sourceLineNo">208</span>    // SEL Device Commands<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    GetSELInfo("Get SEL Info", IpmiNetworkFunction.Storage, 0x40, User, GetSELInfoRequest.class, GetSELInfoResponse.class),<a name="line.209"></a>
+<span class="sourceLineNo">210</span>    GetSELAllocationInfo("Get SEL Allocation Info", IpmiNetworkFunction.Storage, 0x41, User, GetSELAllocationInfoRequest.class, GetSELAllocationInfoResponse.class),<a name="line.210"></a>
+<span class="sourceLineNo">211</span>    ReserveSEL("Reserve SEL", IpmiNetworkFunction.Storage, 0x42, User),<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    GetSELEntry("Get SEL Entry", IpmiNetworkFunction.Storage, 0x43, User),<a name="line.212"></a>
+<span class="sourceLineNo">213</span>    AddSELEntry("Add SEL Entry", IpmiNetworkFunction.Storage, 0x44, Operator),<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    PartialAddSELEntry("Partial Add SEL Entry", IpmiNetworkFunction.Storage, 0x45, Operator),<a name="line.214"></a>
+<span class="sourceLineNo">215</span>    DeleteSELEntry("Delete SEL Entry", IpmiNetworkFunction.Storage, 0x46, Operator),<a name="line.215"></a>
+<span class="sourceLineNo">216</span>    ClearSEL("Clear SEL", IpmiNetworkFunction.Storage, 0x47, Operator),<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    GetSELTime("Get SEL Time", IpmiNetworkFunction.Storage, 0x48, User),<a name="line.217"></a>
+<span class="sourceLineNo">218</span>    SetSELTime("Set SEL Time", IpmiNetworkFunction.Storage, 0x49, Operator),<a name="line.218"></a>
+<span class="sourceLineNo">219</span>    GetAuxiliaryLogStatus("Get Auxiliary Log Status", IpmiNetworkFunction.Storage, 0x5A, User),<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    SetAuxiliaryLogStatus("Set Auxiliary Log Status", IpmiNetworkFunction.Storage, 0x5B, Administrator),<a name="line.220"></a>
+<span class="sourceLineNo">221</span>    GetSELTimeUTCOffset("Get SEL Time UTC Offset", IpmiNetworkFunction.Storage, 0x5C, User),<a name="line.221"></a>
+<span class="sourceLineNo">222</span>    SetSELTimeUTCOffset("Set SEL Time UTC Offset", IpmiNetworkFunction.Storage, 0x5D, Operator),<a name="line.222"></a>
+<span class="sourceLineNo">223</span>    // LAN Device Commands<a name="line.223"></a>
+<span class="sourceLineNo">224</span>    SetLANConfigurationParameters("Set LAN Configuration Parameters", IpmiNetworkFunction.Transport, 0x01, Administrator),<a name="line.224"></a>
+<span class="sourceLineNo">225</span>    GetLANConfigurationParameters("Get LAN Configuration Parameters", IpmiNetworkFunction.Transport, 0x02, Operator, GetLANConfigurationParametersRequest.class, GetLANConfigurationParametersResponse.class),<a name="line.225"></a>
+<span class="sourceLineNo">226</span>    SuspendBMCARPs("Suspend BMC ARPs", IpmiNetworkFunction.Transport, 0x03, Administrator),<a name="line.226"></a>
+<span class="sourceLineNo">227</span>    GetIP_UDP_RMCPStatistics("Get IP/UDP/RMCP Statistics", IpmiNetworkFunction.Transport, 0x04, User),<a name="line.227"></a>
+<span class="sourceLineNo">228</span>    // Serial/Modem Device Commands<a name="line.228"></a>
+<span class="sourceLineNo">229</span>    SetSerialModemConfiguration("Set Serial/Modem Configuration", IpmiNetworkFunction.Transport, 0x10, Administrator),<a name="line.229"></a>
+<span class="sourceLineNo">230</span>    GetSerialModemConfiguration("Get Serial/Modem Configuration", IpmiNetworkFunction.Transport, 0x11, Operator),<a name="line.230"></a>
+<span class="sourceLineNo">231</span>    SetSerialModemMux("Set Serial/Modem Mux", IpmiNetworkFunction.Transport, 0x12, Operator),<a name="line.231"></a>
+<span class="sourceLineNo">232</span>    GetTAPResponseCodes("Get TAP Response Codes", IpmiNetworkFunction.Transport, 0x13, User),<a name="line.232"></a>
+<span class="sourceLineNo">233</span>    SetPPPUDPProxyTransmitData("Set PPP UDP Proxy Transmit Data", IpmiNetworkFunction.Transport, 0x14), // System only<a name="line.233"></a>
+<span class="sourceLineNo">234</span>    GetPPPUDPProxyTransmitData("Get PPP UDP Proxy Transmit Data", IpmiNetworkFunction.Transport, 0x15), // System only<a name="line.234"></a>
+<span class="sourceLineNo">235</span>    SendPPPUDPProxyPacket("Send PPP UDP Proxy Packet", IpmiNetworkFunction.Transport, 0x16), // System only<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    GetPPPUDPProxyReceiveData("Get PPP UDP Proxy Receive Data", IpmiNetworkFunction.Transport, 0x17), // System only<a name="line.236"></a>
+<span class="sourceLineNo">237</span>    SerialModemConnectionActive("Serial/Modem Connection Active", IpmiNetworkFunction.Transport, 0x18, Unprotected), // Before session<a name="line.237"></a>
+<span class="sourceLineNo">238</span>    Callback("Callback", IpmiNetworkFunction.Transport, 0x19, Administrator),<a name="line.238"></a>
+<span class="sourceLineNo">239</span>    SetUserCallbackOptions("Set User Callback Options", IpmiNetworkFunction.Transport, 0x1A, Administrator),<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    GetUserCallbackOptions("Get User Callback Options", IpmiNetworkFunction.Transport, 0x1B, User),<a name="line.240"></a>
+<span class="sourceLineNo">241</span>    SetSerialRoutingMux("Set Serial Routing Mux", IpmiNetworkFunction.Transport, 0x1C, Administrator),<a name="line.241"></a>
+<span class="sourceLineNo">242</span>    SOLActivating("SOL Activating", IpmiNetworkFunction.Transport, 0x20), // Weird.<a name="line.242"></a>
+<span class="sourceLineNo">243</span>    SetSOLConfigurationParameters("Set SOL Configuration Parameters", IpmiNetworkFunction.Transport, 0x21, Administrator),<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    GetSOLConfigurationParameters("Get SOL Configuration Parameters", IpmiNetworkFunction.Transport, 0x22, User, GetSOLConfigurationParametersRequest.class, GetSOLConfigurationParametersResponse.class),<a name="line.244"></a>
+<span class="sourceLineNo">245</span>    // Command Forwarding Commands<a name="line.245"></a>
+<span class="sourceLineNo">246</span>    ForwardedCommand("Forwarded Command", IpmiNetworkFunction.Transport, 0x30), // Weird<a name="line.246"></a>
+<span class="sourceLineNo">247</span>    SetForwardedCommands("Set Forwarded Commands", IpmiNetworkFunction.Transport, 0x31, Administrator),<a name="line.247"></a>
+<span class="sourceLineNo">248</span>    GetForwardedCommands("Get Forwarded Commands", IpmiNetworkFunction.Transport, 0x32, User),<a name="line.248"></a>
+<span class="sourceLineNo">249</span>    EnableForwardedCommands("Enable Forwarded Commands", IpmiNetworkFunction.Transport, 0x33, Administrator),<a name="line.249"></a>
+<span class="sourceLineNo">250</span>    // Bridge Management Commands (ICMB)<a name="line.250"></a>
+<span class="sourceLineNo">251</span>    GetBridgeState("Get Bridge State", IpmiNetworkFunction.Bridge, 0x00, User),<a name="line.251"></a>
+<span class="sourceLineNo">252</span>    SetBridgeState("Set Bridge State", IpmiNetworkFunction.Bridge, 0x01, Operator),<a name="line.252"></a>
+<span class="sourceLineNo">253</span>    GetICMBAddress("Get ICMB Address", IpmiNetworkFunction.Bridge, 0x02, User),<a name="line.253"></a>
+<span class="sourceLineNo">254</span>    SetICMBAddress("Set ICMB Address", IpmiNetworkFunction.Bridge, 0x03, Operator),<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    SetBridgeProxyAddress("Set Bridge ProxyAddress", IpmiNetworkFunction.Bridge, 0x04, Operator),<a name="line.255"></a>
+<span class="sourceLineNo">256</span>    GetBridgeStatistics("Get Bridge Statistics", IpmiNetworkFunction.Bridge, 0x05, User),<a name="line.256"></a>
+<span class="sourceLineNo">257</span>    GetICMBCapabilities("Get ICMB Capabilities", IpmiNetworkFunction.Bridge, 0x06, User),<a name="line.257"></a>
+<span class="sourceLineNo">258</span>    ClearBridgeStatistics("Clear Bridge Statistics", IpmiNetworkFunction.Bridge, 0x08, Operator),<a name="line.258"></a>
+<span class="sourceLineNo">259</span>    GetBridgeProxyAddress("Get Bridge Proxy Address", IpmiNetworkFunction.Bridge, 0x09, User),<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    GetICMBConnectorInfo("Get ICMB Connector Info", IpmiNetworkFunction.Bridge, 0x0A, User),<a name="line.260"></a>
+<span class="sourceLineNo">261</span>    GetICMBConnectionID("Get ICMB Connection ID", IpmiNetworkFunction.Bridge, 0x0B, User),<a name="line.261"></a>
+<span class="sourceLineNo">262</span>    SendICMBConnectionID("Send ICMB Connection ID", IpmiNetworkFunction.Bridge, 0x0C, User),<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    // Discovery Commands (ICMB)<a name="line.263"></a>
+<span class="sourceLineNo">264</span>    PrepareForDiscovery("PrepareForDiscovery", IpmiNetworkFunction.Bridge, 0x10, Operator),<a name="line.264"></a>
+<span class="sourceLineNo">265</span>    GetAddresses("GetAddresses", IpmiNetworkFunction.Bridge, 0x11, User),<a name="line.265"></a>
+<span class="sourceLineNo">266</span>    SetDiscovered("SetDiscovered", IpmiNetworkFunction.Bridge, 0x12, Operator),<a name="line.266"></a>
+<span class="sourceLineNo">267</span>    GetChassisDeviceId("GetChassisDeviceId", IpmiNetworkFunction.Bridge, 0x13, User),<a name="line.267"></a>
+<span class="sourceLineNo">268</span>    SetChassisDeviceId("SetChassisDeviceId", IpmiNetworkFunction.Bridge, 0x14, Operator),<a name="line.268"></a>
+<span class="sourceLineNo">269</span>    // Bridging Commands (ICMB)<a name="line.269"></a>
+<span class="sourceLineNo">270</span>    BridgeRequest("BridgeRequest", IpmiNetworkFunction.Bridge, 0x20, Operator),<a name="line.270"></a>
+<span class="sourceLineNo">271</span>    BridgeMessage("BridgeMessage", IpmiNetworkFunction.Bridge, 0x21, Operator),<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    // Event Commands (ICMB)<a name="line.272"></a>
+<span class="sourceLineNo">273</span>    GetEventCount("GetEventCount", IpmiNetworkFunction.Bridge, 0x30, User),<a name="line.273"></a>
+<span class="sourceLineNo">274</span>    SetEventDestination("SetEventDestination", IpmiNetworkFunction.Bridge, 0x31, Operator),<a name="line.274"></a>
+<span class="sourceLineNo">275</span>    SetEventReceptionState("SetEventReceptionState", IpmiNetworkFunction.Bridge, 0x32, Operator),<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    SendICMBEventMessage("SendICMBEventMessage", IpmiNetworkFunction.Bridge, 0x33, Operator),<a name="line.276"></a>
+<span class="sourceLineNo">277</span>    GetEventDestination("GetEventDestination (optional)", IpmiNetworkFunction.Bridge, 0x34, User),<a name="line.277"></a>
+<span class="sourceLineNo">278</span>    GetEventReceptionState("GetEventReceptionState (optional)", IpmiNetworkFunction.Bridge, 0x35, User),<a name="line.278"></a>
+<span class="sourceLineNo">279</span>    // OEM commands for PICMG<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    /** [IPMI2] Section 5.1, table 5-1, page 41, "Group Extension" */<a name="line.280"></a>
+<span class="sourceLineNo">281</span>    PICMGExtension("PICMG Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x00, Unprotected),<a name="line.281"></a>
+<span class="sourceLineNo">282</span>    DMTFExtension("DMTF Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x01, Unprotected),<a name="line.282"></a>
+<span class="sourceLineNo">283</span>    SSIForumExtension("SSI Forum Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x02, Unprotected),<a name="line.283"></a>
+<span class="sourceLineNo">284</span>    VITAStandardsExtension("VITA Standards Organization Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0x03, Unprotected),<a name="line.284"></a>
+<span class="sourceLineNo">285</span>    DCMIExtension("DCMI Specifications Non-IPMI Command", IpmiNetworkFunction.GroupExtension, 0xDC, Unprotected),<a name="line.285"></a>
+<span class="sourceLineNo">286</span>    // OEM Commands for Bridge NetFn<a name="line.286"></a>
+<span class="sourceLineNo">287</span>    // OEMCommands("OEM Commands", IpmiNetworkFunction.Bridge, 0xC0h-FE),<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    // Other Bridge Commands<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    ErrorReport("Error Report (optional)", IpmiNetworkFunction.Bridge, 0xFF, User);<a name="line.289"></a>
+<span class="sourceLineNo">290</span>    private final String name;<a name="line.290"></a>
+<span class="sourceLineNo">291</span>    private final IpmiNetworkFunction networkFunction;<a name="line.291"></a>
+<span class="sourceLineNo">292</span>    private final byte code;<a name="line.292"></a>
+<span class="sourceLineNo">293</span>    private final IpmiChannelPrivilegeLevel privilegeLevel;<a name="line.293"></a>
+<span class="sourceLineNo">294</span>    private final Class&lt;? extends IpmiRequest&gt; requestType;<a name="line.294"></a>
+<span class="sourceLineNo">295</span>    private final Class&lt;? extends IpmiResponse&gt; responseType;<a name="line.295"></a>
+<span class="sourceLineNo">296</span><a name="line.296"></a>
+<span class="sourceLineNo">297</span>    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel,<a name="line.297"></a>
+<span class="sourceLineNo">298</span>            @CheckForNull Class&lt;? extends IpmiRequest&gt; requestType, @CheckForNull Class&lt;? extends IpmiResponse&gt; responseType) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        this.name = name;<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        this.networkFunction = networkFunction;<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        this.code = UnsignedBytes.checkedCast(code);<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        this.privilegeLevel = privilegeLevel;<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        this.requestType = requestType;<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        this.responseType = responseType;<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    }<a name="line.305"></a>
+<span class="sourceLineNo">306</span><a name="line.306"></a>
+<span class="sourceLineNo">307</span>    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code, @CheckForNull IpmiChannelPrivilegeLevel privilegeLevel) {<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        this(name, networkFunction, code, privilegeLevel, null, null);<a name="line.308"></a>
+<span class="sourceLineNo">309</span>    }<a name="line.309"></a>
+<span class="sourceLineNo">310</span><a name="line.310"></a>
+<span class="sourceLineNo">311</span>    @Deprecated<a name="line.311"></a>
+<span class="sourceLineNo">312</span>    private IpmiCommandName(@Nonnull String name, @Nonnull IpmiNetworkFunction networkFunction, @Nonnegative int code) {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>        this(name, networkFunction, code, null);<a name="line.313"></a>
+<span class="sourceLineNo">314</span>    }<a name="line.314"></a>
+<span class="sourceLineNo">315</span><a name="line.315"></a>
+<span class="sourceLineNo">316</span>    @Nonnull<a name="line.316"></a>
+<span class="sourceLineNo">317</span>    public String getName() {<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        return name;<a name="line.318"></a>
+<span class="sourceLineNo">319</span>    }<a name="line.319"></a>
+<span class="sourceLineNo">320</span><a name="line.320"></a>
+<span class="sourceLineNo">321</span>    @Nonnull<a name="line.321"></a>
+<span class="sourceLineNo">322</span>    public IpmiNetworkFunction getNetworkFunction() {<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        return networkFunction;<a name="line.323"></a>
+<span class="sourceLineNo">324</span>    }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>    @Override<a name="line.326"></a>
+<span class="sourceLineNo">327</span>    public byte getCode() {<a name="line.327"></a>
+<span class="sourceLineNo">328</span>        return code;<a name="line.328"></a>
+<span class="sourceLineNo">329</span>    }<a name="line.329"></a>
+<span class="sourceLineNo">330</span><a name="line.330"></a>
+<span class="sourceLineNo">331</span>    @CheckForNull<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    public IpmiChannelPrivilegeLevel getPrivilegeLevel() {<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        return privilegeLevel;<a name="line.333"></a>
+<span class="sourceLineNo">334</span>    }<a name="line.334"></a>
+<span class="sourceLineNo">335</span><a name="line.335"></a>
+<span class="sourceLineNo">336</span>    @CheckForNull<a name="line.336"></a>
+<span class="sourceLineNo">337</span>    public Class&lt;? extends IpmiRequest&gt; getRequestType() {<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        return requestType;<a name="line.338"></a>
+<span class="sourceLineNo">339</span>    }<a name="line.339"></a>
+<span class="sourceLineNo">340</span><a name="line.340"></a>
+<span class="sourceLineNo">341</span>    @CheckForNull<a name="line.341"></a>
+<span class="sourceLineNo">342</span>    public Class&lt;? extends IpmiResponse&gt; getResponseType() {<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        return responseType;<a name="line.343"></a>
+<span class="sourceLineNo">344</span>    }<a name="line.344"></a>
+<span class="sourceLineNo">345</span><a name="line.345"></a>
+<span class="sourceLineNo">346</span>    // TODO: Packet data factory.<a name="line.346"></a>
+<span class="sourceLineNo">347</span>    @Override<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    public String toString() {<a name="line.348"></a>
+<span class="sourceLineNo">349</span>        return name() + "(" + getNetworkFunction().name() + ".0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getName() + " [" + getPrivilegeLevel() + "])";<a name="line.349"></a>
+<span class="sourceLineNo">350</span>    }<a name="line.350"></a>
+<span class="sourceLineNo">351</span><a name="line.351"></a>
+<span class="sourceLineNo">352</span>    /**<a name="line.352"></a>
+<span class="sourceLineNo">353</span>     * @see Code#fromByte(Class, byte)<a name="line.353"></a>
+<span class="sourceLineNo">354</span>     */<a name="line.354"></a>
+<span class="sourceLineNo">355</span>    @Nonnull<a name="line.355"></a>
+<span class="sourceLineNo">356</span>    public static IpmiCommandName fromByte(@Nonnull IpmiNetworkFunction networkFunction, byte code) {<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        for (IpmiCommandName value : values())<a name="line.357"></a>
+<span class="sourceLineNo">358</span>            if (networkFunction.equals(value.getNetworkFunction()))<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                if (value.getCode() == code)<a name="line.359"></a>
+<span class="sourceLineNo">360</span>                    return value;<a name="line.360"></a>
+<span class="sourceLineNo">361</span>        throw new IllegalArgumentException("Unknown IpmiCommand code for netfn " + networkFunction + " 0x" + Integer.toHexString(code));<a name="line.361"></a>
+<span class="sourceLineNo">362</span>    }<a name="line.362"></a>
+<span class="sourceLineNo">363</span><a name="line.363"></a>
+<span class="sourceLineNo">364</span>    @Nonnull<a name="line.364"></a>
+<span class="sourceLineNo">365</span>    private &lt;T extends IpmiCommand&gt; T newInstance(@Nonnull Class&lt;T&gt; type) {<a name="line.365"></a>
+<span class="sourceLineNo">366</span>        try {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>            return type.newInstance();<a name="line.367"></a>
+<span class="sourceLineNo">368</span>        } catch (InstantiationException | IllegalAccessException e) {<a name="line.368"></a>
+<span class="sourceLineNo">369</span>            throw Throwables.propagate(e);<a name="line.369"></a>
+<span class="sourceLineNo">370</span>        }<a name="line.370"></a>
+<span class="sourceLineNo">371</span>    }<a name="line.371"></a>
+<span class="sourceLineNo">372</span><a name="line.372"></a>
+<span class="sourceLineNo">373</span>    @Nonnull<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    public IpmiCommand newRequestMessage() {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>        if (requestType == null)<a name="line.375"></a>
+<span class="sourceLineNo">376</span>            return new UnknownIpmiRequest(this);<a name="line.376"></a>
+<span class="sourceLineNo">377</span>        return newInstance(requestType);<a name="line.377"></a>
+<span class="sourceLineNo">378</span>    }<a name="line.378"></a>
+<span class="sourceLineNo">379</span><a name="line.379"></a>
+<span class="sourceLineNo">380</span>    @Nonnull<a name="line.380"></a>
+<span class="sourceLineNo">381</span>    public IpmiCommand newResponseMessage() {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>        if (requestType == null)<a name="line.382"></a>
+<span class="sourceLineNo">383</span>            return new UnknownIpmiResponse(this);<a name="line.383"></a>
+<span class="sourceLineNo">384</span>        return newInstance(responseType);<a name="line.384"></a>
+<span class="sourceLineNo">385</span>    }<a name="line.385"></a>
+<span class="sourceLineNo">386</span>}<a name="line.386"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

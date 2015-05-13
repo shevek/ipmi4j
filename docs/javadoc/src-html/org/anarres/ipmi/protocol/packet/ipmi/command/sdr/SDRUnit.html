@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * To change this template, choose Tools | Templates<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * and open the template in the editor.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> */<a name="line.4"></a>
+<span class="sourceLineNo">005</span>package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.google.common.primitives.UnsignedBytes;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.anarres.ipmi.protocol.packet.common.Code;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>/**<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * [IPMI2] Section 43.17, table 43-15, page 557.<a name="line.11"></a>
+<span class="sourceLineNo">012</span> *<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * @author shevek<a name="line.13"></a>
+<span class="sourceLineNo">014</span> */<a name="line.14"></a>
+<span class="sourceLineNo">015</span>public enum SDRUnit implements Code.DescriptiveWrapper {<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>    Unspecified(0, "unspecified"),<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    Degrees_C(1, "degrees C"),<a name="line.18"></a>
+<span class="sourceLineNo">019</span>    Degrees_F(2, "degrees F"),<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    Degrees_K(3, "degrees K"),<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    Volts(4, "Volts"),<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    Amps(5, "Amps"),<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    Watts(6, "Watts"),<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    Joules(7, "Joules"),<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    Coulombs(8, "Coulombs"),<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    VA(9, "VA"),<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    Nits(10, "Nits"),<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    lumen(11, "lumen"),<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    lux(12, "lux"),<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    Candela(13, "Candela"),<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    kPa(14, "kPa"),<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    PSI(15, "PSI"),<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    Newton(16, "Newton"),<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    CFM(17, "CFM"),<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    RPM(18, "RPM"),<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    Hz(19, "Hz"),<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    microsecond(20, "microsecond"),<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    millisecond(21, "millisecond"),<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    second(22, "second"),<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    minute(23, "minute"),<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    hour(24, "hour"),<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    day(25, "day"),<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    week(26, "week"),<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    mil(27, "mil"),<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    inches(28, "inches"),<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    feet(29, "feet"),<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    cubic_in(30, "cu in"),<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    cubic_feet(31, "cu feet"),<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    mm(32, "mm"),<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    cm(33, "cm"),<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    m(34, "m"),<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    cubic_cm(35, "cu cm"),<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    cubic_m(36, "cu m"),<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    liters(37, "liters"),<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    fluid_ounce(38, "fluid ounce"),<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    radians(39, "radians"),<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    steradians(40, "steradians"),<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    revolutions(41, "revolutions"),<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    cycles(42, "cycles"),<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    gravities(43, "gravities"),<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    ounce(44, "ounce"),<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    pound(45, "pound"),<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    ft_lb(46, "ft-lb"),<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    oz_in(47, "oz-in"),<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    gauss(48, "gauss"),<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    gilberts(49, "gilberts"),<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    henry(50, "henry"),<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    millihenry(51, "millihenry"),<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    farad(52, "farad"),<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    microfarad(53, "microfarad"),<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    ohms(54, "ohms"),<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    siemens(55, "siemens"),<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    mole(56, "mole"),<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    becquerel(57, "becquerel"),<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    PPM(58, "PPM (parts/million)"),<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    Reserved_59(59, "reserved"),<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    Decibels(60, "Decibels"),<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    DbA(61, "DbA"),<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    DbC(62, "DbC"),<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    gray(63, "gray"),<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    sievert(64, "sievert"),<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    color_temp_deg_K(65, "color temp deg K"),<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    bit(66, "bit"),<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    kilobit(67, "kilobit"),<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    megabit(68, "megabit"),<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    gigabit(69, "gigabit"),<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    Byte(70, "byte"),<a name="line.87"></a>
+<span class="sourceLineNo">088</span>    kilobyte(71, "kilobyte"),<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    megabyte(72, "megabyte"),<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    gigabyte(73, "gigabyte"),<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    word(74, "word (data)"),<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    dword(75, "dword"),<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    qword(76, "qword"),<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    line(77, "line (re. mem. line)"),<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    hit(78, "hit"),<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    miss(79, "miss"),<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    retry(80, "retry"),<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    reset(81, "reset"),<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    overrun(82, "overrun / overflow"),<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    underrun(83, "underrun"),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    collision(84, "collision"),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    packets(85, "packets"),<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    messages(86, "messages"),<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    characters(87, "characters"),<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    error(88, "error"),<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    correctable_error(89, "correctable error"),<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    uncorrectable_error(90, "uncorrectable error"),<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    fatal_error(91, "fatal error"),<a name="line.108"></a>
+<span class="sourceLineNo">109</span>    grams(92, "grams");<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    private final byte code;<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    private final String description;<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    /* pp */ SDRUnit(int code, String description) {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        this.code = UnsignedBytes.checkedCast(code);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        this.description = description;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>    @Override<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    public byte getCode() {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        return code;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    }<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>    @Override<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    public String getDescription() {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        return description;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>    }<a name="line.125"></a>
+<span class="sourceLineNo">126</span><a name="line.126"></a>
+<span class="sourceLineNo">127</span>    @Override<a name="line.127"></a>
+<span class="sourceLineNo">128</span>    public String toString() {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    }<a name="line.130"></a>
+<span class="sourceLineNo">131</span>}<a name="line.131"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

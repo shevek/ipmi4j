@@ -1,0 +1,1128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * To change this template, choose Tools | Templates<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * and open the template in the editor.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> */<a name="line.4"></a>
+<span class="sourceLineNo">005</span>package org.anarres.ipmi.protocol.packet.ipmi.command.sensor;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.google.common.primitives.UnsignedBytes;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import javax.annotation.Nonnegative;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import javax.annotation.Nonnull;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.anarres.ipmi.protocol.packet.common.Bits;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import org.anarres.ipmi.protocol.packet.common.Code;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.anarres.ipmi.protocol.packet.ipmi.IpmiChannelNumber;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.anarres.ipmi.protocol.packet.ipmi.command.AbstractIpmiCommand;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.anarres.ipmi.protocol.packet.ipmi.command.chassis.GetSystemRestartCauseResponse;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span>/**<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * [IPMI2] Section 42.2, table 42-3, pages 508-521.<a name="line.17"></a>
+<span class="sourceLineNo">018</span> *<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * @author shevek<a name="line.19"></a>
+<span class="sourceLineNo">020</span> */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>public interface SensorSpecificOffset extends Code.DescriptiveWrapper {<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     * [IPMI2] Section 42.2, table 42-3, page 508.<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     */<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    public static enum PhysicalSecurity implements SensorSpecificOffset {<a name="line.26"></a>
+<span class="sourceLineNo">027</span><a name="line.27"></a>
+<span class="sourceLineNo">028</span>        General_Chassis_Intrusion(0x00, "General Chassis Intrusion"),<a name="line.28"></a>
+<span class="sourceLineNo">029</span>        Drive_Bay_Intrusion(0x01, "Drive Bay intrusion"),<a name="line.29"></a>
+<span class="sourceLineNo">030</span>        IO_Card_Area_Intrusion(0x02, "I/O Card area intrusion"),<a name="line.30"></a>
+<span class="sourceLineNo">031</span>        Processor_Area_Intrusion(0x03, "Processor area intrusion"),<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        /** System is unplugged from LAN. The Event Data 2 field can be used to identify which network controller the leash was lost on where 00h corresponds to the first (or only) network controller. */<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        LAN_Leash_Lost(0x04, "LAN Leash Lost"),<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        Unauthorized_Dock(0x05, "Unauthorized dock"),<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        /** (supports detection of hot plug fan tampering) */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        FAN_Area_Intrusion(0x06, "FAN area intrusion");<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        private final byte code;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        private final String description;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        /* pp */ private PhysicalSecurity(@Nonnegative int code, @Nonnull String description) {<a name="line.39"></a>
+<span class="sourceLineNo">040</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.40"></a>
+<span class="sourceLineNo">041</span>            this.description = description;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        }<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>        @Override<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        public byte getCode() {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>            return code;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>        @Override<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        public String getDescription() {<a name="line.50"></a>
+<span class="sourceLineNo">051</span>            return description;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        }<a name="line.52"></a>
+<span class="sourceLineNo">053</span><a name="line.53"></a>
+<span class="sourceLineNo">054</span>        @Override<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        public String toString() {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>            return Code.Utils.toString(this);<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        }<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * [IPMI2] Section 42.2, table 42-3, page 508.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     */<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    public static enum PlatformSecurity implements SensorSpecificOffset {<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>        Secure_Mode_Violation_Attempt(0x00, "Secure Mode (Front Panel Lockout) Violation attempt"),<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        Pre_Boot_Password_Violation_UserPassword(0x01, "Pre-boot Password Violation - user password"),<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        Pre_Boot_Password_Violation_SetupPassword(0x02, "Pre-boot Password Violation attempt - setup password"),<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        Pre_Boot_Password_Violation_NetworkBootPassword(0x03, "Pre-boot Password Violation - network boot password"),<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        Pre_Boot_Password_Violation_Other(0x04, "Other pre-boot Password Violation"),<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        Out_Of_Band_Password_Violation(0x05, "Out-of-band Access Password Violation");<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private final byte code;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        private final String description;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        /* pp */ private PlatformSecurity(@Nonnegative int code, @Nonnull String description) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.74"></a>
+<span class="sourceLineNo">075</span>            this.description = description;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>        @Override<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        public byte getCode() {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>            return code;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        }<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>        @Override<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        public String getDescription() {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>            return description;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        }<a name="line.86"></a>
+<span class="sourceLineNo">087</span><a name="line.87"></a>
+<span class="sourceLineNo">088</span>        @Override<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        public String toString() {<a name="line.89"></a>
+<span class="sourceLineNo">090</span>            return Code.Utils.toString(this);<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>    /**<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * [IPMI2] Section 42.2, table 42-3, page 508.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public static enum Processor implements SensorSpecificOffset {<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>        IERR(0x00, "IERR"),<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        Thermal_Trip(0x01, "Thermal Trip"),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        FRB1_BIST_failure(0x02, "FRB1/BIST failure"),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        /** (used hang is believed to be due or related to a processor failure. Use System Firmware Progress sensor for other BIOS hangs.) */<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        FRB2_Hang_in_POST_failure(0x03, "FRB2/Hang in POST failure"),<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        FRB3_Processor_Startup_failure(0x04, "FRB3/Processor Startup/Initialization failure (CPU didn't start)"),<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        Configuration_Error(0x05, "Configuration Error"),<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        Uncorrectable_CPU_complex_Error(0x06, "SM BIOS 'Uncorrectable CPU-complex Error'"),<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        Processor_Presence_detected(0x07, "Processor Presence detected"),<a name="line.107"></a>
+<span class="sourceLineNo">108</span>        Processor_disabled(0x08, "Processor disabled"),<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        Terminator_Presence_Detected(0x09, "Terminator Presence Detected"),<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        /** (processor throttling triggered by a hardware-based mechanism operating independent from system software, such as automatic thermal throttling or throttling to limit power consumption.) */<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        Processor_Automatically_Throttled(0x0A, "Processor Automatically Throttled"),<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        Machine_Check_Exception(0x0B, "Machine Check Exception (Uncorrectable)"),<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        Correctable_Machine_Check_Error(0x0C, "Correctable Machine Check Error");<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        private final byte code;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        private final String description;<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        /* pp */ private Processor(@Nonnegative int code, @Nonnull String description) {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>            this.description = description;<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span>        @Override<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        public byte getCode() {<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            return code;<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        }<a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>        @Override<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        public String getDescription() {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>            return description;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        }<a name="line.129"></a>
+<span class="sourceLineNo">130</span><a name="line.130"></a>
+<span class="sourceLineNo">131</span>        @Override<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        public String toString() {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>            return Code.Utils.toString(this);<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
+<span class="sourceLineNo">135</span>    }<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>    /**<a name="line.137"></a>
+<span class="sourceLineNo">138</span>     * [IPMI2] Section 42.2, table 42-3, page 509.<a name="line.138"></a>
+<span class="sourceLineNo">139</span>     */<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    public static enum PowerSupply implements SensorSpecificOffset {<a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>        Presence_Detected(0x00, "Presence detected."),<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        Power_Supply_Failure_Detected(0x01, "Power Supply Failure detected."),<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        Predictive_Failure(0x02, "Predictive Failure."),<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        Power_Supply_Input_Lost(0x03, "Power Supply input lost (AC/DC)."),<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        Power_Supply_Input_Lost_or_Out_of_Range(0x04, "Power Supply input lost or out-of-range."),<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        Power_Supply_Input_Out_of_Range_but_Present(0x05, "Power Supply input out-of-range, but present."),<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        Configuration_Error(0x06, "Configuration error.") {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            // ConfigurationErrorValue<a name="line.149"></a>
+<span class="sourceLineNo">150</span>            public Object decodeEventData3(byte value) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                return Code.fromByte(ConfigurationErrorData3.class, value);<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            }<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        },<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        /** Power supply is in a standby state where its main outputs have been automatically deactivated because the load is being supplied by one or more other power supplies. */<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        Power_Supply_Inactive(0x07, "Power Supply Inactive (in standby state).");<a name="line.155"></a>
+<span class="sourceLineNo">156</span><a name="line.156"></a>
+<span class="sourceLineNo">157</span>        /**<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         The Event Data 3 field provides a more detailed definition of the error:<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         7:4 = Reserved for future definition, set to 0000b<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         3:0 = Error Type, one of */<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        public static enum ConfigurationErrorData3 implements Code.DescriptiveWrapper {<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>            /** Typically, the system OEM defines the vendor compatibility criteria that drives this status). */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>            VendorMismatch(0x00, "Vendor mismatch."),<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            /** Typically, the system OEM defines the vendor revision compatibility criteria that drives this status). */<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            RevisionMismatch(0x01, "Revision mismatch."),<a name="line.166"></a>
+<span class="sourceLineNo">167</span>            /** For processor power supplies (typically DC-to-DC converters or VRMs), there's usually a one-to- one relationship between the supply and the CPU. This offset can indicate the situation where the power supply is present but the processor is not. This offset can be used for reporting that as an unexpected or unsupported condition. */<a name="line.167"></a>
+<span class="sourceLineNo">168</span>            ProcessorMissing(0x02, "Processor missing."),<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            /** The power rating of the supply does not match the system's requirements. */<a name="line.169"></a>
+<span class="sourceLineNo">170</span>            PowerSupplyRatingMismatch(0x03, "Power Supply rating mismatch."),<a name="line.170"></a>
+<span class="sourceLineNo">171</span>            /** The voltage rating of the supply does not match the system's requirements. */<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            VoltageRatingMismatch(0x04, "Voltage rating mismatch.");<a name="line.172"></a>
+<span class="sourceLineNo">173</span>            private final byte code;<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            private final String description;<a name="line.174"></a>
+<span class="sourceLineNo">175</span>            /* pp */ private ConfigurationErrorData3(@Nonnegative int code, @Nonnull String description) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                this.description = description;<a name="line.177"></a>
+<span class="sourceLineNo">178</span>            }<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>            @Override<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            public byte getCode() {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                return code;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>            @Override<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            public String getDescription() {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                return description;<a name="line.187"></a>
+<span class="sourceLineNo">188</span>            }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>            @Override<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            public String toString() {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                return Code.Utils.toString(this);<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        private final byte code;<a name="line.195"></a>
+<span class="sourceLineNo">196</span>        private final String description;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        /* pp */ private PowerSupply(@Nonnegative int code, @Nonnull String description) {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            this.description = description;<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        }<a name="line.200"></a>
+<span class="sourceLineNo">201</span><a name="line.201"></a>
+<span class="sourceLineNo">202</span>        @Override<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        public byte getCode() {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>            return code;<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        }<a name="line.205"></a>
+<span class="sourceLineNo">206</span><a name="line.206"></a>
+<span class="sourceLineNo">207</span>        @Override<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        public String getDescription() {<a name="line.208"></a>
+<span class="sourceLineNo">209</span>            return description;<a name="line.209"></a>
+<span class="sourceLineNo">210</span>        }<a name="line.210"></a>
+<span class="sourceLineNo">211</span><a name="line.211"></a>
+<span class="sourceLineNo">212</span>        @Override<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        public String toString() {<a name="line.213"></a>
+<span class="sourceLineNo">214</span>            return Code.Utils.toString(this);<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        }<a name="line.215"></a>
+<span class="sourceLineNo">216</span>    }<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>    /**<a name="line.218"></a>
+<span class="sourceLineNo">219</span>     * [IPMI2] Section 42.2, table 42-3, page 509.<a name="line.219"></a>
+<span class="sourceLineNo">220</span>     */<a name="line.220"></a>
+<span class="sourceLineNo">221</span>    public static enum PowerUnit implements SensorSpecificOffset {<a name="line.221"></a>
+<span class="sourceLineNo">222</span><a name="line.222"></a>
+<span class="sourceLineNo">223</span>        PowerOff(0x00, "Power Off / Power Down"),<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        PowerCycle(0x01, "Power Cycle"),<a name="line.224"></a>
+<span class="sourceLineNo">225</span>        _240VAPowerDown(0x02, "240VA Power Down"),<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        InterlockPowerDown(0x03, "Interlock Power Down"),<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        /** The power source for the power unit was lost. */<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        ACLost(0x04, "AC lost / Power input lost"),<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        /** Unit did not respond to request to turn on. */<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        SoftPowerControlFailure(0x05, "Soft Power Control Failure"),<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        PowerUnitFailure(0x06, "Power Unit Failure detected"),<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        PredictiveFailure(0x07, "Predictive Failure");<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        private final byte code;<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        private final String description;<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        /* pp */ private PowerUnit(@Nonnegative int code, @Nonnull String description) {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.236"></a>
+<span class="sourceLineNo">237</span>            this.description = description;<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        }<a name="line.238"></a>
+<span class="sourceLineNo">239</span><a name="line.239"></a>
+<span class="sourceLineNo">240</span>        @Override<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        public byte getCode() {<a name="line.241"></a>
+<span class="sourceLineNo">242</span>            return code;<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        }<a name="line.243"></a>
+<span class="sourceLineNo">244</span><a name="line.244"></a>
+<span class="sourceLineNo">245</span>        @Override<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        public String getDescription() {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>            return description;<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        }<a name="line.248"></a>
+<span class="sourceLineNo">249</span><a name="line.249"></a>
+<span class="sourceLineNo">250</span>        @Override<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        public String toString() {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>            return Code.Utils.toString(this);<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        }<a name="line.253"></a>
+<span class="sourceLineNo">254</span>    }<a name="line.254"></a>
+<span class="sourceLineNo">255</span><a name="line.255"></a>
+<span class="sourceLineNo">256</span>    /**<a name="line.256"></a>
+<span class="sourceLineNo">257</span>     * [IPMI2] Section 42.2, table 42-3, page 510.<a name="line.257"></a>
+<span class="sourceLineNo">258</span>     */<a name="line.258"></a>
+<span class="sourceLineNo">259</span>    public static enum Memory implements SensorSpecificOffset {<a name="line.259"></a>
+<span class="sourceLineNo">260</span><a name="line.260"></a>
+<span class="sourceLineNo">261</span>        CorrectableECC(0x00, "Correctable ECC."),<a name="line.261"></a>
+<span class="sourceLineNo">262</span>        UncorrectableECC(0x01, "Uncorrectable ECC."),<a name="line.262"></a>
+<span class="sourceLineNo">263</span>        Parity(0x02, "Parity."),<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        /** Stuck bit. */<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        MemoryScrubFailed(0x03, "Memory Scrub Failed."),<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        MemoryDeviceDisabled(0x04, "Memory Device Disabled."),<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        CorrectableECCLoggingLimitReached(0x05, "Correctable ECC logging limit reached."),<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        /** Indicates presence of entity associated with the sensor. Typically the entity will be a 'memory module' or other entity representing a physically replaceable unit of memory. */<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        PresenceDetected(0x06, "Presence detected."),<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        /** Indicates a memory configuration error for the entity associated with the sensor. This can include when a given implementation of the entity is not supported by the system (e.g., when the particular size of the memory module is unsupported) or that the entity is part of an unsupported memory configuration (e.g.  the configuration is not supported because the memory module doesn't match other memory modules). */<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        ConfigurationError(0x07, "Configuration error."),<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        /** Indicates entity associated with the sensor represents a 'spare' unit of memory.  The Event Data 3 field can be used to provide an event extension code, with the following definition: [7:0] - Memory module/device (e.g. DIMM/SIMM/RIMM) identification, relative to the entity that the sensor is associated with (if SDR provided for this sensor). */<a name="line.272"></a>
+<span class="sourceLineNo">273</span>        Spare(0x08, "Spare.") {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>            public Object decodeEventData2(byte value) {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                return UnsignedBytes.toInt(value);<a name="line.275"></a>
+<span class="sourceLineNo">276</span>            }<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        },<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        /** Memory throttling triggered by a hardware-based mechanism operating independent from system software, such as automatic thermal throttling or throttling to limit power consumption. */<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        MemoryAutomaticallyThrottled(0x09, "Memory Automatically Throttled."),<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        /** Memory device has entered a critical overtemperature state, exceeding specified operating conditions. Memory devices in this state may produce errors or become inaccessible. */<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        CriticalOvertemperature(0x0A, "Critical Overtemperature.");<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        private final byte code;<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        private final String description;<a name="line.283"></a>
+<span class="sourceLineNo">284</span>        /* pp */ private Memory(@Nonnegative int code, @Nonnull String description) {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.285"></a>
+<span class="sourceLineNo">286</span>            this.description = description;<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        }<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>        @Override<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        public byte getCode() {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>            return code;<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        }<a name="line.292"></a>
+<span class="sourceLineNo">293</span><a name="line.293"></a>
+<span class="sourceLineNo">294</span>        @Override<a name="line.294"></a>
+<span class="sourceLineNo">295</span>        public String getDescription() {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>            return description;<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        }<a name="line.297"></a>
+<span class="sourceLineNo">298</span><a name="line.298"></a>
+<span class="sourceLineNo">299</span>        @Override<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        public String toString() {<a name="line.300"></a>
+<span class="sourceLineNo">301</span>            return Code.Utils.toString(this);<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        }<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    }<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>    /**<a name="line.305"></a>
+<span class="sourceLineNo">306</span>     * [IPMI2] Section 42.2, table 42-3, page 510.<a name="line.306"></a>
+<span class="sourceLineNo">307</span>     */<a name="line.307"></a>
+<span class="sourceLineNo">308</span>    public static enum DriveSlot implements SensorSpecificOffset {<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>        DrivePresence(0x00, "Drive Presence"),<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        DriveFault(0x01, "Drive Fault"),<a name="line.311"></a>
+<span class="sourceLineNo">312</span>        PredictiveFailure(0x02, "Predictive Failure"),<a name="line.312"></a>
+<span class="sourceLineNo">313</span>        HotSpare(0x03, "Hot Spare"),<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        ConsistencyCheckInProgress(0x04, "Consistency Check / Parity Check in progress"),<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        InCriticalArray(0x05, "In Critical Array"),<a name="line.315"></a>
+<span class="sourceLineNo">316</span>        InFailedArray(0x06, "In Failed Array"),<a name="line.316"></a>
+<span class="sourceLineNo">317</span>        RebuildInProgress(0x07, "Rebuild/Remap in progress"),<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        RebuildAborted(0x08, "Rebuild/Remap Aborted (was not completed normally)");<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        private final byte code;<a name="line.319"></a>
+<span class="sourceLineNo">320</span>        private final String description;<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        /* pp */ private DriveSlot(@Nonnegative int code, @Nonnull String description) {<a name="line.321"></a>
+<span class="sourceLineNo">322</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.322"></a>
+<span class="sourceLineNo">323</span>            this.description = description;<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>        @Override<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        public byte getCode() {<a name="line.327"></a>
+<span class="sourceLineNo">328</span>            return code;<a name="line.328"></a>
+<span class="sourceLineNo">329</span>        }<a name="line.329"></a>
+<span class="sourceLineNo">330</span><a name="line.330"></a>
+<span class="sourceLineNo">331</span>        @Override<a name="line.331"></a>
+<span class="sourceLineNo">332</span>        public String getDescription() {<a name="line.332"></a>
+<span class="sourceLineNo">333</span>            return description;<a name="line.333"></a>
+<span class="sourceLineNo">334</span>        }<a name="line.334"></a>
+<span class="sourceLineNo">335</span><a name="line.335"></a>
+<span class="sourceLineNo">336</span>        @Override<a name="line.336"></a>
+<span class="sourceLineNo">337</span>        public String toString() {<a name="line.337"></a>
+<span class="sourceLineNo">338</span>            return Code.Utils.toString(this);<a name="line.338"></a>
+<span class="sourceLineNo">339</span>        }<a name="line.339"></a>
+<span class="sourceLineNo">340</span>    }<a name="line.340"></a>
+<span class="sourceLineNo">341</span><a name="line.341"></a>
+<span class="sourceLineNo">342</span>    /**<a name="line.342"></a>
+<span class="sourceLineNo">343</span>     * [IPMI2] Section 42.2, table 42-3, page 511.<a name="line.343"></a>
+<span class="sourceLineNo">344</span>     */<a name="line.344"></a>
+<span class="sourceLineNo">345</span>    public static enum SystemFirmwareProgress implements SensorSpecificOffset {<a name="line.345"></a>
+<span class="sourceLineNo">346</span><a name="line.346"></a>
+<span class="sourceLineNo">347</span>        SystemFirmwareError(0x00, "System Firmware Error (POST Error).") {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>            public Object decodeEventData2(byte value) {<a name="line.348"></a>
+<span class="sourceLineNo">349</span>                return Code.fromByte(SystemFirmwareErrorData2.class, value);<a name="line.349"></a>
+<span class="sourceLineNo">350</span>            }<a name="line.350"></a>
+<span class="sourceLineNo">351</span>        },<a name="line.351"></a>
+<span class="sourceLineNo">352</span>        SystemFirmwareHang(0x01, "System Firmware Hang.") {<a name="line.352"></a>
+<span class="sourceLineNo">353</span>            public Object decodeEventData2(byte value) {<a name="line.353"></a>
+<span class="sourceLineNo">354</span>                return Code.fromByte(SystemFirmwareProgressData2.class, value);<a name="line.354"></a>
+<span class="sourceLineNo">355</span>            }<a name="line.355"></a>
+<span class="sourceLineNo">356</span>        },<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        SystemFirmwareProgress(0x02, "System Firmware Progress") {<a name="line.357"></a>
+<span class="sourceLineNo">358</span>            public Object decodeEventData2(byte value) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                return Code.fromByte(SystemFirmwareProgressData2.class, value);<a name="line.359"></a>
+<span class="sourceLineNo">360</span>            }<a name="line.360"></a>
+<span class="sourceLineNo">361</span>        };<a name="line.361"></a>
+<span class="sourceLineNo">362</span><a name="line.362"></a>
+<span class="sourceLineNo">363</span>        public static enum SystemFirmwareErrorData2 implements Code.DescriptiveWrapper {<a name="line.363"></a>
+<span class="sourceLineNo">364</span><a name="line.364"></a>
+<span class="sourceLineNo">365</span>            Unspecified(0x00, "Unspecified."),<a name="line.365"></a>
+<span class="sourceLineNo">366</span>            NoSystemMemoryInstalled(0x01, "No system memory is physically installed in the system."),<a name="line.366"></a>
+<span class="sourceLineNo">367</span>            NoUsableSystemMemory(0x02, "No usable system memory, all installed memory has experienced an unrecoverable failure."),<a name="line.367"></a>
+<span class="sourceLineNo">368</span>            UnrecoverableHardDiskDeviceFailure(0x03, "Unrecoverable hard-disk/ATAPI/IDE device failure."),<a name="line.368"></a>
+<span class="sourceLineNo">369</span>            UnrecoverableSystemBoardFailure(0x04, "Unrecoverable system-board failure."),<a name="line.369"></a>
+<span class="sourceLineNo">370</span>            UnrecoverableDisketteSubsystemFailure(0x05, "Unrecoverable diskette subsystem failure."),<a name="line.370"></a>
+<span class="sourceLineNo">371</span>            UnrecoverableHardDiskControllerFailure(0x06, "Unrecoverable hard-disk controller failure."),<a name="line.371"></a>
+<span class="sourceLineNo">372</span>            UnrecoverableKeyboardFailure(0x07, "Unrecoverable PS/2 or USB keyboard failure."),<a name="line.372"></a>
+<span class="sourceLineNo">373</span>            RemovableBootMediaNotFound(0x08, "Removable boot media not found"),<a name="line.373"></a>
+<span class="sourceLineNo">374</span>            UnrecoverableVideoControllerFailure(0x09, "Unrecoverable video controller failure"),<a name="line.374"></a>
+<span class="sourceLineNo">375</span>            NoVideoDeviceDetected(0x0A, "No video device detected"),<a name="line.375"></a>
+<span class="sourceLineNo">376</span>            FirmwareROMCorruptionDetected(0x0B, "Firmware (BIOS) ROM corruption detected"),<a name="line.376"></a>
+<span class="sourceLineNo">377</span>            CPUVoltageMismatch(0x0C, "CPU voltage mismatch (processors that share same supply have mismatched voltage requirements)"),<a name="line.377"></a>
+<span class="sourceLineNo">378</span>            CPUSpeedMatchingFailure(0x0D, "CPU speed matching failure");<a name="line.378"></a>
+<span class="sourceLineNo">379</span>            private final byte code;<a name="line.379"></a>
+<span class="sourceLineNo">380</span>            private final String description;<a name="line.380"></a>
+<span class="sourceLineNo">381</span>            /* pp */ private SystemFirmwareErrorData2(@Nonnegative int code, @Nonnull String description) {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.382"></a>
+<span class="sourceLineNo">383</span>                this.description = description;<a name="line.383"></a>
+<span class="sourceLineNo">384</span>            }<a name="line.384"></a>
+<span class="sourceLineNo">385</span><a name="line.385"></a>
+<span class="sourceLineNo">386</span>            @Override<a name="line.386"></a>
+<span class="sourceLineNo">387</span>            public byte getCode() {<a name="line.387"></a>
+<span class="sourceLineNo">388</span>                return code;<a name="line.388"></a>
+<span class="sourceLineNo">389</span>            }<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>            @Override<a name="line.391"></a>
+<span class="sourceLineNo">392</span>            public String getDescription() {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>                return description;<a name="line.393"></a>
+<span class="sourceLineNo">394</span>            }<a name="line.394"></a>
+<span class="sourceLineNo">395</span><a name="line.395"></a>
+<span class="sourceLineNo">396</span>            @Override<a name="line.396"></a>
+<span class="sourceLineNo">397</span>            public String toString() {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>                return Code.Utils.toString(this);<a name="line.398"></a>
+<span class="sourceLineNo">399</span>            }<a name="line.399"></a>
+<span class="sourceLineNo">400</span>        }<a name="line.400"></a>
+<span class="sourceLineNo">401</span><a name="line.401"></a>
+<span class="sourceLineNo">402</span>        public static enum SystemFirmwareProgressData2 implements Code.DescriptiveWrapper {<a name="line.402"></a>
+<span class="sourceLineNo">403</span><a name="line.403"></a>
+<span class="sourceLineNo">404</span>            Unspecified(0x00, "Unspecified."),<a name="line.404"></a>
+<span class="sourceLineNo">405</span>            MemoryInitialization(0x01, "Memory initialization."),<a name="line.405"></a>
+<span class="sourceLineNo">406</span>            HardDiskInitialization(0x02, "Hard-disk initialization"),<a name="line.406"></a>
+<span class="sourceLineNo">407</span>            SecondaryProcessorInitialization(0x03, "Secondary processor(s) initialization"),<a name="line.407"></a>
+<span class="sourceLineNo">408</span>            UserAuthentication(0x04, "User authentication"),<a name="line.408"></a>
+<span class="sourceLineNo">409</span>            UserInitiatedSystemSetup(0x05, "User-initiated system setup"),<a name="line.409"></a>
+<span class="sourceLineNo">410</span>            USBResourceConfiguration(0x06, "USB resource configuration"),<a name="line.410"></a>
+<span class="sourceLineNo">411</span>            PCIResourceConfiguration(0x07, "PCI resource configuration"),<a name="line.411"></a>
+<span class="sourceLineNo">412</span>            OptionROMInitialization(0x08, "Option ROM initialization"),<a name="line.412"></a>
+<span class="sourceLineNo">413</span>            VideoInitialization(0x09, "Video initialization"),<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            CacheInitialization(0x0A, "Cache initialization"),<a name="line.414"></a>
+<span class="sourceLineNo">415</span>            SMBusInitialization(0x0B, "SM Bus initialization"),<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            KeyboardControllerInitialization(0x0C, "Keyboard controller initialization"),<a name="line.416"></a>
+<span class="sourceLineNo">417</span>            ManagementControllerInitialization(0x0D, "Embedded controller/management controller initialization"),<a name="line.417"></a>
+<span class="sourceLineNo">418</span>            DockingStationAttachment(0x0E, "Docking station attachment"),<a name="line.418"></a>
+<span class="sourceLineNo">419</span>            DockingStationEnablement(0x0F, "Enabling docking station"),<a name="line.419"></a>
+<span class="sourceLineNo">420</span>            DockingStationEjection(0x10, "Docking station ejection"),<a name="line.420"></a>
+<span class="sourceLineNo">421</span>            DockingStationDisablement(0x11, "Disabling docking station"),<a name="line.421"></a>
+<span class="sourceLineNo">422</span>            OperatingSystemWakeUpVectorCall(0x12, "Calling operating system wake-up vector"),<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            OperatingSystemBootProcessStart(0x13, "Starting operating system boot process, e.g. calling Int 19h"),<a name="line.423"></a>
+<span class="sourceLineNo">424</span>            BaseboardInitialization(0x14, "Baseboard or motherboard initialization"),<a name="line.424"></a>
+<span class="sourceLineNo">425</span>            Reserved_15(0x15, "reserved"),<a name="line.425"></a>
+<span class="sourceLineNo">426</span>            FloppyInitialization(0x16, "Floppy initialization"),<a name="line.426"></a>
+<span class="sourceLineNo">427</span>            KeyboardTest(0x17, "Keyboard test"),<a name="line.427"></a>
+<span class="sourceLineNo">428</span>            PointingDeviceTest(0x18, "Pointing device test"),<a name="line.428"></a>
+<span class="sourceLineNo">429</span>            PrimaryProcessorInitialization(0x19, "Primary processor initialization");<a name="line.429"></a>
+<span class="sourceLineNo">430</span>            private final byte code;<a name="line.430"></a>
+<span class="sourceLineNo">431</span>            private final String description;<a name="line.431"></a>
+<span class="sourceLineNo">432</span>            /* pp */ private SystemFirmwareProgressData2(@Nonnegative int code, @Nonnull String description) {<a name="line.432"></a>
+<span class="sourceLineNo">433</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.433"></a>
+<span class="sourceLineNo">434</span>                this.description = description;<a name="line.434"></a>
+<span class="sourceLineNo">435</span>            }<a name="line.435"></a>
+<span class="sourceLineNo">436</span><a name="line.436"></a>
+<span class="sourceLineNo">437</span>            @Override<a name="line.437"></a>
+<span class="sourceLineNo">438</span>            public byte getCode() {<a name="line.438"></a>
+<span class="sourceLineNo">439</span>                return code;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>            }<a name="line.440"></a>
+<span class="sourceLineNo">441</span><a name="line.441"></a>
+<span class="sourceLineNo">442</span>            @Override<a name="line.442"></a>
+<span class="sourceLineNo">443</span>            public String getDescription() {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>                return description;<a name="line.444"></a>
+<span class="sourceLineNo">445</span>            }<a name="line.445"></a>
+<span class="sourceLineNo">446</span><a name="line.446"></a>
+<span class="sourceLineNo">447</span>            @Override<a name="line.447"></a>
+<span class="sourceLineNo">448</span>            public String toString() {<a name="line.448"></a>
+<span class="sourceLineNo">449</span>                return Code.Utils.toString(this);<a name="line.449"></a>
+<span class="sourceLineNo">450</span>            }<a name="line.450"></a>
+<span class="sourceLineNo">451</span>        }<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        private final byte code;<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        private final String description;<a name="line.453"></a>
+<span class="sourceLineNo">454</span>        /* pp */ private SystemFirmwareProgress(@Nonnegative int code, @Nonnull String description) {<a name="line.454"></a>
+<span class="sourceLineNo">455</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.455"></a>
+<span class="sourceLineNo">456</span>            this.description = description;<a name="line.456"></a>
+<span class="sourceLineNo">457</span>        }<a name="line.457"></a>
+<span class="sourceLineNo">458</span><a name="line.458"></a>
+<span class="sourceLineNo">459</span>        @Override<a name="line.459"></a>
+<span class="sourceLineNo">460</span>        public byte getCode() {<a name="line.460"></a>
+<span class="sourceLineNo">461</span>            return code;<a name="line.461"></a>
+<span class="sourceLineNo">462</span>        }<a name="line.462"></a>
+<span class="sourceLineNo">463</span><a name="line.463"></a>
+<span class="sourceLineNo">464</span>        @Override<a name="line.464"></a>
+<span class="sourceLineNo">465</span>        public String getDescription() {<a name="line.465"></a>
+<span class="sourceLineNo">466</span>            return description;<a name="line.466"></a>
+<span class="sourceLineNo">467</span>        }<a name="line.467"></a>
+<span class="sourceLineNo">468</span><a name="line.468"></a>
+<span class="sourceLineNo">469</span>        @Override<a name="line.469"></a>
+<span class="sourceLineNo">470</span>        public String toString() {<a name="line.470"></a>
+<span class="sourceLineNo">471</span>            return Code.Utils.toString(this);<a name="line.471"></a>
+<span class="sourceLineNo">472</span>        }<a name="line.472"></a>
+<span class="sourceLineNo">473</span>    }<a name="line.473"></a>
+<span class="sourceLineNo">474</span><a name="line.474"></a>
+<span class="sourceLineNo">475</span>    /**<a name="line.475"></a>
+<span class="sourceLineNo">476</span>     * [IPMI2] Section 42.2, table 42-3, page 512.<a name="line.476"></a>
+<span class="sourceLineNo">477</span>     */<a name="line.477"></a>
+<span class="sourceLineNo">478</span>    public static enum EventLoggingDisabled implements SensorSpecificOffset {<a name="line.478"></a>
+<span class="sourceLineNo">479</span><a name="line.479"></a>
+<span class="sourceLineNo">480</span>        CorrectableMemoryErrorLoggingDisabled(0x00, "Correctable Memory Error Logging Disabled") {<a name="line.480"></a>
+<span class="sourceLineNo">481</span>            /** [7:0] - Memory module/device (e.g. DIMM/SIMM/RIMM) identification, relative to the entity that the sensor is associated with (if SDR provided for this sensor). */<a name="line.481"></a>
+<span class="sourceLineNo">482</span>            public Object decodeEventData2(byte value) {<a name="line.482"></a>
+<span class="sourceLineNo">483</span>                return UnsignedBytes.toInt(value);<a name="line.483"></a>
+<span class="sourceLineNo">484</span>            }<a name="line.484"></a>
+<span class="sourceLineNo">485</span>        },<a name="line.485"></a>
+<span class="sourceLineNo">486</span>        EventTypeLoggingDisabled(0x01, "Event 'Type' Logging Disabled") {<a name="line.486"></a>
+<span class="sourceLineNo">487</span>            public Object decodeEventData2(byte value) {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>                return Code.fromByte(GenericEventType.class, value);<a name="line.488"></a>
+<span class="sourceLineNo">489</span>            }<a name="line.489"></a>
+<span class="sourceLineNo">490</span><a name="line.490"></a>
+<span class="sourceLineNo">491</span>            public Object decodeEventData3(byte value) {<a name="line.491"></a>
+<span class="sourceLineNo">492</span>                boolean allEventsOfType = AbstractIpmiCommand.getBit(value, 5);<a name="line.492"></a>
+<span class="sourceLineNo">493</span>                boolean assertion = AbstractIpmiCommand.getBit(value, 4);<a name="line.493"></a>
+<span class="sourceLineNo">494</span>                int eventOffset = value &amp; 0xF;<a name="line.494"></a>
+<span class="sourceLineNo">495</span>                return null;<a name="line.495"></a>
+<span class="sourceLineNo">496</span>            }<a name="line.496"></a>
+<span class="sourceLineNo">497</span>        },<a name="line.497"></a>
+<span class="sourceLineNo">498</span>        LogAreaReset(0x02, "Log Area Reset/Cleared"),<a name="line.498"></a>
+<span class="sourceLineNo">499</span>        AllEventLoggingDisabled(0x03, "All Event Logging Disabled"),<a name="line.499"></a>
+<span class="sourceLineNo">500</span>        SELFull(0x04, "SEL Full"),<a name="line.500"></a>
+<span class="sourceLineNo">501</span>        SELAlmostFull(0x05, "SEL Almost Full") {<a name="line.501"></a>
+<span class="sourceLineNo">502</span>            /** Contains hex value from 0 to 100 decimal (00h to 64h) representing the % of which the SEL is filled at the time the event was generated: 00h is 0% full (SEL is empty), 64h is 100% full, etc. */<a name="line.502"></a>
+<span class="sourceLineNo">503</span>            public Object decodeEventData3(byte value) {<a name="line.503"></a>
+<span class="sourceLineNo">504</span>                return UnsignedBytes.checkedCast(value);<a name="line.504"></a>
+<span class="sourceLineNo">505</span>            }<a name="line.505"></a>
+<span class="sourceLineNo">506</span>        },<a name="line.506"></a>
+<span class="sourceLineNo">507</span>        CorrectableMachineCheckErrorLoggingDisabled(0x06, "Correctable Machine Check Error Logging Disabled") {<a name="line.507"></a>
+<span class="sourceLineNo">508</span>            /** Instance ID number of the (processor) Entity that the sensor is associated with (if SDR provided for this sensor), or a vendor selected logical processor number if no SDR. */<a name="line.508"></a>
+<span class="sourceLineNo">509</span>            public Object decodeEventData2(byte value) {<a name="line.509"></a>
+<span class="sourceLineNo">510</span>                return UnsignedBytes.toInt(value);<a name="line.510"></a>
+<span class="sourceLineNo">511</span>            }<a name="line.511"></a>
+<span class="sourceLineNo">512</span><a name="line.512"></a>
+<span class="sourceLineNo">513</span>            /** If Event Data 2 is provided then Event Data 3 may be optionally used to indicate whether Event Data 2 is being used to hold an Entity Instance number or a vendor-specific processor number. If Event Data 2 is provided by Event Data 3 is not, then Event Data 2 is assumed to hold an Entity Instance number. */<a name="line.513"></a>
+<span class="sourceLineNo">514</span>            public Object decodeEventData3(byte value) {<a name="line.514"></a>
+<span class="sourceLineNo">515</span>                return AbstractIpmiCommand.getBit(value, 7);<a name="line.515"></a>
+<span class="sourceLineNo">516</span>            }<a name="line.516"></a>
+<span class="sourceLineNo">517</span>        };<a name="line.517"></a>
+<span class="sourceLineNo">518</span>        private final byte code;<a name="line.518"></a>
+<span class="sourceLineNo">519</span>        private final String description;<a name="line.519"></a>
+<span class="sourceLineNo">520</span>        /* pp */ private EventLoggingDisabled(@Nonnegative int code, @Nonnull String description) {<a name="line.520"></a>
+<span class="sourceLineNo">521</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.521"></a>
+<span class="sourceLineNo">522</span>            this.description = description;<a name="line.522"></a>
+<span class="sourceLineNo">523</span>        }<a name="line.523"></a>
+<span class="sourceLineNo">524</span><a name="line.524"></a>
+<span class="sourceLineNo">525</span>        @Override<a name="line.525"></a>
+<span class="sourceLineNo">526</span>        public byte getCode() {<a name="line.526"></a>
+<span class="sourceLineNo">527</span>            return code;<a name="line.527"></a>
+<span class="sourceLineNo">528</span>        }<a name="line.528"></a>
+<span class="sourceLineNo">529</span><a name="line.529"></a>
+<span class="sourceLineNo">530</span>        @Override<a name="line.530"></a>
+<span class="sourceLineNo">531</span>        public String getDescription() {<a name="line.531"></a>
+<span class="sourceLineNo">532</span>            return description;<a name="line.532"></a>
+<span class="sourceLineNo">533</span>        }<a name="line.533"></a>
+<span class="sourceLineNo">534</span><a name="line.534"></a>
+<span class="sourceLineNo">535</span>        @Override<a name="line.535"></a>
+<span class="sourceLineNo">536</span>        public String toString() {<a name="line.536"></a>
+<span class="sourceLineNo">537</span>            return Code.Utils.toString(this);<a name="line.537"></a>
+<span class="sourceLineNo">538</span>        }<a name="line.538"></a>
+<span class="sourceLineNo">539</span>    }<a name="line.539"></a>
+<span class="sourceLineNo">540</span><a name="line.540"></a>
+<span class="sourceLineNo">541</span>    /**<a name="line.541"></a>
+<span class="sourceLineNo">542</span>     * [IPMI2] Section 42.2, table 42-3, page 512.<a name="line.542"></a>
+<span class="sourceLineNo">543</span>     */<a name="line.543"></a>
+<span class="sourceLineNo">544</span>    public static enum Watchdog1 implements SensorSpecificOffset {<a name="line.544"></a>
+<span class="sourceLineNo">545</span><a name="line.545"></a>
+<span class="sourceLineNo">546</span>        BIOSWatchdogReset(0x00, "BIOS Watchdog Reset"),<a name="line.546"></a>
+<span class="sourceLineNo">547</span>        OSWatchdogReset(0x01, "OS Watchdog Reset"),<a name="line.547"></a>
+<span class="sourceLineNo">548</span>        OSWatchdogShutDown(0x02, "OS Watchdog Shut Down"),<a name="line.548"></a>
+<span class="sourceLineNo">549</span>        OSWatchdogPowerDown(0x03, "OS Watchdog Power Down"),<a name="line.549"></a>
+<span class="sourceLineNo">550</span>        OSWatchdogPowerCycle(0x04, "OS Watchdog Power Cycle"),<a name="line.550"></a>
+<span class="sourceLineNo">551</span>        OSWatchdogNMI(0x05, "OS Watchdog NMI / Diagnostic Interrupt"),<a name="line.551"></a>
+<span class="sourceLineNo">552</span>        OSWatchdogExpired(0x06, "OS Watchdog Expired, status only"),<a name="line.552"></a>
+<span class="sourceLineNo">553</span>        OSWatchdogPreTimeoutInterrupt(0x07, "OS Watchdog pre-timeout Interrupt, non-NMI");<a name="line.553"></a>
+<span class="sourceLineNo">554</span>        private final byte code;<a name="line.554"></a>
+<span class="sourceLineNo">555</span>        private final String description;<a name="line.555"></a>
+<span class="sourceLineNo">556</span>        /* pp */ private Watchdog1(@Nonnegative int code, @Nonnull String description) {<a name="line.556"></a>
+<span class="sourceLineNo">557</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.557"></a>
+<span class="sourceLineNo">558</span>            this.description = description;<a name="line.558"></a>
+<span class="sourceLineNo">559</span>        }<a name="line.559"></a>
+<span class="sourceLineNo">560</span><a name="line.560"></a>
+<span class="sourceLineNo">561</span>        @Override<a name="line.561"></a>
+<span class="sourceLineNo">562</span>        public byte getCode() {<a name="line.562"></a>
+<span class="sourceLineNo">563</span>            return code;<a name="line.563"></a>
+<span class="sourceLineNo">564</span>        }<a name="line.564"></a>
+<span class="sourceLineNo">565</span><a name="line.565"></a>
+<span class="sourceLineNo">566</span>        @Override<a name="line.566"></a>
+<span class="sourceLineNo">567</span>        public String getDescription() {<a name="line.567"></a>
+<span class="sourceLineNo">568</span>            return description;<a name="line.568"></a>
+<span class="sourceLineNo">569</span>        }<a name="line.569"></a>
+<span class="sourceLineNo">570</span><a name="line.570"></a>
+<span class="sourceLineNo">571</span>        @Override<a name="line.571"></a>
+<span class="sourceLineNo">572</span>        public String toString() {<a name="line.572"></a>
+<span class="sourceLineNo">573</span>            return Code.Utils.toString(this);<a name="line.573"></a>
+<span class="sourceLineNo">574</span>        }<a name="line.574"></a>
+<span class="sourceLineNo">575</span>    }<a name="line.575"></a>
+<span class="sourceLineNo">576</span><a name="line.576"></a>
+<span class="sourceLineNo">577</span>    /**<a name="line.577"></a>
+<span class="sourceLineNo">578</span>     * [IPMI2] Section 42.2, table 42-3, page 513.<a name="line.578"></a>
+<span class="sourceLineNo">579</span>     */<a name="line.579"></a>
+<span class="sourceLineNo">580</span>    public static enum SystemEvent implements SensorSpecificOffset {<a name="line.580"></a>
+<span class="sourceLineNo">581</span><a name="line.581"></a>
+<span class="sourceLineNo">582</span>        SystemReconfigured(0x00, "System Reconfigured"),<a name="line.582"></a>
+<span class="sourceLineNo">583</span>        OEMSystemBootEvent(0x01, "OEM System Boot Event"),<a name="line.583"></a>
+<span class="sourceLineNo">584</span>        /** This event would typically require system-specific diagnostics to determine FRU / failure type. */<a name="line.584"></a>
+<span class="sourceLineNo">585</span>        UndeterminedSystemHardwareFailure(0x02, "Undetermined system hardware failure"),<a name="line.585"></a>
+<span class="sourceLineNo">586</span>        /** See GetAuxiliaryLogStatusCommandRequest etc. */<a name="line.586"></a>
+<span class="sourceLineNo">587</span>        EntryAddedToAuxiliaryLog(0x03, "Entry added to Auxiliary Log") {<a name="line.587"></a>
+<span class="sourceLineNo">588</span>            // Event Data 2: [7:4] LogEntryAction, [3:0] LogType<a name="line.588"></a>
+<span class="sourceLineNo">589</span>            public Object decodeEventData2(byte value) {<a name="line.589"></a>
+<span class="sourceLineNo">590</span>                Code.fromInt(LogEntryAction.class, (value &gt;&gt; 4) &amp; 0xF);<a name="line.590"></a>
+<span class="sourceLineNo">591</span>                Code.fromInt(LogType.class, value &amp; 0xF);<a name="line.591"></a>
+<span class="sourceLineNo">592</span>                return null;<a name="line.592"></a>
+<span class="sourceLineNo">593</span>            }<a name="line.593"></a>
+<span class="sourceLineNo">594</span>        },<a name="line.594"></a>
+<span class="sourceLineNo">595</span>        PEFAction(0x04, "PEF Action") {<a name="line.595"></a>
+<span class="sourceLineNo">596</span>            // Event Data 2: Action<a name="line.596"></a>
+<span class="sourceLineNo">597</span>            public Object decodeEventData2(byte value) {<a name="line.597"></a>
+<span class="sourceLineNo">598</span>                return Bits.fromByte(Action.class, value);<a name="line.598"></a>
+<span class="sourceLineNo">599</span>            }<a name="line.599"></a>
+<span class="sourceLineNo">600</span>        },<a name="line.600"></a>
+<span class="sourceLineNo">601</span>        TimestampClockSynchronization(0x05, "Timestamp Clock Synchronization") {<a name="line.601"></a>
+<span class="sourceLineNo">602</span>            /*<a name="line.602"></a>
+<span class="sourceLineNo">603</span>             This event can be used to record when changes are made to the<a name="line.603"></a>
+<span class="sourceLineNo">604</span>             timestamp clock(s) so that relative time differences between SEL<a name="line.604"></a>
+<span class="sourceLineNo">605</span>             entries can be determined.<a name="line.605"></a>
+<span class="sourceLineNo">606</span>             */<a name="line.606"></a>
+<span class="sourceLineNo">607</span>            public Object decodeEventData2(byte value) {<a name="line.607"></a>
+<span class="sourceLineNo">608</span>                boolean first = AbstractIpmiCommand.getBit(value, 7);<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                return Code.fromInt(TimestampClockType.class, value &amp; 0xF);<a name="line.609"></a>
+<span class="sourceLineNo">610</span>            }<a name="line.610"></a>
+<span class="sourceLineNo">611</span>        };<a name="line.611"></a>
+<span class="sourceLineNo">612</span><a name="line.612"></a>
+<span class="sourceLineNo">613</span>        public static enum LogEntryAction implements Code.DescriptiveWrapper {<a name="line.613"></a>
+<span class="sourceLineNo">614</span>            // [7:4] - Log Type<a name="line.614"></a>
+<span class="sourceLineNo">615</span><a name="line.615"></a>
+<span class="sourceLineNo">616</span>            EntryAdded(0x00, "entry added"),<a name="line.616"></a>
+<span class="sourceLineNo">617</span>            EntryAddedNonIPMI(0x01, "entry added because event did not be map to standard IPMI event"),<a name="line.617"></a>
+<span class="sourceLineNo">618</span>            EntryAddedWithSEL(0x02, "entry added along with one or more corresponding SEL entries"),<a name="line.618"></a>
+<span class="sourceLineNo">619</span>            LogCleared(0x03, "log cleared"),<a name="line.619"></a>
+<span class="sourceLineNo">620</span>            LogDisabled(0x04, "log disabled"),<a name="line.620"></a>
+<span class="sourceLineNo">621</span>            LogEnabled(0x05, "log enabled");<a name="line.621"></a>
+<span class="sourceLineNo">622</span>            private final byte code;<a name="line.622"></a>
+<span class="sourceLineNo">623</span>            private final String description;<a name="line.623"></a>
+<span class="sourceLineNo">624</span>            /* pp */ private LogEntryAction(@Nonnegative int code, @Nonnull String description) {<a name="line.624"></a>
+<span class="sourceLineNo">625</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.625"></a>
+<span class="sourceLineNo">626</span>                this.description = description;<a name="line.626"></a>
+<span class="sourceLineNo">627</span>            }<a name="line.627"></a>
+<span class="sourceLineNo">628</span><a name="line.628"></a>
+<span class="sourceLineNo">629</span>            @Override<a name="line.629"></a>
+<span class="sourceLineNo">630</span>            public byte getCode() {<a name="line.630"></a>
+<span class="sourceLineNo">631</span>                return code;<a name="line.631"></a>
+<span class="sourceLineNo">632</span>            }<a name="line.632"></a>
+<span class="sourceLineNo">633</span><a name="line.633"></a>
+<span class="sourceLineNo">634</span>            @Override<a name="line.634"></a>
+<span class="sourceLineNo">635</span>            public String getDescription() {<a name="line.635"></a>
+<span class="sourceLineNo">636</span>                return description;<a name="line.636"></a>
+<span class="sourceLineNo">637</span>            }<a name="line.637"></a>
+<span class="sourceLineNo">638</span><a name="line.638"></a>
+<span class="sourceLineNo">639</span>            @Override<a name="line.639"></a>
+<span class="sourceLineNo">640</span>            public String toString() {<a name="line.640"></a>
+<span class="sourceLineNo">641</span>                return Code.Utils.toString(this);<a name="line.641"></a>
+<span class="sourceLineNo">642</span>            }<a name="line.642"></a>
+<span class="sourceLineNo">643</span>        }<a name="line.643"></a>
+<span class="sourceLineNo">644</span><a name="line.644"></a>
+<span class="sourceLineNo">645</span>        public static enum LogType implements Code.DescriptiveWrapper {<a name="line.645"></a>
+<span class="sourceLineNo">646</span>            // [3:0] - Log Type<a name="line.646"></a>
+<span class="sourceLineNo">647</span><a name="line.647"></a>
+<span class="sourceLineNo">648</span>            MCA(0x00, "MCA Log"),<a name="line.648"></a>
+<span class="sourceLineNo">649</span>            OEM1(0x01, "OEM 1"),<a name="line.649"></a>
+<span class="sourceLineNo">650</span>            OEM2(0x02, "OEM 2");<a name="line.650"></a>
+<span class="sourceLineNo">651</span>            private final byte code;<a name="line.651"></a>
+<span class="sourceLineNo">652</span>            private final String description;<a name="line.652"></a>
+<span class="sourceLineNo">653</span>            /* pp */ private LogType(@Nonnegative int code, @Nonnull String description) {<a name="line.653"></a>
+<span class="sourceLineNo">654</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.654"></a>
+<span class="sourceLineNo">655</span>                this.description = description;<a name="line.655"></a>
+<span class="sourceLineNo">656</span>            }<a name="line.656"></a>
+<span class="sourceLineNo">657</span><a name="line.657"></a>
+<span class="sourceLineNo">658</span>            @Override<a name="line.658"></a>
+<span class="sourceLineNo">659</span>            public byte getCode() {<a name="line.659"></a>
+<span class="sourceLineNo">660</span>                return code;<a name="line.660"></a>
+<span class="sourceLineNo">661</span>            }<a name="line.661"></a>
+<span class="sourceLineNo">662</span><a name="line.662"></a>
+<span class="sourceLineNo">663</span>            @Override<a name="line.663"></a>
+<span class="sourceLineNo">664</span>            public String getDescription() {<a name="line.664"></a>
+<span class="sourceLineNo">665</span>                return description;<a name="line.665"></a>
+<span class="sourceLineNo">666</span>            }<a name="line.666"></a>
+<span class="sourceLineNo">667</span><a name="line.667"></a>
+<span class="sourceLineNo">668</span>            @Override<a name="line.668"></a>
+<span class="sourceLineNo">669</span>            public String toString() {<a name="line.669"></a>
+<span class="sourceLineNo">670</span>                return Code.Utils.toString(this);<a name="line.670"></a>
+<span class="sourceLineNo">671</span>            }<a name="line.671"></a>
+<span class="sourceLineNo">672</span>        }<a name="line.672"></a>
+<span class="sourceLineNo">673</span><a name="line.673"></a>
+<span class="sourceLineNo">674</span>        public static enum Action implements Bits.DescriptiveWrapper {<a name="line.674"></a>
+<span class="sourceLineNo">675</span><a name="line.675"></a>
+<span class="sourceLineNo">676</span>            DiagnosticInterrupt(5, "Diagnostic Interrupt (NMI)"),<a name="line.676"></a>
+<span class="sourceLineNo">677</span>            OEMAction(4, "OEM Action"),<a name="line.677"></a>
+<span class="sourceLineNo">678</span>            PowerCycle(3, "Power Cycle"),<a name="line.678"></a>
+<span class="sourceLineNo">679</span>            Reset(2, "Reset"),<a name="line.679"></a>
+<span class="sourceLineNo">680</span>            PowerOff(1, "Power Off"),<a name="line.680"></a>
+<span class="sourceLineNo">681</span>            Alert(0, "Alert");<a name="line.681"></a>
+<span class="sourceLineNo">682</span>            private final Bits bits;<a name="line.682"></a>
+<span class="sourceLineNo">683</span>            private final String description;<a name="line.683"></a>
+<span class="sourceLineNo">684</span>            /* pp */ private Action(@Nonnegative int bit, @Nonnull String description) {<a name="line.684"></a>
+<span class="sourceLineNo">685</span>                this.bits = Bits.forBitIndex(0, bit);<a name="line.685"></a>
+<span class="sourceLineNo">686</span>                this.description = description;<a name="line.686"></a>
+<span class="sourceLineNo">687</span>            }<a name="line.687"></a>
+<span class="sourceLineNo">688</span><a name="line.688"></a>
+<span class="sourceLineNo">689</span>            @Override<a name="line.689"></a>
+<span class="sourceLineNo">690</span>            public Bits getBits() {<a name="line.690"></a>
+<span class="sourceLineNo">691</span>                return bits;<a name="line.691"></a>
+<span class="sourceLineNo">692</span>            }<a name="line.692"></a>
+<span class="sourceLineNo">693</span><a name="line.693"></a>
+<span class="sourceLineNo">694</span>            @Override<a name="line.694"></a>
+<span class="sourceLineNo">695</span>            public String getDescription() {<a name="line.695"></a>
+<span class="sourceLineNo">696</span>                return description;<a name="line.696"></a>
+<span class="sourceLineNo">697</span>            }<a name="line.697"></a>
+<span class="sourceLineNo">698</span><a name="line.698"></a>
+<span class="sourceLineNo">699</span>            @Override<a name="line.699"></a>
+<span class="sourceLineNo">700</span>            public String toString() {<a name="line.700"></a>
+<span class="sourceLineNo">701</span>                return Bits.Utils.toString(this);<a name="line.701"></a>
+<span class="sourceLineNo">702</span>            }<a name="line.702"></a>
+<span class="sourceLineNo">703</span>        }<a name="line.703"></a>
+<span class="sourceLineNo">704</span><a name="line.704"></a>
+<span class="sourceLineNo">705</span>        public static enum TimestampClockType implements Code.DescriptiveWrapper {<a name="line.705"></a>
+<span class="sourceLineNo">706</span>            // [3:0] - Timestamp Clock Type<a name="line.706"></a>
+<span class="sourceLineNo">707</span><a name="line.707"></a>
+<span class="sourceLineNo">708</span>            /** Also used when both SEL and SDR Timestamp clocks are linked together. */<a name="line.708"></a>
+<span class="sourceLineNo">709</span>            SEL(0x00, "SEL Timestamp Clock updated."),<a name="line.709"></a>
+<span class="sourceLineNo">710</span>            SDR(0x01, "SDR Timestamp Clock updated.");<a name="line.710"></a>
+<span class="sourceLineNo">711</span>            private final byte code;<a name="line.711"></a>
+<span class="sourceLineNo">712</span>            private final String description;<a name="line.712"></a>
+<span class="sourceLineNo">713</span>            /* pp */ private TimestampClockType(@Nonnegative int code, @Nonnull String description) {<a name="line.713"></a>
+<span class="sourceLineNo">714</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.714"></a>
+<span class="sourceLineNo">715</span>                this.description = description;<a name="line.715"></a>
+<span class="sourceLineNo">716</span>            }<a name="line.716"></a>
+<span class="sourceLineNo">717</span><a name="line.717"></a>
+<span class="sourceLineNo">718</span>            @Override<a name="line.718"></a>
+<span class="sourceLineNo">719</span>            public byte getCode() {<a name="line.719"></a>
+<span class="sourceLineNo">720</span>                return code;<a name="line.720"></a>
+<span class="sourceLineNo">721</span>            }<a name="line.721"></a>
+<span class="sourceLineNo">722</span><a name="line.722"></a>
+<span class="sourceLineNo">723</span>            @Override<a name="line.723"></a>
+<span class="sourceLineNo">724</span>            public String getDescription() {<a name="line.724"></a>
+<span class="sourceLineNo">725</span>                return description;<a name="line.725"></a>
+<span class="sourceLineNo">726</span>            }<a name="line.726"></a>
+<span class="sourceLineNo">727</span><a name="line.727"></a>
+<span class="sourceLineNo">728</span>            @Override<a name="line.728"></a>
+<span class="sourceLineNo">729</span>            public String toString() {<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                return Code.Utils.toString(this);<a name="line.730"></a>
+<span class="sourceLineNo">731</span>            }<a name="line.731"></a>
+<span class="sourceLineNo">732</span>        }<a name="line.732"></a>
+<span class="sourceLineNo">733</span>        private final byte code;<a name="line.733"></a>
+<span class="sourceLineNo">734</span>        private final String description;<a name="line.734"></a>
+<span class="sourceLineNo">735</span>        /* pp */ private SystemEvent(@Nonnegative int code, @Nonnull String description) {<a name="line.735"></a>
+<span class="sourceLineNo">736</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.736"></a>
+<span class="sourceLineNo">737</span>            this.description = description;<a name="line.737"></a>
+<span class="sourceLineNo">738</span>        }<a name="line.738"></a>
+<span class="sourceLineNo">739</span><a name="line.739"></a>
+<span class="sourceLineNo">740</span>        @Override<a name="line.740"></a>
+<span class="sourceLineNo">741</span>        public byte getCode() {<a name="line.741"></a>
+<span class="sourceLineNo">742</span>            return code;<a name="line.742"></a>
+<span class="sourceLineNo">743</span>        }<a name="line.743"></a>
+<span class="sourceLineNo">744</span><a name="line.744"></a>
+<span class="sourceLineNo">745</span>        @Override<a name="line.745"></a>
+<span class="sourceLineNo">746</span>        public String getDescription() {<a name="line.746"></a>
+<span class="sourceLineNo">747</span>            return description;<a name="line.747"></a>
+<span class="sourceLineNo">748</span>        }<a name="line.748"></a>
+<span class="sourceLineNo">749</span><a name="line.749"></a>
+<span class="sourceLineNo">750</span>        @Override<a name="line.750"></a>
+<span class="sourceLineNo">751</span>        public String toString() {<a name="line.751"></a>
+<span class="sourceLineNo">752</span>            return Code.Utils.toString(this);<a name="line.752"></a>
+<span class="sourceLineNo">753</span>        }<a name="line.753"></a>
+<span class="sourceLineNo">754</span>    }<a name="line.754"></a>
+<span class="sourceLineNo">755</span><a name="line.755"></a>
+<span class="sourceLineNo">756</span>    /**<a name="line.756"></a>
+<span class="sourceLineNo">757</span>     * [IPMI2] Section 42.2, table 42-3, page 514.<a name="line.757"></a>
+<span class="sourceLineNo">758</span>     */<a name="line.758"></a>
+<span class="sourceLineNo">759</span>    public static enum CriticalInterrupt implements SensorSpecificOffset {<a name="line.759"></a>
+<span class="sourceLineNo">760</span><a name="line.760"></a>
+<span class="sourceLineNo">761</span>        FrontPanelNMI(0x00, "Front Panel NMI / Diagnostic Interrupt"),<a name="line.761"></a>
+<span class="sourceLineNo">762</span>        BusTimeout(0x01, "Bus Timeout"),<a name="line.762"></a>
+<span class="sourceLineNo">763</span>        IOChannelCheckNMI(0x02, "I/O channel check NMI"),<a name="line.763"></a>
+<span class="sourceLineNo">764</span>        SoftwareNMI(0x03, "Software NMI"),<a name="line.764"></a>
+<span class="sourceLineNo">765</span>        PCI_PERR(0x04, "PCI PERR"),<a name="line.765"></a>
+<span class="sourceLineNo">766</span>        PCI_SERR(0x05, "PCI SERR"),<a name="line.766"></a>
+<span class="sourceLineNo">767</span>        EISAFailSafeTimeout(0x06, "EISA Fail Safe Timeout"),<a name="line.767"></a>
+<span class="sourceLineNo">768</span>        BusCorrectableError(0x07, "Bus Correctable Error"),<a name="line.768"></a>
+<span class="sourceLineNo">769</span>        BusUncorrectableError(0x08, "Bus Uncorrectable Error"),<a name="line.769"></a>
+<span class="sourceLineNo">770</span>        FatalNMI(0x09, "Fatal NMI (port 61h, bit 7)"),<a name="line.770"></a>
+<span class="sourceLineNo">771</span>        BusFatalError(0x0A, "Bus Fatal Error"),<a name="line.771"></a>
+<span class="sourceLineNo">772</span>        BusDegraded(0x0B, "Bus Degraded (bus operating in a degraded performance state)");<a name="line.772"></a>
+<span class="sourceLineNo">773</span>        private final byte code;<a name="line.773"></a>
+<span class="sourceLineNo">774</span>        private final String description;<a name="line.774"></a>
+<span class="sourceLineNo">775</span>        /* pp */ private CriticalInterrupt(@Nonnegative int code, @Nonnull String description) {<a name="line.775"></a>
+<span class="sourceLineNo">776</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.776"></a>
+<span class="sourceLineNo">777</span>            this.description = description;<a name="line.777"></a>
+<span class="sourceLineNo">778</span>        }<a name="line.778"></a>
+<span class="sourceLineNo">779</span><a name="line.779"></a>
+<span class="sourceLineNo">780</span>        @Override<a name="line.780"></a>
+<span class="sourceLineNo">781</span>        public byte getCode() {<a name="line.781"></a>
+<span class="sourceLineNo">782</span>            return code;<a name="line.782"></a>
+<span class="sourceLineNo">783</span>        }<a name="line.783"></a>
+<span class="sourceLineNo">784</span><a name="line.784"></a>
+<span class="sourceLineNo">785</span>        @Override<a name="line.785"></a>
+<span class="sourceLineNo">786</span>        public String getDescription() {<a name="line.786"></a>
+<span class="sourceLineNo">787</span>            return description;<a name="line.787"></a>
+<span class="sourceLineNo">788</span>        }<a name="line.788"></a>
+<span class="sourceLineNo">789</span><a name="line.789"></a>
+<span class="sourceLineNo">790</span>        @Override<a name="line.790"></a>
+<span class="sourceLineNo">791</span>        public String toString() {<a name="line.791"></a>
+<span class="sourceLineNo">792</span>            return Code.Utils.toString(this);<a name="line.792"></a>
+<span class="sourceLineNo">793</span>        }<a name="line.793"></a>
+<span class="sourceLineNo">794</span>    }<a name="line.794"></a>
+<span class="sourceLineNo">795</span><a name="line.795"></a>
+<span class="sourceLineNo">796</span>    /**<a name="line.796"></a>
+<span class="sourceLineNo">797</span>     * [IPMI2] Section 42.2, table 42-3, page 514.<a name="line.797"></a>
+<span class="sourceLineNo">798</span>     */<a name="line.798"></a>
+<span class="sourceLineNo">799</span>    public static enum Button implements SensorSpecificOffset {<a name="line.799"></a>
+<span class="sourceLineNo">800</span><a name="line.800"></a>
+<span class="sourceLineNo">801</span>        PowerButtonPressed(0x00, "Power Button pressed"),<a name="line.801"></a>
+<span class="sourceLineNo">802</span>        SleepButtonPressed(0x01, "Sleep Button pressed"),<a name="line.802"></a>
+<span class="sourceLineNo">803</span>        ResetButtonPressed(0x02, "Reset Button pressed"),<a name="line.803"></a>
+<span class="sourceLineNo">804</span>        /** Switch indicating FRU latch is in 'unlatched' position and FRU is mechanically removable. */<a name="line.804"></a>
+<span class="sourceLineNo">805</span>        FRULatchOpen(0x03, "FRU latch open"),<a name="line.805"></a>
+<span class="sourceLineNo">806</span>        /** e.g. removal/replacement, requested. */<a name="line.806"></a>
+<span class="sourceLineNo">807</span>        FRUServiceRequestButton(0x04, "FRU service request button pressed");<a name="line.807"></a>
+<span class="sourceLineNo">808</span>        private final byte code;<a name="line.808"></a>
+<span class="sourceLineNo">809</span>        private final String description;<a name="line.809"></a>
+<span class="sourceLineNo">810</span>        /* pp */ private Button(@Nonnegative int code, @Nonnull String description) {<a name="line.810"></a>
+<span class="sourceLineNo">811</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.811"></a>
+<span class="sourceLineNo">812</span>            this.description = description;<a name="line.812"></a>
+<span class="sourceLineNo">813</span>        }<a name="line.813"></a>
+<span class="sourceLineNo">814</span><a name="line.814"></a>
+<span class="sourceLineNo">815</span>        @Override<a name="line.815"></a>
+<span class="sourceLineNo">816</span>        public byte getCode() {<a name="line.816"></a>
+<span class="sourceLineNo">817</span>            return code;<a name="line.817"></a>
+<span class="sourceLineNo">818</span>        }<a name="line.818"></a>
+<span class="sourceLineNo">819</span><a name="line.819"></a>
+<span class="sourceLineNo">820</span>        @Override<a name="line.820"></a>
+<span class="sourceLineNo">821</span>        public String getDescription() {<a name="line.821"></a>
+<span class="sourceLineNo">822</span>            return description;<a name="line.822"></a>
+<span class="sourceLineNo">823</span>        }<a name="line.823"></a>
+<span class="sourceLineNo">824</span><a name="line.824"></a>
+<span class="sourceLineNo">825</span>        @Override<a name="line.825"></a>
+<span class="sourceLineNo">826</span>        public String toString() {<a name="line.826"></a>
+<span class="sourceLineNo">827</span>            return Code.Utils.toString(this);<a name="line.827"></a>
+<span class="sourceLineNo">828</span>        }<a name="line.828"></a>
+<span class="sourceLineNo">829</span>    }<a name="line.829"></a>
+<span class="sourceLineNo">830</span><a name="line.830"></a>
+<span class="sourceLineNo">831</span>    /**<a name="line.831"></a>
+<span class="sourceLineNo">832</span>     * [IPMI2] Section 42.2, table 42-3, page 514.<a name="line.832"></a>
+<span class="sourceLineNo">833</span>     */<a name="line.833"></a>
+<span class="sourceLineNo">834</span>    public static enum Chipset implements SensorSpecificOffset {<a name="line.834"></a>
+<span class="sourceLineNo">835</span><a name="line.835"></a>
+<span class="sourceLineNo">836</span>        SoftPowerControlFailure(0x00, "Soft Power Control Failure") {<a name="line.836"></a>
+<span class="sourceLineNo">837</span>            /** intended/requested */<a name="line.837"></a>
+<span class="sourceLineNo">838</span>            public Object decodeEventData2(byte value) {<a name="line.838"></a>
+<span class="sourceLineNo">839</span>                return Code.fromByte(PowerState.class, value);<a name="line.839"></a>
+<span class="sourceLineNo">840</span>            }<a name="line.840"></a>
+<span class="sourceLineNo">841</span><a name="line.841"></a>
+<span class="sourceLineNo">842</span>            /** at time of failure */<a name="line.842"></a>
+<span class="sourceLineNo">843</span>            public Object decodeEventData3(byte value) {<a name="line.843"></a>
+<span class="sourceLineNo">844</span>                return Code.fromByte(PowerState.class, value);<a name="line.844"></a>
+<span class="sourceLineNo">845</span>            }<a name="line.845"></a>
+<span class="sourceLineNo">846</span>        },<a name="line.846"></a>
+<span class="sourceLineNo">847</span>        ThermalTrip(0x01, "Thermal Trip");<a name="line.847"></a>
+<span class="sourceLineNo">848</span><a name="line.848"></a>
+<span class="sourceLineNo">849</span>        public static enum PowerState implements Code.DescriptiveWrapper {<a name="line.849"></a>
+<span class="sourceLineNo">850</span><a name="line.850"></a>
+<span class="sourceLineNo">851</span>            S0(0x00, "S0 / G0 'working'"),<a name="line.851"></a>
+<span class="sourceLineNo">852</span>            S1(0x01, "S1 'sleeping with system h/w &amp; processor context maintained'"),<a name="line.852"></a>
+<span class="sourceLineNo">853</span>            S2(0x02, "S2 'sleeping, processor context lost'"),<a name="line.853"></a>
+<span class="sourceLineNo">854</span>            S3(0x03, "S3 'sleeping, processor &amp; h/w context lost, memory retained.'"),<a name="line.854"></a>
+<span class="sourceLineNo">855</span>            S4(0x04, "S4 'non-volatile sleep / suspend-to disk'"),<a name="line.855"></a>
+<span class="sourceLineNo">856</span>            S5(0x05, "S5 / G2 'soft-off'"),<a name="line.856"></a>
+<span class="sourceLineNo">857</span>            S4S5(0x06, "S4 / S5 soft-off, particular S4 / S5 state cannot be determined"),<a name="line.857"></a>
+<span class="sourceLineNo">858</span>            G3(0x07, "G3 / Mechanical Off"),<a name="line.858"></a>
+<span class="sourceLineNo">859</span>            S1S2S3(0x08, "Sleeping in an S1, S2, or S3 states (used when particular S1, S2, S3 state cannot be determined)"),<a name="line.859"></a>
+<span class="sourceLineNo">860</span>            G1(0x09, "G1 sleeping (S1-S4 state cannot be determined)"),<a name="line.860"></a>
+<span class="sourceLineNo">861</span>            S5Override(0x0A, "S5 entered by override"),<a name="line.861"></a>
+<span class="sourceLineNo">862</span>            LegacyOn(0x0B, "Legacy ON state"),<a name="line.862"></a>
+<span class="sourceLineNo">863</span>            LegacyOff(0x0C, "Legacy OFF state"),<a name="line.863"></a>
+<span class="sourceLineNo">864</span>            Unknown(0x0D, "Unknown/Reserved");<a name="line.864"></a>
+<span class="sourceLineNo">865</span>            private final byte code;<a name="line.865"></a>
+<span class="sourceLineNo">866</span>            private final String description;<a name="line.866"></a>
+<span class="sourceLineNo">867</span>            /* pp */ private PowerState(@Nonnegative int code, @Nonnull String description) {<a name="line.867"></a>
+<span class="sourceLineNo">868</span>                this.code = UnsignedBytes.checkedCast(code);<a name="line.868"></a>
+<span class="sourceLineNo">869</span>                this.description = description;<a name="line.869"></a>
+<span class="sourceLineNo">870</span>            }<a name="line.870"></a>
+<span class="sourceLineNo">871</span><a name="line.871"></a>
+<span class="sourceLineNo">872</span>            @Override<a name="line.872"></a>
+<span class="sourceLineNo">873</span>            public byte getCode() {<a name="line.873"></a>
+<span class="sourceLineNo">874</span>                return code;<a name="line.874"></a>
+<span class="sourceLineNo">875</span>            }<a name="line.875"></a>
+<span class="sourceLineNo">876</span><a name="line.876"></a>
+<span class="sourceLineNo">877</span>            @Override<a name="line.877"></a>
+<span class="sourceLineNo">878</span>            public String getDescription() {<a name="line.878"></a>
+<span class="sourceLineNo">879</span>                return description;<a name="line.879"></a>
+<span class="sourceLineNo">880</span>            }<a name="line.880"></a>
+<span class="sourceLineNo">881</span><a name="line.881"></a>
+<span class="sourceLineNo">882</span>            @Override<a name="line.882"></a>
+<span class="sourceLineNo">883</span>            public String toString() {<a name="line.883"></a>
+<span class="sourceLineNo">884</span>                return Code.Utils.toString(this);<a name="line.884"></a>
+<span class="sourceLineNo">885</span>            }<a name="line.885"></a>
+<span class="sourceLineNo">886</span>        }<a name="line.886"></a>
+<span class="sourceLineNo">887</span>        private final byte code;<a name="line.887"></a>
+<span class="sourceLineNo">888</span>        private final String description;<a name="line.888"></a>
+<span class="sourceLineNo">889</span>        /* pp */ private Chipset(@Nonnegative int code, @Nonnull String description) {<a name="line.889"></a>
+<span class="sourceLineNo">890</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.890"></a>
+<span class="sourceLineNo">891</span>            this.description = description;<a name="line.891"></a>
+<span class="sourceLineNo">892</span>        }<a name="line.892"></a>
+<span class="sourceLineNo">893</span><a name="line.893"></a>
+<span class="sourceLineNo">894</span>        @Override<a name="line.894"></a>
+<span class="sourceLineNo">895</span>        public byte getCode() {<a name="line.895"></a>
+<span class="sourceLineNo">896</span>            return code;<a name="line.896"></a>
+<span class="sourceLineNo">897</span>        }<a name="line.897"></a>
+<span class="sourceLineNo">898</span><a name="line.898"></a>
+<span class="sourceLineNo">899</span>        @Override<a name="line.899"></a>
+<span class="sourceLineNo">900</span>        public String getDescription() {<a name="line.900"></a>
+<span class="sourceLineNo">901</span>            return description;<a name="line.901"></a>
+<span class="sourceLineNo">902</span>        }<a name="line.902"></a>
+<span class="sourceLineNo">903</span><a name="line.903"></a>
+<span class="sourceLineNo">904</span>        @Override<a name="line.904"></a>
+<span class="sourceLineNo">905</span>        public String toString() {<a name="line.905"></a>
+<span class="sourceLineNo">906</span>            return Code.Utils.toString(this);<a name="line.906"></a>
+<span class="sourceLineNo">907</span>        }<a name="line.907"></a>
+<span class="sourceLineNo">908</span>    }<a name="line.908"></a>
+<span class="sourceLineNo">909</span><a name="line.909"></a>
+<span class="sourceLineNo">910</span>    /**<a name="line.910"></a>
+<span class="sourceLineNo">911</span>     * [IPMI2] Section 42.2, table 42-3, page 515.<a name="line.911"></a>
+<span class="sourceLineNo">912</span>     */<a name="line.912"></a>
+<span class="sourceLineNo">913</span>    public static enum Cable implements SensorSpecificOffset {<a name="line.913"></a>
+<span class="sourceLineNo">914</span><a name="line.914"></a>
+<span class="sourceLineNo">915</span>        CableConnected(0x00, "Cable/Interconnect is connected"),<a name="line.915"></a>
+<span class="sourceLineNo">916</span>        CableConfigurationError(0x01, "Configuration Error - Incorrect cable connected / Incorrect interconnection");<a name="line.916"></a>
+<span class="sourceLineNo">917</span>        private final byte code;<a name="line.917"></a>
+<span class="sourceLineNo">918</span>        private final String description;<a name="line.918"></a>
+<span class="sourceLineNo">919</span>        /* pp */ private Cable(@Nonnegative int code, @Nonnull String description) {<a name="line.919"></a>
+<span class="sourceLineNo">920</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.920"></a>
+<span class="sourceLineNo">921</span>            this.description = description;<a name="line.921"></a>
+<span class="sourceLineNo">922</span>        }<a name="line.922"></a>
+<span class="sourceLineNo">923</span><a name="line.923"></a>
+<span class="sourceLineNo">924</span>        @Override<a name="line.924"></a>
+<span class="sourceLineNo">925</span>        public byte getCode() {<a name="line.925"></a>
+<span class="sourceLineNo">926</span>            return code;<a name="line.926"></a>
+<span class="sourceLineNo">927</span>        }<a name="line.927"></a>
+<span class="sourceLineNo">928</span><a name="line.928"></a>
+<span class="sourceLineNo">929</span>        @Override<a name="line.929"></a>
+<span class="sourceLineNo">930</span>        public String getDescription() {<a name="line.930"></a>
+<span class="sourceLineNo">931</span>            return description;<a name="line.931"></a>
+<span class="sourceLineNo">932</span>        }<a name="line.932"></a>
+<span class="sourceLineNo">933</span><a name="line.933"></a>
+<span class="sourceLineNo">934</span>        @Override<a name="line.934"></a>
+<span class="sourceLineNo">935</span>        public String toString() {<a name="line.935"></a>
+<span class="sourceLineNo">936</span>            return Code.Utils.toString(this);<a name="line.936"></a>
+<span class="sourceLineNo">937</span>        }<a name="line.937"></a>
+<span class="sourceLineNo">938</span>    }<a name="line.938"></a>
+<span class="sourceLineNo">939</span><a name="line.939"></a>
+<span class="sourceLineNo">940</span>    /**<a name="line.940"></a>
+<span class="sourceLineNo">941</span>     * [IPMI2] Section 42.2, table 42-3, page 515.<a name="line.941"></a>
+<span class="sourceLineNo">942</span>     */<a name="line.942"></a>
+<span class="sourceLineNo">943</span>    public static enum SystemBootInitiation implements SensorSpecificOffset {<a name="line.943"></a>
+<span class="sourceLineNo">944</span><a name="line.944"></a>
+<span class="sourceLineNo">945</span>        BIOSPowerUp(0x00, "Initiated by power up (this would typically be generated by BIOS/EFI)"),<a name="line.945"></a>
+<span class="sourceLineNo">946</span>        BIOSHardReset(0x01, "Initiated by hard reset (this would typically be generated by BIOS/EFI)"),<a name="line.946"></a>
+<span class="sourceLineNo">947</span>        BIOSWarmReset(0x02, "Initiated by warm reset (this would typically be generated by BIOS/EFI)"),<a name="line.947"></a>
+<span class="sourceLineNo">948</span>        PXEBoot(0x03, "User requested PXE boot"),<a name="line.948"></a>
+<span class="sourceLineNo">949</span>        BootToDiagnostic(0x04, "Automatic boot to diagnostic"),<a name="line.949"></a>
+<span class="sourceLineNo">950</span>        OSHardReset(0x05, "OS / run-time software initiated hard reset"),<a name="line.950"></a>
+<span class="sourceLineNo">951</span>        OSWarnReset(0x06, "OS / run-time software initiated warm reset"),<a name="line.951"></a>
+<span class="sourceLineNo">952</span>        SystemRestart(0x07, "System Restart") {<a name="line.952"></a>
+<span class="sourceLineNo">953</span>            public Object decodeEventData2(byte value) {<a name="line.953"></a>
+<span class="sourceLineNo">954</span>                return Code.fromInt(GetSystemRestartCauseResponse.RestartCause.class, value &amp; 0xF);<a name="line.954"></a>
+<span class="sourceLineNo">955</span>            }<a name="line.955"></a>
+<span class="sourceLineNo">956</span><a name="line.956"></a>
+<span class="sourceLineNo">957</span>            public Object decodeEventData3(byte value) {<a name="line.957"></a>
+<span class="sourceLineNo">958</span>                // TODO: Doublecheck this.<a name="line.958"></a>
+<span class="sourceLineNo">959</span>                return Code.fromByte(IpmiChannelNumber.class, value);<a name="line.959"></a>
+<span class="sourceLineNo">960</span>            }<a name="line.960"></a>
+<span class="sourceLineNo">961</span>        };<a name="line.961"></a>
+<span class="sourceLineNo">962</span>        private final byte code;<a name="line.962"></a>
+<span class="sourceLineNo">963</span>        private final String description;<a name="line.963"></a>
+<span class="sourceLineNo">964</span>        /* pp */ private SystemBootInitiation(@Nonnegative int code, @Nonnull String description) {<a name="line.964"></a>
+<span class="sourceLineNo">965</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.965"></a>
+<span class="sourceLineNo">966</span>            this.description = description;<a name="line.966"></a>
+<span class="sourceLineNo">967</span>        }<a name="line.967"></a>
+<span class="sourceLineNo">968</span><a name="line.968"></a>
+<span class="sourceLineNo">969</span>        @Override<a name="line.969"></a>
+<span class="sourceLineNo">970</span>        public byte getCode() {<a name="line.970"></a>
+<span class="sourceLineNo">971</span>            return code;<a name="line.971"></a>
+<span class="sourceLineNo">972</span>        }<a name="line.972"></a>
+<span class="sourceLineNo">973</span><a name="line.973"></a>
+<span class="sourceLineNo">974</span>        @Override<a name="line.974"></a>
+<span class="sourceLineNo">975</span>        public String getDescription() {<a name="line.975"></a>
+<span class="sourceLineNo">976</span>            return description;<a name="line.976"></a>
+<span class="sourceLineNo">977</span>        }<a name="line.977"></a>
+<span class="sourceLineNo">978</span><a name="line.978"></a>
+<span class="sourceLineNo">979</span>        @Override<a name="line.979"></a>
+<span class="sourceLineNo">980</span>        public String toString() {<a name="line.980"></a>
+<span class="sourceLineNo">981</span>            return Code.Utils.toString(this);<a name="line.981"></a>
+<span class="sourceLineNo">982</span>        }<a name="line.982"></a>
+<span class="sourceLineNo">983</span>    }<a name="line.983"></a>
+<span class="sourceLineNo">984</span><a name="line.984"></a>
+<span class="sourceLineNo">985</span>    /**<a name="line.985"></a>
+<span class="sourceLineNo">986</span>     * [IPMI2] Section 42.2, table 42-3, page 515.<a name="line.986"></a>
+<span class="sourceLineNo">987</span>     */<a name="line.987"></a>
+<span class="sourceLineNo">988</span>    public static enum BootError implements SensorSpecificOffset {<a name="line.988"></a>
+<span class="sourceLineNo">989</span><a name="line.989"></a>
+<span class="sourceLineNo">990</span>        NoBootableMedia(0x00, "No bootable media"),<a name="line.990"></a>
+<span class="sourceLineNo">991</span>        NonBootableDisketteLeftInDrive(0x01, "Non-bootable diskette left in drive"),<a name="line.991"></a>
+<span class="sourceLineNo">992</span>        PXEServerNotFound(0x02, "PXE Server not found"),<a name="line.992"></a>
+<span class="sourceLineNo">993</span>        InvalidBootSector(0x03, "Invalid boot sector"),<a name="line.993"></a>
+<span class="sourceLineNo">994</span>        TimeoutWaitingForUserBootSelection(0x04, "Timeout waiting for user selection of boot source");<a name="line.994"></a>
+<span class="sourceLineNo">995</span>        private final byte code;<a name="line.995"></a>
+<span class="sourceLineNo">996</span>        private final String description;<a name="line.996"></a>
+<span class="sourceLineNo">997</span>        /* pp */ private BootError(@Nonnegative int code, @Nonnull String description) {<a name="line.997"></a>
+<span class="sourceLineNo">998</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.998"></a>
+<span class="sourceLineNo">999</span>            this.description = description;<a name="line.999"></a>
+<span class="sourceLineNo">1000</span>        }<a name="line.1000"></a>
+<span class="sourceLineNo">1001</span><a name="line.1001"></a>
+<span class="sourceLineNo">1002</span>        @Override<a name="line.1002"></a>
+<span class="sourceLineNo">1003</span>        public byte getCode() {<a name="line.1003"></a>
+<span class="sourceLineNo">1004</span>            return code;<a name="line.1004"></a>
+<span class="sourceLineNo">1005</span>        }<a name="line.1005"></a>
+<span class="sourceLineNo">1006</span><a name="line.1006"></a>
+<span class="sourceLineNo">1007</span>        @Override<a name="line.1007"></a>
+<span class="sourceLineNo">1008</span>        public String getDescription() {<a name="line.1008"></a>
+<span class="sourceLineNo">1009</span>            return description;<a name="line.1009"></a>
+<span class="sourceLineNo">1010</span>        }<a name="line.1010"></a>
+<span class="sourceLineNo">1011</span><a name="line.1011"></a>
+<span class="sourceLineNo">1012</span>        @Override<a name="line.1012"></a>
+<span class="sourceLineNo">1013</span>        public String toString() {<a name="line.1013"></a>
+<span class="sourceLineNo">1014</span>            return Code.Utils.toString(this);<a name="line.1014"></a>
+<span class="sourceLineNo">1015</span>        }<a name="line.1015"></a>
+<span class="sourceLineNo">1016</span>    }<a name="line.1016"></a>
+<span class="sourceLineNo">1017</span><a name="line.1017"></a>
+<span class="sourceLineNo">1018</span>    /**<a name="line.1018"></a>
+<span class="sourceLineNo">1019</span>     * [IPMI2] Section 42.2, table 42-3, page 515.<a name="line.1019"></a>
+<span class="sourceLineNo">1020</span>     */<a name="line.1020"></a>
+<span class="sourceLineNo">1021</span>    public static enum BootStatus implements SensorSpecificOffset {<a name="line.1021"></a>
+<span class="sourceLineNo">1022</span><a name="line.1022"></a>
+<span class="sourceLineNo">1023</span>        BootCompletedA(0x00, "A: boot completed"),<a name="line.1023"></a>
+<span class="sourceLineNo">1024</span>        BootCompletedC(0x01, "C: boot completed"),<a name="line.1024"></a>
+<span class="sourceLineNo">1025</span>        BootCompletedPXE(0x02, "PXE boot completed"),<a name="line.1025"></a>
+<span class="sourceLineNo">1026</span>        BootCompletedDiagnostic(0x03, "Diagnostic boot completed"),<a name="line.1026"></a>
+<span class="sourceLineNo">1027</span>        BootCompletedCDROM(0x04, "CD-ROM boot completed"),<a name="line.1027"></a>
+<span class="sourceLineNo">1028</span>        BootCompletedROM(0x05, "ROM boot completed"),<a name="line.1028"></a>
+<span class="sourceLineNo">1029</span>        BootCompletedUnspecified(0x06, "Boot Completed - boot device not specified"),<a name="line.1029"></a>
+<span class="sourceLineNo">1030</span>        BaseOSInstallationStarted(0x07, "Base OS/Hypervisor Installation started"),<a name="line.1030"></a>
+<span class="sourceLineNo">1031</span>        BaseOSInstallationCompleted(0x08, "Base OS/Hypervisor Installation completed"),<a name="line.1031"></a>
+<span class="sourceLineNo">1032</span>        BaseOSInstallationAborted(0x09, "Base OS/Hypervisor Installation aborted"),<a name="line.1032"></a>
+<span class="sourceLineNo">1033</span>        BaseOSInstallationFailed(0x0A, "Base OS/Hypervisor Installation failed");<a name="line.1033"></a>
+<span class="sourceLineNo">1034</span>        private final byte code;<a name="line.1034"></a>
+<span class="sourceLineNo">1035</span>        private final String description;<a name="line.1035"></a>
+<span class="sourceLineNo">1036</span>        /* pp */ private BootStatus(@Nonnegative int code, @Nonnull String description) {<a name="line.1036"></a>
+<span class="sourceLineNo">1037</span>            this.code = UnsignedBytes.checkedCast(code);<a name="line.1037"></a>
+<span class="sourceLineNo">1038</span>            this.description = description;<a name="line.1038"></a>
+<span class="sourceLineNo">1039</span>        }<a name="line.1039"></a>
+<span class="sourceLineNo">1040</span><a name="line.1040"></a>
+<span class="sourceLineNo">1041</span>        @Override<a name="line.1041"></a>
+<span class="sourceLineNo">1042</span>        public byte getCode() {<a name="line.1042"></a>
+<span class="sourceLineNo">1043</span>            return code;<a name="line.1043"></a>
+<span class="sourceLineNo">1044</span>        }<a name="line.1044"></a>
+<span class="sourceLineNo">1045</span><a name="line.1045"></a>
+<span class="sourceLineNo">1046</span>        @Override<a name="line.1046"></a>
+<span class="sourceLineNo">1047</span>        public String getDescription() {<a name="line.1047"></a>
+<span class="sourceLineNo">1048</span>            return description;<a name="line.1048"></a>
+<span class="sourceLineNo">1049</span>        }<a name="line.1049"></a>
+<span class="sourceLineNo">1050</span><a name="line.1050"></a>
+<span class="sourceLineNo">1051</span>        @Override<a name="line.1051"></a>
+<span class="sourceLineNo">1052</span>        public String toString() {<a name="line.1052"></a>
+<span class="sourceLineNo">1053</span>            return Code.Utils.toString(this);<a name="line.1053"></a>
+<span class="sourceLineNo">1054</span>        }<a name="line.1054"></a>
+<span class="sourceLineNo">1055</span>    }<a name="line.1055"></a>
+<span class="sourceLineNo">1056</span>}<a name="line.1056"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

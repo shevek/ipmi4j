@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * To change this template, choose Tools | Templates<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * and open the template in the editor.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> */<a name="line.4"></a>
+<span class="sourceLineNo">005</span>package org.anarres.ipmi.protocol.packet.ipmi.command.sdr;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.google.common.primitives.UnsignedBytes;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import javax.annotation.Nonnegative;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import javax.annotation.Nonnull;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.anarres.ipmi.protocol.packet.common.Code;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>/**<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * [IPMI2] Section 43.14, pages 553-554.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> *<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * @author shevek<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>public enum SDREntityId implements Code.DescriptiveWrapper {<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>    Unspecified(0x00, "Unspecified"),<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    Other(0x01, "Other"),<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    Unknown(0x02, "Unknown (unspecified)"),<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    Processor(0x03, "Processor"),<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    Disk(0x04, "Disk or disk bay"),<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    Peripheral_Bay(0x05, "Peripheral bay"),<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    System_Management_Module(0x06, "System Management Module"),<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    /** Main system board, may also be a processor board and/or internal expansion board. */<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    System_Board(0x07, "System board"),<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    /** (board holding memory devices) */<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    Memory_Module(0x08, "Memory module"),<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    /** Holds processors, use this designation when processors are not mounted on system board. */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    Processor_Module(0x09, "Processor module"),<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    /** Use this value for the main power supply (supplies) for the system. (DMI refers to this as a power unit, but it's used to represent a power supply). */<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    Power_Supply(0x0A, "Power supply"),<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    Add_In_Card(0x0B, "Add-in card"),<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    /** Front control panel. */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    Front_Panel_Board(0x0C, "Front panel board"),<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    Back_Panel_Board(0x0D, "Back panel board"),<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    Power_System_Board(0x0E, "Power system board"),<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    Drive_Backplane(0x0F, "Drive backplane"),<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    /** Contains expansion slots. */<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    System_Internal_Expansion_Board(0x10, "System internal expansion board"),<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    /** Part of board set. */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    Other_System_Board(0x11, "Other system board"),<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    /** Holds 1 or more processors - includes boards that hold SECC modules. */<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    Processor_Board(0x12, "Processor board"),<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    /** This Entity ID is typically used as a pre-defined logical entity for grouping power supplies and/or sensors that are associated in monitoring a particular logical power domain. */<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    Power_Unit(0x13, "Power unit / power domain"),<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    /* Power module / DC-to-DC converter - Use this value for internal converters. Note: You should use Entity ID 10 (power supply) for the main power supply even if the main supply is a DC-to-DC converter, e.g. gets external power from a -48 DC source. */<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    Power_Module(0x14, "Power module / DC-to-DC converter"),<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    Power_Management_Board(0x15, "Power management / power distribution board"),<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    Chassis_Back_Panel_Board(0x16, "Chassis back panel board"),<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    System_Chassis(0x17, "System chassis"),<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    Sub_Chassis(0x18, "Sub-chassis"),<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    Other_Chassis_Board(0x19, "Other chassis board"),<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    Disk_Drive_Bay(0x1A, "Disk drive bay"),<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    Peripheral_Bay_Alt(0x1B, "Peripheral bay"),<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    Device_Bay(0x1C, "Device bay"),<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    Fan(0x1D, "Fan / cooling device"),<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    /** This Entity ID can be used as a pre-defined logical entity for grouping fans or other cooling devices and/or sensors that are associated in monitoring a particular logical cooling domain. */<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    Cooling_Unit(0x1E, "Cooling unit / cooling domain"),<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    Cable(0x1F, "Cable / interconnect"),<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    /** This Entity ID should be used for replaceable memory devices, e.g. DIMM/SIMM. It is recommended that Entity IDs not be used for individual non-replaceable memory devices. Rather, monitoring and error reporting should be associated with the FRU [e.g. memory card] holding the memory. */<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    Memory_Device(0x20, "Memory device"),<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    System_Management_Software(0x21, "System management software"),<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    /** E.g. BIOS/EFI. */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    System_Firmware(0x22, "System firmware"),<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    Operating_System(0x23, "Operating system"),<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    System_Bus(0x24, "System bus"),<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    /** This is a logical entity for use with Entity Association records. It is provided to allow an Entity- association record to define a grouping of entities when there is no appropriate pre-defined entity for the container entity. This Entity should not be used as a physical entity. */<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    Group(0x25, "Group"),<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    Remote_Management_Communication_Device(0x26, "Remote (out of band) management communication device"),<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    /** This Entity ID can be used to identify the environment outside the system chassis. For example, a system may have a temperature sensor that monitors the temperature 'outside the box'. Such a temperature sensor can be associated with an External Environment entity. This value will typically be used as a single instance physical entity. However, the Entity Instance value can be used to denote a difference in regions of the external environment. For example, the region around the front of a chassis may be considered to be different from the region around the back, in which case it would be reasonable to have two different instances of the External Environment entity. */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    External_Environment(0x27, "External environment"),<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    Battery(0x28, "battery"),<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    /** A blade module that contains processor, memory, and I/O connections that enable it to operate as a processing entity. */<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    Processing_Blade(0x29, "Processing blade"),<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    /** (a blade module that provides the fabric or network connection for one or more processing blades or modules. */<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    Connectivity_Switch(0x2A, "Connectivity switch"),<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    /** Processor and memory together on a module. */<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    Processor_Memory_Module(0x2B, "Processor / memory module"),<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    /** A module that contains the main elements of an I/O interface. */<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    IO_Module(0x2C, "I/O module"),<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    /** A combination processor and I/O module. */<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    Processor_IO_Module(0x2D, "Processor / I/O module"),<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    /** Represents firmware or software running on a management controller. */<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    Management_Controller_Firmware(0x2E, "Management controller firmware"),<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    /** This Entity ID enables associating sensors with the IPMI communication channels - for example a Redundancy sensor could be used to report redundancy status for a channel that is composed of multiple physical links. By convention, the Entity Instance corresponds to the channel number. */<a name="line.87"></a>
+<span class="sourceLineNo">088</span>    IPMI_Channel(0x2F, "IPMI channel"),<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    PCI_Bus(0x30, "PCI bus"),<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    PCI_Express_Bus(0x31, "PCI Express bus"),<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    SCSI_Bus(0x32, "SCSI bus (parallel)"),<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    SATA_SAS_Bus(0x33, "SATA / SAS bus"),<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    Processor_Front_Side_Bus(0x34, "Processor / front-side bus"),<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    Real_Time_Clock(0x35, "Real Time Clock (RTC)"),<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    Reserved_36(0x36, "reserved"),<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    /** This Entity ID enables associating sensors such as temperature to the airflow at an air inlet. */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    Air_Inlet(0x37, "Air inlet"),<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    Reserved_38(0x38, "reserved"),<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    Reserved_39(0x39, "reserved"),<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    Reserved_3A(0x3A, "reserved"),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    Reserved_3B(0x3B, "reserved"),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    Reserved_3C(0x3C, "reserved"),<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    Reserved_3D(0x3D, "reserved"),<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    Reserved_3E(0x3E, "reserved"),<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    Reserved_3F(0x3F, "reserved"),<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    /** This Entity ID value is equivalent to Entity ID 37h. It is provided for interoperability with the DCMI 1.0 specifications. */<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    Air_Inlet_DCMICompat(0x40, "Air inlet (DCMI compatible)"),<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    /** This Entity ID value is equivalent to Entity ID 03h (processor). It is provided for interoperability with the DCMI 1.0 specifications. */<a name="line.108"></a>
+<span class="sourceLineNo">109</span>    Processor_DCMICompat(0x41, "Processor (DCMI compatible)"),<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    /** This Entity ID value is equivalent to Entity ID 07h (system board). It is provided for interoperability with the DCMI 1.0 specifications. */<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    System_Board_DCMICompat(0x42, "Baseboard / main system board (DCMI compatible)"),<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    Chassis_Specific_90(0x90, "Chassis Specific ID 0x90"),<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    Chassis_Specific_91(0x91, "Chassis Specific ID 0x91"),<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    Chassis_Specific_92(0x92, "Chassis Specific ID 0x92"),<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    Chassis_Specific_93(0x93, "Chassis Specific ID 0x93"),<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    Chassis_Specific_94(0x94, "Chassis Specific ID 0x94"),<a name="line.116"></a>
+<span class="sourceLineNo">117</span>    Chassis_Specific_95(0x95, "Chassis Specific ID 0x95"),<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    Chassis_Specific_96(0x96, "Chassis Specific ID 0x96"),<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    Chassis_Specific_97(0x97, "Chassis Specific ID 0x97"),<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    Chassis_Specific_98(0x98, "Chassis Specific ID 0x98"),<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    Chassis_Specific_99(0x99, "Chassis Specific ID 0x99"),<a name="line.121"></a>
+<span class="sourceLineNo">122</span>    Chassis_Specific_9A(0x9A, "Chassis Specific ID 0x9A"),<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    Chassis_Specific_9B(0x9B, "Chassis Specific ID 0x9B"),<a name="line.123"></a>
+<span class="sourceLineNo">124</span>    Chassis_Specific_9C(0x9C, "Chassis Specific ID 0x9C"),<a name="line.124"></a>
+<span class="sourceLineNo">125</span>    Chassis_Specific_9D(0x9D, "Chassis Specific ID 0x9D"),<a name="line.125"></a>
+<span class="sourceLineNo">126</span>    Chassis_Specific_9E(0x9E, "Chassis Specific ID 0x9E"),<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    Chassis_Specific_9F(0x9F, "Chassis Specific ID 0x9F"),<a name="line.127"></a>
+<span class="sourceLineNo">128</span>    Chassis_Specific_A0(0xA0, "Chassis Specific ID 0xA0"),<a name="line.128"></a>
+<span class="sourceLineNo">129</span>    Chassis_Specific_A1(0xA1, "Chassis Specific ID 0xA1"),<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    Chassis_Specific_A2(0xA2, "Chassis Specific ID 0xA2"),<a name="line.130"></a>
+<span class="sourceLineNo">131</span>    Chassis_Specific_A3(0xA3, "Chassis Specific ID 0xA3"),<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    Chassis_Specific_A4(0xA4, "Chassis Specific ID 0xA4"),<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    Chassis_Specific_A5(0xA5, "Chassis Specific ID 0xA5"),<a name="line.133"></a>
+<span class="sourceLineNo">134</span>    Chassis_Specific_A6(0xA6, "Chassis Specific ID 0xA6"),<a name="line.134"></a>
+<span class="sourceLineNo">135</span>    Chassis_Specific_A7(0xA7, "Chassis Specific ID 0xA7"),<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    Chassis_Specific_A8(0xA8, "Chassis Specific ID 0xA8"),<a name="line.136"></a>
+<span class="sourceLineNo">137</span>    Chassis_Specific_A9(0xA9, "Chassis Specific ID 0xA9"),<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    Chassis_Specific_AA(0xAA, "Chassis Specific ID 0xAA"),<a name="line.138"></a>
+<span class="sourceLineNo">139</span>    Chassis_Specific_AB(0xAB, "Chassis Specific ID 0xAB"),<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    Chassis_Specific_AC(0xAC, "Chassis Specific ID 0xAC"),<a name="line.140"></a>
+<span class="sourceLineNo">141</span>    Chassis_Specific_AD(0xAD, "Chassis Specific ID 0xAD"),<a name="line.141"></a>
+<span class="sourceLineNo">142</span>    Chassis_Specific_AE(0xAE, "Chassis Specific ID 0xAE"),<a name="line.142"></a>
+<span class="sourceLineNo">143</span>    Chassis_Specific_AF(0xAF, "Chassis Specific ID 0xAF"),<a name="line.143"></a>
+<span class="sourceLineNo">144</span>    Board_Set_Specific_B0(0xB0, "Board Set Specific ID 0xB0"),<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    Board_Set_Specific_B1(0xB1, "Board Set Specific ID 0xB1"),<a name="line.145"></a>
+<span class="sourceLineNo">146</span>    Board_Set_Specific_B2(0xB2, "Board Set Specific ID 0xB2"),<a name="line.146"></a>
+<span class="sourceLineNo">147</span>    Board_Set_Specific_B3(0xB3, "Board Set Specific ID 0xB3"),<a name="line.147"></a>
+<span class="sourceLineNo">148</span>    Board_Set_Specific_B4(0xB4, "Board Set Specific ID 0xB4"),<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    Board_Set_Specific_B5(0xB5, "Board Set Specific ID 0xB5"),<a name="line.149"></a>
+<span class="sourceLineNo">150</span>    Board_Set_Specific_B6(0xB6, "Board Set Specific ID 0xB6"),<a name="line.150"></a>
+<span class="sourceLineNo">151</span>    Board_Set_Specific_B7(0xB7, "Board Set Specific ID 0xB7"),<a name="line.151"></a>
+<span class="sourceLineNo">152</span>    Board_Set_Specific_B8(0xB8, "Board Set Specific ID 0xB8"),<a name="line.152"></a>
+<span class="sourceLineNo">153</span>    Board_Set_Specific_B9(0xB9, "Board Set Specific ID 0xB9"),<a name="line.153"></a>
+<span class="sourceLineNo">154</span>    Board_Set_Specific_BA(0xBA, "Board Set Specific ID 0xBA"),<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    Board_Set_Specific_BB(0xBB, "Board Set Specific ID 0xBB"),<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    Board_Set_Specific_BC(0xBC, "Board Set Specific ID 0xBC"),<a name="line.156"></a>
+<span class="sourceLineNo">157</span>    Board_Set_Specific_BD(0xBD, "Board Set Specific ID 0xBD"),<a name="line.157"></a>
+<span class="sourceLineNo">158</span>    Board_Set_Specific_BE(0xBE, "Board Set Specific ID 0xBE"),<a name="line.158"></a>
+<span class="sourceLineNo">159</span>    Board_Set_Specific_BF(0xBF, "Board Set Specific ID 0xBF"),<a name="line.159"></a>
+<span class="sourceLineNo">160</span>    Board_Set_Specific_C0(0xC0, "Board Set Specific ID 0xC0"),<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    Board_Set_Specific_C1(0xC1, "Board Set Specific ID 0xC1"),<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    Board_Set_Specific_C2(0xC2, "Board Set Specific ID 0xC2"),<a name="line.162"></a>
+<span class="sourceLineNo">163</span>    Board_Set_Specific_C3(0xC3, "Board Set Specific ID 0xC3"),<a name="line.163"></a>
+<span class="sourceLineNo">164</span>    Board_Set_Specific_C4(0xC4, "Board Set Specific ID 0xC4"),<a name="line.164"></a>
+<span class="sourceLineNo">165</span>    Board_Set_Specific_C5(0xC5, "Board Set Specific ID 0xC5"),<a name="line.165"></a>
+<span class="sourceLineNo">166</span>    Board_Set_Specific_C6(0xC6, "Board Set Specific ID 0xC6"),<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    Board_Set_Specific_C7(0xC7, "Board Set Specific ID 0xC7"),<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    Board_Set_Specific_C8(0xC8, "Board Set Specific ID 0xC8"),<a name="line.168"></a>
+<span class="sourceLineNo">169</span>    Board_Set_Specific_C9(0xC9, "Board Set Specific ID 0xC9"),<a name="line.169"></a>
+<span class="sourceLineNo">170</span>    Board_Set_Specific_CA(0xCA, "Board Set Specific ID 0xCA"),<a name="line.170"></a>
+<span class="sourceLineNo">171</span>    Board_Set_Specific_CB(0xCB, "Board Set Specific ID 0xCB"),<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    Board_Set_Specific_CC(0xCC, "Board Set Specific ID 0xCC"),<a name="line.172"></a>
+<span class="sourceLineNo">173</span>    Board_Set_Specific_CD(0xCD, "Board Set Specific ID 0xCD"),<a name="line.173"></a>
+<span class="sourceLineNo">174</span>    Board_Set_Specific_CE(0xCE, "Board Set Specific ID 0xCE"),<a name="line.174"></a>
+<span class="sourceLineNo">175</span>    Board_Set_Specific_CF(0xCF, "Board Set Specific ID 0xCF"),<a name="line.175"></a>
+<span class="sourceLineNo">176</span>    OEM_Specific_D0(0xD0, "OEM Specific ID 0xD0"),<a name="line.176"></a>
+<span class="sourceLineNo">177</span>    OEM_Specific_D1(0xD1, "OEM Specific ID 0xD1"),<a name="line.177"></a>
+<span class="sourceLineNo">178</span>    OEM_Specific_D2(0xD2, "OEM Specific ID 0xD2"),<a name="line.178"></a>
+<span class="sourceLineNo">179</span>    OEM_Specific_D3(0xD3, "OEM Specific ID 0xD3"),<a name="line.179"></a>
+<span class="sourceLineNo">180</span>    OEM_Specific_D4(0xD4, "OEM Specific ID 0xD4"),<a name="line.180"></a>
+<span class="sourceLineNo">181</span>    OEM_Specific_D5(0xD5, "OEM Specific ID 0xD5"),<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    OEM_Specific_D6(0xD6, "OEM Specific ID 0xD6"),<a name="line.182"></a>
+<span class="sourceLineNo">183</span>    OEM_Specific_D7(0xD7, "OEM Specific ID 0xD7"),<a name="line.183"></a>
+<span class="sourceLineNo">184</span>    OEM_Specific_D8(0xD8, "OEM Specific ID 0xD8"),<a name="line.184"></a>
+<span class="sourceLineNo">185</span>    OEM_Specific_D9(0xD9, "OEM Specific ID 0xD9"),<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    OEM_Specific_DA(0xDA, "OEM Specific ID 0xDA"),<a name="line.186"></a>
+<span class="sourceLineNo">187</span>    OEM_Specific_DB(0xDB, "OEM Specific ID 0xDB"),<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    OEM_Specific_DC(0xDC, "OEM Specific ID 0xDC"),<a name="line.188"></a>
+<span class="sourceLineNo">189</span>    OEM_Specific_DD(0xDD, "OEM Specific ID 0xDD"),<a name="line.189"></a>
+<span class="sourceLineNo">190</span>    OEM_Specific_DE(0xDE, "OEM Specific ID 0xDE"),<a name="line.190"></a>
+<span class="sourceLineNo">191</span>    OEM_Specific_DF(0xDF, "OEM Specific ID 0xDF"),<a name="line.191"></a>
+<span class="sourceLineNo">192</span>    OEM_Specific_E0(0xE0, "OEM Specific ID 0xE0"),<a name="line.192"></a>
+<span class="sourceLineNo">193</span>    OEM_Specific_E1(0xE1, "OEM Specific ID 0xE1"),<a name="line.193"></a>
+<span class="sourceLineNo">194</span>    OEM_Specific_E2(0xE2, "OEM Specific ID 0xE2"),<a name="line.194"></a>
+<span class="sourceLineNo">195</span>    OEM_Specific_E3(0xE3, "OEM Specific ID 0xE3"),<a name="line.195"></a>
+<span class="sourceLineNo">196</span>    OEM_Specific_E4(0xE4, "OEM Specific ID 0xE4"),<a name="line.196"></a>
+<span class="sourceLineNo">197</span>    OEM_Specific_E5(0xE5, "OEM Specific ID 0xE5"),<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    OEM_Specific_E6(0xE6, "OEM Specific ID 0xE6"),<a name="line.198"></a>
+<span class="sourceLineNo">199</span>    OEM_Specific_E7(0xE7, "OEM Specific ID 0xE7"),<a name="line.199"></a>
+<span class="sourceLineNo">200</span>    OEM_Specific_E8(0xE8, "OEM Specific ID 0xE8"),<a name="line.200"></a>
+<span class="sourceLineNo">201</span>    OEM_Specific_E9(0xE9, "OEM Specific ID 0xE9"),<a name="line.201"></a>
+<span class="sourceLineNo">202</span>    OEM_Specific_EA(0xEA, "OEM Specific ID 0xEA"),<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    OEM_Specific_EB(0xEB, "OEM Specific ID 0xEB"),<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    OEM_Specific_EC(0xEC, "OEM Specific ID 0xEC"),<a name="line.204"></a>
+<span class="sourceLineNo">205</span>    OEM_Specific_ED(0xED, "OEM Specific ID 0xED"),<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    OEM_Specific_EE(0xEE, "OEM Specific ID 0xEE"),<a name="line.206"></a>
+<span class="sourceLineNo">207</span>    OEM_Specific_EF(0xEF, "OEM Specific ID 0xEF"),<a name="line.207"></a>
+<span class="sourceLineNo">208</span>    OEM_Specific_F0(0xF0, "OEM Specific ID 0xF0"),<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    OEM_Specific_F1(0xF1, "OEM Specific ID 0xF1"),<a name="line.209"></a>
+<span class="sourceLineNo">210</span>    OEM_Specific_F2(0xF2, "OEM Specific ID 0xF2"),<a name="line.210"></a>
+<span class="sourceLineNo">211</span>    OEM_Specific_F3(0xF3, "OEM Specific ID 0xF3"),<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    OEM_Specific_F4(0xF4, "OEM Specific ID 0xF4"),<a name="line.212"></a>
+<span class="sourceLineNo">213</span>    OEM_Specific_F5(0xF5, "OEM Specific ID 0xF5"),<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    OEM_Specific_F6(0xF6, "OEM Specific ID 0xF6"),<a name="line.214"></a>
+<span class="sourceLineNo">215</span>    OEM_Specific_F7(0xF7, "OEM Specific ID 0xF7"),<a name="line.215"></a>
+<span class="sourceLineNo">216</span>    OEM_Specific_F8(0xF8, "OEM Specific ID 0xF8"),<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    OEM_Specific_F9(0xF9, "OEM Specific ID 0xF9"),<a name="line.217"></a>
+<span class="sourceLineNo">218</span>    OEM_Specific_FA(0xFA, "OEM Specific ID 0xFA"),<a name="line.218"></a>
+<span class="sourceLineNo">219</span>    OEM_Specific_FB(0xFB, "OEM Specific ID 0xFB"),<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    OEM_Specific_FC(0xFC, "OEM Specific ID 0xFC"),<a name="line.220"></a>
+<span class="sourceLineNo">221</span>    OEM_Specific_FD(0xFD, "OEM Specific ID 0xFD"),<a name="line.221"></a>
+<span class="sourceLineNo">222</span>    OEM_Specific_FE(0xFE, "OEM Specific ID 0xFE"),<a name="line.222"></a>
+<span class="sourceLineNo">223</span>    OEM_Specific_FF(0xFF, "OEM Specific ID 0xFF");<a name="line.223"></a>
+<span class="sourceLineNo">224</span>// 90h-AF, "Chassis-specific Entities. These IDs are system specific and can be assigned by the chassis provider.<a name="line.224"></a>
+<span class="sourceLineNo">225</span>// B0h-CF, "Board-set specific Entities. These IDs are system specific and can be assigned by the Board-set provider.<a name="line.225"></a>
+<span class="sourceLineNo">226</span>// D0h-FF, "OEM System Integrator defined. These IDs are system specific and can be assigned by the system integrator, or OEM.<a name="line.226"></a>
+<span class="sourceLineNo">227</span>    private final byte code;<a name="line.227"></a>
+<span class="sourceLineNo">228</span>    private final String description;<a name="line.228"></a>
+<span class="sourceLineNo">229</span>    /* pp */ SDREntityId(@Nonnegative int code, @Nonnull String description) {<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        this.code = UnsignedBytes.checkedCast(code);<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        this.description = description;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>    }<a name="line.232"></a>
+<span class="sourceLineNo">233</span><a name="line.233"></a>
+<span class="sourceLineNo">234</span>    @Override<a name="line.234"></a>
+<span class="sourceLineNo">235</span>    public byte getCode() {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        return code;<a name="line.236"></a>
+<span class="sourceLineNo">237</span>    }<a name="line.237"></a>
+<span class="sourceLineNo">238</span><a name="line.238"></a>
+<span class="sourceLineNo">239</span>    @Override<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    public String getDescription() {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        return description;<a name="line.241"></a>
+<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>    @Override<a name="line.244"></a>
+<span class="sourceLineNo">245</span>    public String toString() {<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        return "0x" + UnsignedBytes.toString(getCode(), 16) + ": " + getDescription();<a name="line.246"></a>
+<span class="sourceLineNo">247</span>    }<a name="line.247"></a>
+<span class="sourceLineNo">248</span>}<a name="line.248"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

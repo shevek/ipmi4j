@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * To change this template, choose Tools | Templates<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * and open the template in the editor.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> */<a name="line.4"></a>
+<span class="sourceLineNo">005</span>package org.anarres.ipmi.protocol.packet.ipmi;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.google.common.primitives.UnsignedBytes;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.anarres.ipmi.protocol.packet.common.Code;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>/**<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * [IPMI2] Section 5.2 page 43.<a name="line.11"></a>
+<span class="sourceLineNo">012</span> *<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * @author shevek<a name="line.13"></a>
+<span class="sourceLineNo">014</span> */<a name="line.14"></a>
+<span class="sourceLineNo">015</span>public enum IpmiCompletionCode implements Code.DescriptiveWrapper {<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>    Normal(0x00, "Command Completed Normally."),<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    NodeBusy(0xC0, "Node Busy. Command could not be processed because command processing resources are temporarily unavailable."),<a name="line.18"></a>
+<span class="sourceLineNo">019</span>    InvalidCommand(0xC1, "Invalid Command. Used to indicate an unrecognized or unsupported command."),<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    InvalidCommandForLUN(0xC2, "Command invalid for given LUN."),<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    Timeout(0xC3, "Timeout while processing command. Response unavailable."),<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    OutOfSpace(0xC4, "Out of space. Command could not be completed because of a lack of storage space required to execute the given command operation."),<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    ReservationCanceled(0xC5, "Reservation Canceled or Invalid Reservation ID."),<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    RequestDataTruncated(0xC6, "Request data truncated."),<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    RequestDataLengthInvalid(0xC7, "Request data length invalid."),<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    RequestDataLengthFieldLimitExceeded(0xC8, "Request data field length limit exceeded."),<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    ParameterOutOfRange(0xC9, "Parameter out of range. One or more parameters in the data field of the Request are out of range."),<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    CannotReturnRequestedNumberOfBytes(0xCA, "Cannot return number of requested data bytes."),<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    NotPresent(0xCB, "Requested Sensor, data, or record not present."),<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    InvalidDataField(0xCC, "Invalid data field in Request."),<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    IllegalCommandForTarget(0xCD, "Command illegal for specified sensor or record type."),<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    CommandResponseNotAvailable(0xCE, "Command response could not be provided."),<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    CannotExecuteDuplicatedRequest(0xCF, "Cannot execute duplicated request."),<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    CommandResponseNotAvailable_SDRUpdate(0xD0, "Command response could not be provided. SDR Repository in update mode."),<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    CommandResponseNotAvailable_FirmwareUpdate(0xD1, "Command response could not be provided. Device in firmware update mode."),<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    CommandResponseNotAvailable_BMCInitialization(0xD2, "Command response could not be provided. BMC initialization or initialization agent in progress."),<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    DestinationUnavailable(0xD3, "Destination unavailable. Cannot deliver request to selected destination."),<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    InsufficientPrivilege(0xD4, "Cannot execute command due to insufficient privilege level or other security-based restriction."),<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    IllegalState(0xD5, "Cannot execute command. Command, or request parameter(s), not supported in present state."),<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    IllegalParameterForSubFunctionState(0xD6, "Cannot execute command. Parameter is illegal because command sub-function has been disabled or is unavailable."),<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    UnspecifiedError(0xFF, "Unspecified error.");<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    /*<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * DEVICE-SPECIFIC (OEM) CODES 01h-7Eh <a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * 01h-7Eh Device specific (OEM) completion codes. This range is used for command-<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * specific codes that are also specific for a particular device and version. A-priori<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * knowledge of the device command set is required for interpretation of these<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * codes.<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * COMMAND-SPECIFIC CODES 80h-BEh <a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * 80h-BEh Standard command-specific codes. This range is reserved for command-<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * specific completion codes for commands specified in this document.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private final byte code;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    private final String description;<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>    private IpmiCompletionCode(int code, String description) {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        this.code = UnsignedBytes.checkedCast(code);<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        this.description = description;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>    @Override<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    public byte getCode() {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        return code;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    }<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>    @Override<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public String getDescription() {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        return description;<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    @Override<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    public String toString() {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        return Code.Utils.toString(this);<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    }<a name="line.73"></a>
+<span class="sourceLineNo">074</span>}<a name="line.74"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
